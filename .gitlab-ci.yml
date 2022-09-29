@@ -6,8 +6,10 @@ cache:
   key:
     files:
       - backend/package-lock.json
+      - frontend/package-lock.json
   paths:
     - backend/node_modules/
+    - frontend/node_modules/
 
 .pull_cached_node_modules:
   cache:
@@ -15,6 +17,7 @@ cache:
     key:
       files:
         - backend/yarn.lock
+        - frontend/yarn.lock
     policy: pull
 
 stages:
@@ -26,7 +29,17 @@ stages:
 setup:
   stage: setup
   script:
+    - npm i -g eslint
+
+backend_setup:
+  stage: setup
+  script:
     - (cd ./backend && npm ci)
+
+frontend_setup:
+  stage: setup
+  script:
+    - (cd ./frontend && npm ci)
 
 npm_audit:
   stage: test
@@ -36,8 +49,17 @@ npm_audit:
   extends: .pull_cached_node_modules
   script:
     - (cd ./backend && npm audit)
+    - (cd ./frontend && npm audit)
 
 backend_lint:
+  stage: test
+  needs:
+    - setup
+  extends: .pull_cached_node_modules
+  script:
+    - (cd ./backend && npm run lint)
+
+frontend_lint:
   stage: test
   needs:
     - setup
@@ -51,7 +73,15 @@ backend_test:
     - setup
   extends: .pull_cached_node_modules
   script:
-    - (cd ./backend && yarn run test)
+    - (cd ./backend && npm run test)
+
+#frontend_test:
+#  stage: test
+#  needs:
+#    - setup
+#  extends: .pull_cached_node_modules
+#  script:
+#    - (cd ./frontend && npm run test)
 
 backend_docker_image_build:
   stage: deploy
