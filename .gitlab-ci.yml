@@ -29,12 +29,12 @@ stages:
 backend_setup:
   stage: setup
   script:
-    - (cd ./backend && npm ci)
+    - (cd ./backend && npm install)
 
 frontend_setup:
   stage: setup
   script:
-    - (cd ./frontend && npm ci)
+    - (cd ./frontend && npm install)
 
 backend_audit:
   stage: test
