@@ -1,0 +1,66 @@
+image: node:16-alpine
+
+cache:
+  untracked: true
+  policy: push
+  key:
+    files:
+      - backend/package-lock.json
+  paths:
+    - backend/node_modules/
+
+.pull_cached_node_modules:
+  cache:
+    untracked: true
+    key:
+      files:
+        - backend/yarn.lock
+    policy: pull
+
+stages:
+  - setup
+  - test
+  - build
+  - deploy
+
+setup:
+  stage: setup
+  script:
+    - (cd ./backend && npm ci)
+
+npm_audit:
+  stage: test
+  allow_failure: true
+  needs:
+    - setup
+  extends: .pull_cached_node_modules
+  script:
+    - (cd ./backend && npm audit)
+
+backend_lint:
+  stage: test
+  needs:
+    - setup
+  extends: .pull_cached_node_modules
+  script:
+    - (cd ./backend && npm run lint)
+
+backend_test:
+  stage: test
+  needs:
+    - setup
+  extends: .pull_cached_node_modules
+  script:
+    - (cd ./backend && yarn run test)
+
+backend_docker_image_build:
+  stage: deploy
+  image: docker:latest
+  needs:
+    - npm_audit
+    - backend_lint
+    - backend_test
+  script:
+    - (cd ./backend && docker build -t backend:latest .)
+  only:
+    - main
