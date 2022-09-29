@@ -16,8 +16,8 @@ cache:
     untracked: true
     key:
       files:
-        - backend/yarn.lock
-        - frontend/yarn.lock
+        - backend/package-lock.json
+        - frontend/package-lock.json
     policy: pull
 
 stages:
