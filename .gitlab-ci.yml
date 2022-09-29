@@ -26,7 +26,7 @@ stages:
   - build
   - deploy
 
-setup:
+install_testing_dependencies:
   stage: setup
   script:
     - npm i -g eslint
@@ -54,13 +54,13 @@ npm_audit:
 backend_lint:
   stage: test
   needs:
-    - setup
+    - install_testing_dependencies
   extends: .pull_cached_node_modules
   script:
     - (cd ./backend && npm run lint)
 
 frontend_lint:
-  stage: test
+  stage: install_lintinstall_testing_dependencies
   needs:
     - setup
   extends: .pull_cached_node_modules
@@ -70,7 +70,7 @@ frontend_lint:
 backend_test:
   stage: test
   needs:
-    - setup
+    - backend_setup
   extends: .pull_cached_node_modules
   script:
     - (cd ./backend && npm run test)
@@ -78,16 +78,15 @@ backend_test:
 #frontend_test:
 #  stage: test
 #  needs:
-#    - setup
+#    - frontend_setup
 #  extends: .pull_cached_node_modules
 #  script:
 #    - (cd ./frontend && npm run test)
 
-backend_docker_image_build:
+backend_build:
   stage: deploy
   image: docker:latest
   needs:
-    - npm_audit
     - backend_lint
     - backend_test
   script:
