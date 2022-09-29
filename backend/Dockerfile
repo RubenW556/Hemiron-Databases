@@ -1,10 +1,8 @@
-# Common build stage
 FROM node:16-alpine
+WORKDIR /usr/src/app
 
-COPY . /app
-
-WORKDIR /app
+COPY . .
 
 RUN npm ci
 
-ENTRYPOINT ["npm", "run", "start"]
+CMD ["npm", "run", "start"]
