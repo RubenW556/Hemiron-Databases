@@ -36,15 +36,22 @@ frontend_setup:
   script:
     - (cd ./frontend && npm ci)
 
-npm_audit:
+backend_audit:
   stage: test
   allow_failure: true
   needs:
-    - frontend_setup
     - backend_setup
   extends: .pull_cached_node_modules
   script:
     - (cd ./backend && npm audit)
+
+frontend_audit:
+  stage: test
+  allow_failure: true
+  needs:
+    - frontend_setup
+  extends: .pull_cached_node_modules
+  script:
     - (cd ./frontend && npm audit)
 
 backend_lint:
@@ -61,7 +68,7 @@ frontend_lint:
     - frontend_setup
   extends: .pull_cached_node_modules
   script:
-    - (cd ./backend && npm run lint)
+    - (cd ./frontend && npm run lint)
 
 backend_test:
   stage: test
@@ -71,13 +78,13 @@ backend_test:
   script:
     - (cd ./backend && npm run test)
 
-#frontend_test:
-#  stage: test
-#  needs:
-#    - frontend_setup
-#  extends: .pull_cached_node_modules
-#  script:
-#    - (cd ./frontend && npm run test)
+frontend_test:
+  stage: test
+  needs:
+    - frontend_setup
+  extends: .pull_cached_node_modules
+  script:
+    - (cd ./frontend && npm run test)
 
 backend_build:
   stage: deploy
