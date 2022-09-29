@@ -45,7 +45,8 @@ npm_audit:
   stage: test
   allow_failure: true
   needs:
-    - setup
+    - frontend_setup
+    - backend_setup
   extends: .pull_cached_node_modules
   script:
     - (cd ./backend && npm audit)
@@ -62,7 +63,7 @@ backend_lint:
 frontend_lint:
   stage: install_lintinstall_testing_dependencies
   needs:
-    - setup
+    - frontend_setup
   extends: .pull_cached_node_modules
   script:
     - (cd ./backend && npm run lint)
