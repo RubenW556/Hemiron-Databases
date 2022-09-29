@@ -56,13 +56,15 @@ backend_lint:
   stage: test
   needs:
     - install_testing_dependencies
+    - backend_setup
   extends: .pull_cached_node_modules
   script:
     - (cd ./backend && npm run lint)
 
 frontend_lint:
-  stage: install_lintinstall_testing_dependencies
+  stage: test
   needs:
+    - install_testing_dependencies
     - frontend_setup
   extends: .pull_cached_node_modules
   script:
