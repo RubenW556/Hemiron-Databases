@@ -2,29 +2,10 @@ image: nielsprins/ipsenh-ci
 
 cache:
   untracked: true
-  policy: push
-  cache:
-    - key:
-        files:
-          - backend/package-lock.json
-      paths:
-        - backend/node_modules/
-    - key:
-        files:
-          - frontend/package-lock.json
-      paths:
-        - frontend/node_modules/
-
-.pull_cached_node_modules:
-  cache:
-    - untracked: true
-    - key:
-      files:
-        - backend/package-lock.json
-    - key:
-      files:
-        - frontend/package-lock.json
-    - policy: pull
+  key: ${CI_COMMIT_REF_SLUG}
+  paths:
+    - backend/node_modules/
+    - frontend/node_modules/
 
 stages:
   - setup
@@ -47,7 +28,6 @@ backend_audit:
   allow_failure: true
   needs:
     - backend_setup
-  extends: .pull_cached_node_modules
   script:
     - (cd ./backend && npm audit)
 
@@ -56,7 +36,6 @@ frontend_audit:
   allow_failure: true
   needs:
     - frontend_setup
-  extends: .pull_cached_node_modules
   script:
     - (cd ./frontend && npm audit)
 
@@ -64,7 +43,6 @@ backend_lint:
   stage: test
   needs:
     - backend_setup
-#  extends: .pull_cached_node_modules
   script:
     - (cd ./backend && npm run lint)
 
@@ -72,7 +50,6 @@ frontend_lint:
   stage: test
   needs:
     - frontend_setup
-  extends: .pull_cached_node_modules
   script:
     - (cd ./frontend && npm run lint)
 
@@ -80,7 +57,6 @@ backend_test:
   stage: test
   needs:
     - backend_setup
-  extends: .pull_cached_node_modules
   script:
     - (cd ./backend && npm run test)
 
@@ -88,7 +64,6 @@ frontend_test:
   stage: test
   needs:
     - frontend_setup
-  extends: .pull_cached_node_modules
   script:
     - (cd ./frontend && npm run test)
 
