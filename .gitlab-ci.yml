@@ -3,22 +3,28 @@ image: nielsprins/ipsenh-ci
 cache:
   untracked: true
   policy: push
-  key:
-    files:
-      - backend/package-lock.json
-      - frontend/package-lock.json
-  paths:
-    - backend/node_modules/
-    - frontend/node_modules/
+  cache:
+    - key:
+        files:
+          - backend/package-lock.json
+      paths:
+        - backend/node_modules/
+    - key:
+        files:
+          - frontend/package-lock.json
+      paths:
+        - frontend/node_modules/
 
 .pull_cached_node_modules:
   cache:
-    untracked: true
-    key:
+    - untracked: true
+    - key:
       files:
         - backend/package-lock.json
+    - key:
+      files:
         - frontend/package-lock.json
-    policy: pull
+    - policy: pull
 
 stages:
   - setup
@@ -60,7 +66,7 @@ backend_lint:
     - backend_setup
 #  extends: .pull_cached_node_modules
   script:
-    - (cd ./backend && npm i && npm run lint)
+    - (cd ./backend && npm run lint)
 
 frontend_lint:
   stage: test
