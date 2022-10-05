@@ -58,9 +58,9 @@ backend_lint:
   stage: test
   needs:
     - backend_setup
-  extends: .pull_cached_node_modules
+#  extends: .pull_cached_node_modules
   script:
-    - (cd ./backend && npm run lint)
+    - (cd ./backend && npm i && npm run lint)
 
 frontend_lint:
   stage: test
