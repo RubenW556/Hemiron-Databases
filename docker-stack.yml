@@ -1,0 +1,14 @@
+version: '3.7'
+
+services:
+  backend:
+    image: registry.inf-hsleiden.nl/2223.ipsenh-p1-p2/databases/backend:latest
+    ports:
+      - "3000:3000"
+    restart: always
+
+  frontend:
+    image: registry.inf-hsleiden.nl/2223.ipsenh-p1-p2/databases/frontend:latest
+    ports:
+      - "80:80"
+    restart: always
