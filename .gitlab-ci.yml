@@ -8,9 +8,8 @@ cache:
 
 .pull_cached_node_modules:
   before_script:
-    - (cd ./backend && npm ci --cache npm --prefer-offline)
-    - (cd ./frontend && npm ci --cache npm --prefer-offline)
-
+    - (cd ./backend && npm ci --cache .npm --prefer-offline)
+    - (cd ./frontend && npm ci --cache .npm --prefer-offline)
   cache:
     untracked: true
     policy: pull
