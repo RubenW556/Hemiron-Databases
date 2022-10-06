@@ -25,8 +25,8 @@ stages:
 npm_install:
   stage: setup
   script:
-    - (cd ./backend && npm ci --cache .npm --prefer-offline)
-    - (cd ./frontend && npm ci --cache .npm --prefer-offline)
+    - (cd ./backend && npm ci --include=dev --cache .npm --prefer-offline)
+    - (cd ./frontend && npm ci --include=dev --cache .npm --prefer-offline)
 
 backend_audit:
   stage: test
