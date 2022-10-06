@@ -6,7 +6,9 @@ image: nielsprins/ipsenh-ci
   cache:
     untracked: true
     policy: pull
-    key: backend/package-lock.json
+    key:
+      files:
+        - backend/package-lock.json
     paths:
       - backend/.npm/
 
@@ -16,7 +18,9 @@ image: nielsprins/ipsenh-ci
   cache:
     untracked: true
     policy: pull
-    key: frontend/package-lock.json
+    key:
+      files:
+        - frontend/package-lock.json
     paths:
       - frontend/.npm/
 
@@ -29,7 +33,9 @@ stages:
 backend_npm_install:
   stage: setup
   cache:
-    key: backend/package-lock.json
+    key:
+      files:
+        - backend/package-lock.json
     paths:
       - backend/.npm/
   script:
@@ -38,7 +44,9 @@ backend_npm_install:
 frontend_npm_install:
   stage: setup
   cache:
-    key: frontend/package-lock.json
+    key:
+      files:
+        - frontend/package-lock.json
     paths:
       - frontend/.npm/
   script:
