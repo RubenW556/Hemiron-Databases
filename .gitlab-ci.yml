@@ -10,11 +10,10 @@ cache:
   cache:
     untracked: true
     policy: pull
-    key:
-      files:
-        - package-lock.json
+    key: $CI_COMMIT_REF_SLUG
     paths:
-      - .npm/
+      - backend/.npm/
+      - frontend/.npm/
 
 stages:
   - setup
