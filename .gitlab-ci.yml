@@ -16,25 +16,17 @@ cache:
     paths:
       - .npm/
 
-before_script:
-  - (cd ./backend && npm ci --cache .npm --prefer-offline)
-  - (cd ./frontend && npm ci --cache .npm --prefer-offline)
-
 stages:
-  #  - setup
+  - setup
   - test
   - build
   - deploy
 
-#backend_setup:
-#  stage: setup
-#  script:
-#    - (cd ./backend && npm install --include=dev)
-#
-#frontend_setup:
-#  stage: setup
-#  script:
-#    - (cd ./frontend && npm install --include=dev)
+npm_install:
+  stage: setup
+  script:
+    - (cd ./backend && npm ci --cache .npm --prefer-offline)
+    - (cd ./frontend && npm ci --cache .npm --prefer-offline)
 
 backend_audit:
   stage: test
