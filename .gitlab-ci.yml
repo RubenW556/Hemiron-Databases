@@ -1,11 +1,5 @@
 image: nielsprins/ipsenh-ci
 
-cache:
-  key: $CI_COMMIT_REF_SLUG
-  paths:
-    - backend/.npm/
-    - frontend/.npm/
-
 .pull_backend_npm_cache:
   before_script:
     - (cd ./backend && npm ci --cache .npm --prefer-offline)
@@ -34,11 +28,19 @@ stages:
 
 backend_npm_install:
   stage: setup
+  cache:
+    key: $CI_COMMIT_REF_SLUG
+    paths:
+      - backend/.npm/
   script:
     - (cd ./backend && npm ci --include=dev --cache .npm)
 
 frontend_npm_install:
   stage: setup
+  cache:
+    key: $CI_COMMIT_REF_SLUG
+    paths:
+      - frontend/.npm/
   script:
     - (cd ./frontend && npm ci --include=dev --cache .npm)
 
