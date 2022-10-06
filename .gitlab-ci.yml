@@ -103,7 +103,7 @@ frontend_test:
     - (cd ./frontend && npm run test)
 
 backend_build:
-  stage: deploy
+  stage: build
   needs:
     - backend_lint
     - backend_test
@@ -115,7 +115,7 @@ backend_build:
     - main
 
 frontend_build:
-  stage: deploy
+  stage: build
   needs:
     - frontend_lint
     - frontend_test
@@ -126,8 +126,11 @@ frontend_build:
   only:
     - main
 
-deploy-to-swarm:
+deploy_to_swarm:
   stage: deploy
+  needs:
+    - backend_build
+    - frontend_build
   before_script:
     - 'command -v ssh-agent >/dev/null || ( apt-get update -y && apt-get install openssh-client -y )'
     - eval $(ssh-agent -s)
