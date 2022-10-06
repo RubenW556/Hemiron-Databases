@@ -8,7 +8,9 @@ cache:
 
 .pull_cached_node_modules:
   before_script:
-    - npm ci --cache npm --prefer-offline
+    - (cd ./backend && npm ci --cache npm --prefer-offline)
+    - (cd ./frontend && npm ci --cache npm --prefer-offline)
+
   cache:
     untracked: true
     policy: pull
@@ -26,8 +28,8 @@ stages:
 npm_install:
   stage: setup
   script:
-    - (cd ./backend && npm ci --include=dev --cache .npm --prefer-offline)
-    - (cd ./frontend && npm ci --include=dev --cache .npm --prefer-offline)
+    - (cd ./backend && npm ci --include=dev --cache .npm)
+    - (cd ./frontend && npm ci --include=dev --cache .npm)
 
 backend_audit:
   stage: test
