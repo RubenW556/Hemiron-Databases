@@ -1,0 +1,20 @@
+networks:
+  databases-frontend-dev:
+    name: databases-frontend-dev
+
+services: # docker compose up --build
+  backend: # docker compose up --build backend
+    restart: unless-stopped
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: development
+    container_name: api
+    image: mcdefault/databases-backend:dev-0.0.1-alpine3.15 #schrijft prod image over
+    command: npm run start
+    volumes:
+      - .:/usr/src/app
+    ports:
+      - ${PORT}:${PORT}
+    networks:
+      - databases-frontend-dev

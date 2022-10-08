@@ -1,0 +1,14 @@
+version: '3.8'
+networks:
+  databases-frontend:
+    external: true
+    name: databases-frontend-dev
+
+services:
+  backend:
+    image: mcdefault/databases-backend:1.0.0-alpine3.15 #hebben we een gezamelijke repo nog nodig?
+    deploy:
+      mode: replicated
+      replicas: 1
+    env_file:
+      - .env
