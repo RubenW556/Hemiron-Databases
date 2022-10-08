@@ -59,6 +59,23 @@ $ npm run test:e2e
 $ npm run test:cov
 ```
 
+## Running with docker
+
+```bash
+# development build
+$ docker compose up --build
+
+# production build 
+$ docker compose -f docker-compose.yaml -f docker-compose.prod.yaml build
+
+# production mode
+docker stack deploy --compose-file docker-compose.yaml -c docker-compose.prod.yaml backend --with-registry-auth --prune
+ 
+# create swarm network
+$ docker network create -d overlay --attachable databases-backend
+```
+
+
 ## Support
 
 Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
@@ -72,3 +89,7 @@ Nest is an MIT-licensed open source project. It can grow thanks to the sponsors 
 ## License
 
 Nest is [MIT licensed](LICENSE).
+
+## Sources
+
+- 
