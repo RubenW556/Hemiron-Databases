@@ -2,7 +2,7 @@
 # BUILD FOR LOCAL DEVELOPMENT
 ###################
 
-FROM node:18-alpine As development
+FROM node:18-alpine AS development
 
 # Create app directory
 WORKDIR /usr/src/app
@@ -25,7 +25,7 @@ USER node
 # BUILD FOR PRODUCTION
 ###################
 
-FROM node:18-alpine As build
+FROM node:18-alpine AS build
 
 WORKDIR /usr/src/app
 
@@ -57,7 +57,7 @@ USER node
 ###################
 
 # Use apline package to keep it small
-FROM alpine:3.15 As production
+FROM alpine:3.15 AS production
 
 # set our node environment, either development or production
 # defaults to production, compose overrides this to development on build and run
