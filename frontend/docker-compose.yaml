@@ -13,7 +13,7 @@ services:
 #    env_file:
 #      - .env
   frontend:
-    image: mcdefault/databases-frontend:1.0.0-nginx1.23.1-alpine #todo  te veranderen naar hsleiden registery
+    image: mcdefault/databases-frontend:1.0.0-nginx1.23.1-alpine #todo  te veranderen naar hsleiden registery registry.inf-hsleiden.nl/2223.ipsenh-p1-p2/databases/frontend:1.0.0-nginx1.23.1-alpine
     deploy:
       mode: replicated
       replicas: 1
