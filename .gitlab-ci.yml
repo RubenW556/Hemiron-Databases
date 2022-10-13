@@ -108,11 +108,7 @@ backend_build:
     - backend_lint
     - backend_test
   script:
-    - docker login -u pipeline -p $DOCKER_PASSWORD registry.inf-hsleiden.nl
     - (cd ./backend && docker build -t registry.inf-hsleiden.nl/2223.ipsenh-p1-p2/databases/backend .)
-    - docker push registry.inf-hsleiden.nl/2223.ipsenh-p1-p2/databases/backend
-  only:
-    - main
 
 frontend_build:
   stage: build
@@ -120,8 +116,24 @@ frontend_build:
     - frontend_lint
     - frontend_test
   script:
-    - docker login -u pipeline -p $DOCKER_PASSWORD registry.inf-hsleiden.nl
     - (cd ./frontend && docker build -t registry.inf-hsleiden.nl/2223.ipsenh-p1-p2/databases/frontend .)
+
+backend_push:
+  stage: deploy
+  needs:
+    - backend_build
+  script:
+    - docker login -u pipeline -p $DOCKER_PASSWORD registry.inf-hsleiden.nl
+    - docker push registry.inf-hsleiden.nl/2223.ipsenh-p1-p2/databases/backend
+  only:
+    - main
+
+frontend_push:
+  stage: deploy
+  needs:
+    - frontend_build
+  script:
+    - docker login -u pipeline -p $DOCKER_PASSWORD registry.inf-hsleiden.nl
     - docker push registry.inf-hsleiden.nl/2223.ipsenh-p1-p2/databases/frontend
   only:
     - main
@@ -129,8 +141,8 @@ frontend_build:
 deploy_to_swarm:
   stage: deploy
   needs:
-    - backend_build
-    - frontend_build
+    - backend_push
+    - frontend_push
   before_script:
     - 'command -v ssh-agent >/dev/null || ( apt-get update -y && apt-get install openssh-client -y )'
     - eval $(ssh-agent -s)
