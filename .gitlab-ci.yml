@@ -125,7 +125,8 @@ frontend_build:
 backend_publish:
   stage: build
   needs:
-    - backend_build
+    - backend_lint
+    - backend_test
   script:
     - (cd ./backend && docker build -t registry.inf-hsleiden.nl/2223.ipsenh-p1-p2/databases/backend .)
     - docker login -u pipeline -p $DOCKER_PASSWORD registry.inf-hsleiden.nl
@@ -136,7 +137,8 @@ backend_publish:
 frontend_publish:
   stage: build
   needs:
-    - frontend_build
+    - frontend_lint
+    - frontend_test
   script:
     - (cd ./frontend && docker build -t registry.inf-hsleiden.nl/2223.ipsenh-p1-p2/databases/frontend .)
     - docker login -u pipeline -p $DOCKER_PASSWORD registry.inf-hsleiden.nl
