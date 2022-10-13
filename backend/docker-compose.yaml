@@ -6,7 +6,7 @@ networks:
 
 services:
   backend:
-    image: mcdefault/databases-backend:1.0.0-alpine3.15 #todo  te veranderen naar hsleiden registery
+    image: mcdefault/databases-backend:1.0.0-alpine3.15 #todo  te veranderen naar hsleiden registery registry.inf-hsleiden.nl/2223.ipsenh-p1-p2/databases-backend:1.0.0-alpine3.15
     deploy:
       mode: replicated
       replicas: 1
