@@ -28,7 +28,7 @@ stages:
   - setup
   - test
   - build
-#  - deploy
+  - deploy
 
 backend_npm_install:
   stage: setup
@@ -146,22 +146,22 @@ frontend_publish:
   only:
     - main
 
-#deploy_to_swarm:
-#  stage: deploy
-#  needs:
-#    - backend_publish
-#    - frontend_publish
-#  before_script:
-#    - 'command -v ssh-agent >/dev/null || ( apt-get update -y && apt-get install openssh-client -y )'
-#    - eval $(ssh-agent -s)
-#    - echo "$SSH_KEY" | tr -d '\r' | ssh-add -
-#    - mkdir -p ~/.ssh
-#    - chmod 700 ~/.ssh
-#    - echo "192.168.195.168 manager-2.inf-hsleiden" > /etc/hosts
-#  script:
-#    - docker login -u pipeline -p $BUILD_TOKEN registry.inf-hsleiden.nl
-#    - scp -o StrictHostKeyChecking=no docker-stack.yml student@manager-2.inf-hsleiden:/home/student/databases/docker-stack.yml
-#    - ssh -o StrictHostKeyChecking=no -t student@manager-2.inf-hsleiden 'bash -s' < deploy.sh
-#  only:
-#    - main
+deploy_to_swarm:
+  stage: deploy
+  needs:
+    - backend_publish
+    - frontend_publish
+  before_script:
+    - 'command -v ssh-agent >/dev/null || ( apt-get update -y && apt-get install openssh-client -y )'
+    - eval $(ssh-agent -s)
+    - echo "$SSH_KEY" | tr -d '\r' | ssh-add -
+    - mkdir -p ~/.ssh
+    - chmod 700 ~/.ssh
+    - echo "192.168.195.168 manager-2.inf-hsleiden" > /etc/hosts
+  script:
+    - docker login -u pipeline -p $BUILD_TOKEN registry.inf-hsleiden.nl
+    - scp -o StrictHostKeyChecking=no docker-stack.yml student@manager-2.inf-hsleiden:/home/student/databases/docker-stack.yml
+    - ssh -o StrictHostKeyChecking=no -t student@manager-2.inf-hsleiden 'bash -s' < deploy.sh
+  only:
+    - main
 
