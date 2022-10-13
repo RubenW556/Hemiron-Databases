@@ -57,7 +57,7 @@ USER node
 ###################
 
 # Use apline package to keep it small
-FROM alpine:3.15 As production
+FROM node:18-alpine As production
 
 # set our node environment, either development or production
 # defaults to production, compose overrides this to development on build and run
