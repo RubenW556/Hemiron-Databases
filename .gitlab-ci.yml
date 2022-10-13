@@ -160,7 +160,7 @@ deploy_to_swarm:
     - echo "192.168.195.168 manager-2.inf-hsleiden" > /etc/hosts
   script:
     - docker login -u pipeline -p $BUILD_TOKEN registry.inf-hsleiden.nl
-    - scp -o StrictHostKeyChecking=no docker-stack.yml student@manager-2.inf-hsleiden:/home/student/serverless/docker-stack.yml
+    - scp -o StrictHostKeyChecking=no docker-stack.yml student@manager-2.inf-hsleiden:/home/student/databases/docker-stack.yml
     - ssh -o StrictHostKeyChecking=no -t student@manager-2.inf-hsleiden 'bash -s' < deploy.sh
   only:
     - main
