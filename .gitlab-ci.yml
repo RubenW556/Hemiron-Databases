@@ -128,8 +128,8 @@ backend_publish:
     - backend_lint
     - backend_test
   script:
-    - (cd ./backend && docker build -t registry.inf-hsleiden.nl/2223.ipsenh-p1-p2/databases/backend .)
     - docker login -u pipeline -p $DOCKER_PASSWORD registry.inf-hsleiden.nl
+    - (cd ./backend && docker build -t registry.inf-hsleiden.nl/2223.ipsenh-p1-p2/databases/backend .)
     - docker push registry.inf-hsleiden.nl/2223.ipsenh-p1-p2/databases/backend
   only:
     - main
@@ -140,8 +140,8 @@ frontend_publish:
     - frontend_lint
     - frontend_test
   script:
-    - (cd ./frontend && docker build -t registry.inf-hsleiden.nl/2223.ipsenh-p1-p2/databases/frontend .)
     - docker login -u pipeline -p $DOCKER_PASSWORD registry.inf-hsleiden.nl
+    - (cd ./frontend && docker build -t registry.inf-hsleiden.nl/2223.ipsenh-p1-p2/databases/frontend .)
     - docker push registry.inf-hsleiden.nl/2223.ipsenh-p1-p2/databases/frontend
   only:
     - main
