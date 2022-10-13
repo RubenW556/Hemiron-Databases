@@ -164,3 +164,4 @@ frontend_publish:
 #    - ssh -o StrictHostKeyChecking=no -t student@manager-2.inf-hsleiden 'bash -s' < deploy.sh
 #  only:
 #    - main
+
