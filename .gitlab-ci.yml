@@ -128,7 +128,7 @@ backend_publish:
     - backend_lint
     - backend_test
   script:
-    - docker login -u pipeline -p $DOCKER_PASSWORD registry.inf-hsleiden.nl
+    - docker login -u pipeline -p $BUILD_TOKEN registry.inf-hsleiden.nl
     - (cd ./backend && docker build -t registry.inf-hsleiden.nl/2223.ipsenh-p1-p2/databases/backend .)
     - docker push registry.inf-hsleiden.nl/2223.ipsenh-p1-p2/databases/backend
   only:
@@ -140,7 +140,7 @@ frontend_publish:
     - frontend_lint
     - frontend_test
   script:
-    - docker login -u pipeline -p $DOCKER_PASSWORD registry.inf-hsleiden.nl
+    - docker login -u pipeline -p $BUILD_TOKEN registry.inf-hsleiden.nl
     - (cd ./frontend && docker build -t registry.inf-hsleiden.nl/2223.ipsenh-p1-p2/databases/frontend .)
     - docker push registry.inf-hsleiden.nl/2223.ipsenh-p1-p2/databases/frontend
   only:
@@ -159,7 +159,7 @@ deploy_to_swarm:
     - chmod 700 ~/.ssh
     - echo "192.168.195.168 manager-2.inf-hsleiden" > /etc/hosts
   script:
-    - docker login -u pipeline -p $DOCKER_PASSWORD registry.inf-hsleiden.nl
+    - docker login -u pipeline -p $BUILD_TOKEN registry.inf-hsleiden.nl
     - scp -o StrictHostKeyChecking=no docker-stack.yml student@manager-2.inf-hsleiden:/home/student/serverless/docker-stack.yml
     - ssh -o StrictHostKeyChecking=no -t student@manager-2.inf-hsleiden 'bash -s' < deploy.sh
   only:
