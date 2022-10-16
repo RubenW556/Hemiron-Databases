@@ -2,7 +2,7 @@
 # BUILD FOR LOCAL DEVELOPMENT
 ###################
 
-FROM node:18-alpine AS development
+FROM node:18-alpine As development
 
 # Create app directory
 WORKDIR /usr/src/app
@@ -25,7 +25,7 @@ USER node
 # BUILD FOR PRODUCTION
 ###################
 
-FROM node:18-alpine AS build
+FROM node:18-alpine As build
 
 WORKDIR /usr/src/app
 
@@ -57,7 +57,7 @@ USER node
 ###################
 
 # Use apline package to keep it small
-FROM alpine:3.15 AS production
+FROM node:18-alpine As production
 
 # set our node environment, either development or production
 # defaults to production, compose overrides this to development on build and run
@@ -71,8 +71,6 @@ RUN apk add --update \
 # Copy the bundled code from the build stage to the production image
 COPY --chown=node:node --from=build /usr/src/app/node_modules ./node_modules
 COPY --chown=node:node --from=build /usr/src/app/dist ./dist
-
-USER node
 
 # Start the server using the production build
 CMD [ "node", "dist/main.js" ]
