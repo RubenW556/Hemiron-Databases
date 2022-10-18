@@ -1,3 +1,3 @@
-FROM ubuntu:latest AS build
+FROM httpd AS deploy
 LABEL name="devops"
-CMD ["sleep","120"]
+COPY index.html /usr/local/apache2/htdocs/

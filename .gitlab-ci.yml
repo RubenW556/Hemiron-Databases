@@ -4,6 +4,7 @@
 
 include:
   - local: "child-pipeline.yml"
+  - local: "./backend/child-pipeline-backend.yml"
 
 default:
   timeout: 2 hours # terminate any job taking longer than 1 hour
@@ -21,7 +22,10 @@ image: docker:latest
   tags:
     - swarm
   only:
-    - feature/pipeline-api
+    refs:
+      - feature/pipeline-api
+    changes:
+      - service-one/**/*
 
 CI_PRE_CHECK:
   stage: pre-check
@@ -42,7 +46,6 @@ CI_BUILD:
     BASE_IMAGE: ubuntu
     PROJECT_ID: test
     IMAGE_NAME_FINAL: $IMAGE_NAME_BASE/$PROJECT_ID:1.0.$CI_PIPELINE_IID-$BASE_IMAGE
-
 #  rules:
 #    - if: $CI_COMMIT_BRANCH == "feature/pipeline-api"
 #      changes:
@@ -103,34 +106,17 @@ CI_TEST:
 
 #CI_Deploy_Testing:
 #  stage: deploy
-#  tags:
-#    - CI
-#    - Devops
-#  only:
-#    - main
+#  <<: *template
 #  script:
 #    - sudo docker run -itd -p 80:80 httpd
 #  environment:
 #    name: Testing
 
-#pages:
-#  stage: deploy
-#  tags:
-#    - swarm
-#  script:
-#    - mkdir .public
-#    - cp -r * .public
-#    - mv .public public
-#  artifacts:
-#    paths:
-#      - public
+
 
 #CI_VERIFY: #no manager
 #  stage: verify
-#  tags:
-#    - swarm
-#  only:
-#    - feature/pipeline-api
+#  <<: *template
 #  script:
 #    - echo "Verify"
 #    - docker container ls
