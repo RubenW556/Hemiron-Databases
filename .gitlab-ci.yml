@@ -22,6 +22,8 @@ CI_BUILD:
   stage: build
   tags:
     - swarm
+  only:
+    - feature/pipeline-api
   script:
     - echo "building"
     - docker login -u pipeline -p $BUILD_TOKEN registry.inf-hsleiden.nl
@@ -31,6 +33,8 @@ CI_TEST:
   stage: test
   tags:
     - swarm
+  only:
+    - feature/pipeline-api
   script:
     - echo "Testing"
     - docker container ls
@@ -40,6 +44,8 @@ CI_VERIFY:
   stage: verify
   tags:
     - swarm
+  only:
+    - feature/pipeline-api
   script:
     - echo "Verify"
     - docker container ls
