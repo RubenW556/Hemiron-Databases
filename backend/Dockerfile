@@ -65,8 +65,8 @@ ARG NODE_ENV=production
 ENV NODE_ENV $NODE_ENV
 
 # Install node, which is all we require!
-RUN apk add --update \
-    && apk add --no-cache nodejs-current
+#RUN apk add --update \
+#    && apk add --no-cache nodejs-current
 
 # Copy the bundled code from the build stage to the production image
 COPY --chown=node:node --from=build /usr/src/app/node_modules ./node_modules

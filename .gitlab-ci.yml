@@ -36,7 +36,7 @@ CI_PRE_CHECK:
     - docker container ls
     - docker images ls
     - sleep 20
-#    - userdump #test failure. All jobs after this one, not ran (with allow_failure false)
+#    - userdump #test failure. All jobs after this one, not ran (with allow_failure false).
 
 CI_BUILD:
   stage: build
