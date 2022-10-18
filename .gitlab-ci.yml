@@ -1,3 +1,5 @@
+default:
+  timeout: 1 hour # terminate any job taking longer than 1 hour
 stages:
   - pre-check
   - build
@@ -29,11 +31,13 @@ CI_BUILD:
     IMAGE_NAME_FINAL: $IMAGE_NAME_BASE/$PROJECT_ID:1.0.$CI_PIPELINE_IID-$BASE_IMAGE
   tags:
     - swarm
-  rules:
-    - if: $CI_COMMIT_BRANCH == "feature/pipeline-api"
-      changes:
-        - Dockerfile
+#  rules:
+#    - if: $CI_COMMIT_BRANCH == "feature/pipeline-api"
+#      changes:
+#        - Dockerfile
   retry: 2
+  only:
+    - feature/pipeline-api
   needs: [] # no dependencies
   before_script:
     - echo "building"
