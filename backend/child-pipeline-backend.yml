@@ -93,7 +93,7 @@ CI_DEPLOY_BACKEND: #$BUILD_TOKEN  $CI_REGISTRY  $SSH_DEPLOYMENT_IP   $SSH_DEPLOY
         - echo $SSH_DEPLOYMENT_IP $SSH_DEPLOYMENT_HOST >> /etc/hosts
     script:
         - docker login -u pipeline -p $BUILD_TOKEN $CI_REGISTRY
-        - ssh -o StrictHostKeyChecking=no $SSH_DEPLOYMENT_USER@$SSH_DEPLOYMENT_HOST bash -c 'mkdir databases'
+        - ssh -o StrictHostKeyChecking=no $SSH_DEPLOYMENT_USER@$SSH_DEPLOYMENT_HOST bash -c 'mkdir -p "databases"'
         - ssh -o StrictHostKeyChecking=no $SSH_DEPLOYMENT_USER@$SSH_DEPLOYMENT_HOST bash -c 'ls -l'
         - ssh -o StrictHostKeyChecking=no -t $SSH_DEPLOYMENT_USER@$SSH_DEPLOYMENT_HOST bash -c 'sudo chmod 700 /home/student/databases'
 #        - scp -o StrictHostKeyChecking=no docker-stack.yml $SSH_DEPLOYMENT_USER@$SSH_DEPLOYMENT_HOST:/home/student/databases/docker-stack.yml
