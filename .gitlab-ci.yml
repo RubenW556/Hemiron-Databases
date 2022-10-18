@@ -18,7 +18,8 @@ CI_PRE_CHECK:
     - docker version
     - docker container ls
     - docker images
-    - userdump #test failure. All jobs after this one, not ran
+    - sleep 20
+#    - userdump #test failure. All jobs after this one, not ran (without allow_failure)
 
 CI_BUILD:
   stage: build
@@ -33,6 +34,7 @@ CI_BUILD:
   before_script:
     - echo "building"
     - docker login -u pipeline -p $BUILD_TOKEN $CI_REGISTRY
+    - sleep 10
   script:
     - docker build -t $IMAGE_NAME_FINAL .
   after_script:
@@ -52,6 +54,7 @@ CI_BUILD_V2:
   before_script:
     - echo "building"
     - docker login -u pipeline -p $BUILD_TOKEN $CI_REGISTRY
+    - sleep 10
   script:
     - docker build -t $IMAGE_NAME_FINAL .
   after_script:
