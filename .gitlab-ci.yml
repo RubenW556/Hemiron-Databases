@@ -22,7 +22,7 @@ CI_BUILD:
     - swarm
   script:
     - echo "building"
-    - docker build -t pipeline-build-test .
+    - docker build -t pipeline-build-test-1 .
 
 CI_TEST:
   stage: test
@@ -30,6 +30,8 @@ CI_TEST:
     - swarm
   script:
     - echo "Testing"
+    - docker container ls
+    - docker image ls
 
 CI_VERIFY:
   stage: verify
