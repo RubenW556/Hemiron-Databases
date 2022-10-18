@@ -23,7 +23,7 @@ CI_BUILD_FRONTEND:
         default: false
     <<: *template
     needs: [CI_PRE_CHECK] # no dependencies.
-    when: manual # only execute when approved manually
+#    when: manual # only execute when approved manually
     before_script:
         - echo "building for production"
         - docker login -u pipeline -p $BUILD_TOKEN $CI_REGISTRY

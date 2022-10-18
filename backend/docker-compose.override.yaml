@@ -10,7 +10,7 @@ services: # docker compose up --build
       dockerfile: Dockerfile
       target: development
     container_name: api
-    image: mcdefault/databases-backend:dev-0.0.1-alpine3.15 #schrijft prod image over #todo  te veranderen naar hsleiden registery
+    image: registry.inf-hsleiden.nl/2223.ipsenh-p1-p2/databases/backend:dev-1.0.0-node18-alpine #schrijft prod image over
     command: npm run start
     volumes:
       - .:/usr/src/app

@@ -35,7 +35,7 @@ services:
       PRIMARY_DOMAIN: inf-hsleiden.nl
       TEST_FILE: /run/secrets/TEST_FILE
       TEST2_FILE: /run/secrets/OPTIONAL_FILE
-    image: mcdefault/databases-backend:1.0.0-alpine3.15
+    image: registry.inf-hsleiden.nl/2223.ipsenh-p1-p2/databases/backend:production
     networks:
       databases-backend: null
 networks:
