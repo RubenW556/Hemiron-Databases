@@ -58,6 +58,10 @@ CI_BUILD:
   after_script:
     - docker image push $IMAGE_NAME_FINAL
     - docker images ls
+  cache:
+    key: $IMAGE_NAME_FINAL
+    paths:
+      - ./
   artifacts: # create artifact when job fails
     name: $IMAGE_NAME_FINAL
     when: on_failure
