@@ -6,4 +6,4 @@ CI_Build:
     - docker
   script:
     - echo "building"
-    - ls -l
+    - docker images
