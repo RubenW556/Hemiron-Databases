@@ -81,5 +81,5 @@ CI_DEPLOY_BACKEND:
         - ls -l
         - cd ../
         - scp -o StrictHostKeyChecking=no backend/backend-stack.yml student@manager-2.inf-hsleiden:/home/student/databases/backend-stack.yml
-        - ssh -o StrictHostKeyChecking=no -t student@manager-2.inf-hsleiden 'bash -s' < backend/deploy-backend.sh
+#        - ssh -o StrictHostKeyChecking=no -t student@manager-2.inf-hsleiden 'bash -s' < backend/deploy-backend.sh
 
