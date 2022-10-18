@@ -37,19 +37,40 @@ CI_PRE_CHECK:
   stage: pre-check
   tags:
     - swarm
+  only:
+    - feature/pipeline-api
+  allow_failure: true #On failure All jobs after this one, will not halt.
   script:
     - echo "pre checking"
     - ls -l
     - docker version
     - docker container ls
-    - docker images
+    - docker images ls
+#    - userdump #test failure. All jobs after this one, not ran (without allow_failure)
 
 CI_BUILD:
   stage: build
+  variables:
+    BASE_IMAGE: ubuntu
+    PROJECT_ID: test
+    IMAGE_NAME_FINAL: $IMAGE_NAME_BASE/$PROJECT_ID:1.0.$CI_PIPELINE_IID-$BASE_IMAGE
   tags:
     - swarm
-  script:
+  retry: 2
+  only:
+    - feature/pipeline-api
+#  rules: #use for subfolders
+#    changes:
+#      - folder/
+  needs: [] # no dependencies
+  before_script:
     - echo "building"
+    - docker login -u pipeline -p $BUILD_TOKEN $CI_REGISTRY
+  script:
+    - docker build -t $IMAGE_NAME_FINAL .
+  after_script:
+    - docker image push $IMAGE_NAME_FINAL
+    - docker images ls
 
 CI_TEST:
   stage: test
@@ -57,6 +78,21 @@ CI_TEST:
     - swarm
   script:
     - echo "Testing"
+```
+
+Add a cleanup for all runners
+
+```yaml
+
+CI_Cleanup:
+    stage: test
+    tags:
+        - swarm
+    parallel: 5 # we have 5 runners
+    only:
+        - feature/pipeline-api
+    script:
+        - docker image prune -a -f # cleanup unused images after each time to reduce disk space waste
 ```
 
 ## Sources

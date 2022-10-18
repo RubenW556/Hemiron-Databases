@@ -12,7 +12,9 @@ stages:
   - pre-check
   - build
   - test
+  - deploy
 #  - verify
+
 image: docker:latest
 
 CI_PRE_CHECK:
@@ -103,6 +105,18 @@ CI_TEST:
     - echo "Testing"
     - docker container ls
     - docker image ls
+
+pages:
+  stage: deploy
+  tags:
+    - swarm
+  script:
+    - mkdir .public
+    - cp -r * .public
+    - mv .public public
+  artifacts:
+    paths:
+      - public
 
 #CI_VERIFY: #no manager
 #  stage: verify
