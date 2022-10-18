@@ -21,8 +21,28 @@ CI_PRE_CHECK:
 CI_BUILD:
   stage: build
   variables:
+    BASE_IMAGE: ubuntu
     PROJECT_ID: test
-    IMAGE_NAME_FINAL: $IMAGE_NAME/$PROJECT_ID:1.0.$CI_PIPELINE_IID-ubuntu
+    IMAGE_NAME_FINAL: $IMAGE_NAME/$PROJECT_ID:1.0.$CI_PIPELINE_IID-$BASE_IMAGE
+  tags:
+    - swarm
+  only:
+    - feature/pipeline-api
+  before_script:
+    - echo "building"
+    - docker login -u pipeline -p $BUILD_TOKEN $CI_REGISTRY
+  script:
+    - docker build -t $IMAGE_NAME_FINAL .
+  after_script:
+    - docker image push $IMAGE_NAME_FINAL
+    - docker images
+
+CI_BUILD_V2:
+  stage: build
+  variables:
+    BASE_IMAGE: ubuntu
+    PROJECT_ID: testv2
+    IMAGE_NAME_FINAL: $IMAGE_NAME/$PROJECT_ID:1.0.$CI_PIPELINE_IID-$BASE_IMAGE
   tags:
     - swarm
   only:
