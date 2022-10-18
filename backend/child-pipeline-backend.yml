@@ -79,7 +79,7 @@ CI_DEPLOY_BACKEND:
         - docker login -u pipeline -p $BUILD_TOKEN $CI_REGISTRY
 #        - scp -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no deployment/nginx.config $SSH_DEPLOYMENT_USER@$SSH_DEPLOYMENT_HOST:/home/student/dashboard/nginx.config
         # copy stack file to server
-#        - ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no -t $SSH_DEPLOYMENT_USER@$SSH_DEPLOYMENT_HOST bash mkdir /home/student/databases/
+        - ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no $SSH_DEPLOYMENT_USER@$SSH_DEPLOYMENT_HOST bash mkdir /home/student/databases/
 #        - scp -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no docker-stack.yml $SSH_DEPLOYMENT_USER@$SSH_DEPLOYMENT_HOST:/home/student/databases/docker-stack.yml
         # deploy stack
 #        - ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no -t $SSH_DEPLOYMENT_USER@$SSH_DEPLOYMENT_HOST bash mkdir /home/student/dashboard/
