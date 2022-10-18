@@ -20,6 +20,8 @@ CI_PRE_CHECK:
 
 CI_BUILD:
   stage: build
+  variables:
+    IMAGE_NAME: $CI_REGISTRY/$CI_PROJECT_ROOT_NAMESPACE/$CI_PROJECT_NAME
   tags:
     - swarm
   only:
@@ -27,7 +29,7 @@ CI_BUILD:
   script:
     - echo "building"
     - docker login -u pipeline -p $BUILD_TOKEN $CI_REGISTRY
-    - docker build -t $CI_REGISTRY/$CI_PROJECT_ROOT_NAMESPACE/$CI_PROJECT_NAME:1.0.0-ubuntu-$CI_PIPELINE_IID .
+    - docker build -t $IMAGE_NAME:1.0.0-ubuntu-$CI_PIPELINE_IID .
 
 CI_TEST:
   stage: test
