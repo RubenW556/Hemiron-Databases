@@ -68,20 +68,17 @@ CI_DEPLOY_BACKEND:
     <<: *template
     needs: []
 #    when: manual # only execute when approved manually.
-    before_script:
-        - 'command -v ssh-agent >/dev/null || ( apt-get update -y && apt-get install openssh-client -y )'
-        - eval $(ssh-agent -s)
-        - echo "$SSH_PRIVATE_KEY" | tr -d '\r' | ssh-add -
-        - mkdir -p ~/.ssh
-        - chmod 700 ~/.ssh
-        - echo 192.168.195.168 manager-2.inf-hsleiden >> /etc/hosts
     script:
+        # setup ssh key to communicate with server
+        - eval $(ssh-agent -s)
+        - echo "$SSH_PRIVATE_KEY" | tr -d '\r' | ssh-add - > /dev/null
+        - echo $SSH_DEPLOYMENT_IP $SSH_DEPLOYMENT_HOST >> /etc/hosts
+        # login to the registry
         - docker login -u pipeline -p $BUILD_TOKEN $CI_REGISTRY
-#        - cd backend
-#        - ls -l
-#        - cd ../
-#        - sudo mkdir /home/student/databases
-        - ssh -o StrictHostKeyChecking=no -t student@manager-2.inf-hsleiden 'bash sudo mkdir /home/student/databases'
-        - scp -o StrictHostKeyChecking=no docker-stack.yml student@manager-2.inf-hsleiden:/home/student/databases/docker-stack.yml
-#        - ssh -o StrictHostKeyChecking=no -t student@manager-2.inf-hsleiden 'bash -s' < backend/deploy-backend.sh
+        - scp -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no deployment/nginx.config $SSH_DEPLOYMENT_USER@$SSH_DEPLOYMENT_HOST:/home/student/dashboard/nginx.config
+        # copy stack file to server
+        - scp -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no docker-stack.yml $SSH_DEPLOYMENT_USER@$SSH_DEPLOYMENT_HOST:/home/student/dashboard/docker-stack.yml
+        # deploy stack
+#        - ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no -t $SSH_DEPLOYMENT_USER@$SSH_DEPLOYMENT_HOST 'bash -s' < deployment/deploy-swarm.sh
+
 
