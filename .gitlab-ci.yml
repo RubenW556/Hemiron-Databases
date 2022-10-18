@@ -11,6 +11,8 @@ CI_PRE_CHECK:
   script:
     - echo "pre checking"
     - ls -l
+    - docker version
+    - docker container ls
     - docker images
 
 CI_BUILD:

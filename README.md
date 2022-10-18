@@ -22,9 +22,42 @@ Run the register command
 8. Enter the default image to be used for projects that do not define one in `.gitlab-ci.yml`: `ubuntu:latest`
 9. Verify the runner got added under [Available specific runners](https://gitlab.inf-hsleiden.nl/2223.ipsenh-p1-p2/databases/-/settings/ci_cd)
 
-Pipeline setup
+## Pipeline setup
 
+Basic pipeline template that check if docker is installed. Uses runners with swarm tag.
 
+```yaml
+stages:
+  - pre-check
+  - build
+  - test
+image: docker:latest
+
+CI_PRE_CHECK:
+  stage: pre-check
+  tags:
+    - swarm
+  script:
+    - echo "pre checking"
+    - ls -l
+    - docker version
+    - docker container ls
+    - docker images
+
+CI_BUILD:
+  stage: build
+  tags:
+    - swarm
+  script:
+    - echo "building"
+
+CI_TEST:
+  stage: test
+  tags:
+    - swarm
+  script:
+    - echo "Testing"
+```
 
 ## Sources
 
