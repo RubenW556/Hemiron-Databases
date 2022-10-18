@@ -91,6 +91,7 @@ CI_DEPLOY_BACKEND: #$BUILD_TOKEN  $CI_REGISTRY  $SSH_DEPLOYMENT_IP   $SSH_DEPLOY
         - mkdir -p ~/.ssh
         - chmod 700 ~/.ssh
         - echo $SSH_DEPLOYMENT_IP $SSH_DEPLOYMENT_HOST >> /etc/hosts
+        - echo $SSH_DEPLOYMENT_USER@$SSH_DEPLOYMENT_HOST
     script:
         - docker login -u pipeline -p $BUILD_TOKEN $CI_REGISTRY
         - ssh -o StrictHostKeyChecking=no -t $SSH_DEPLOYMENT_USER@$SSH_DEPLOYMENT_HOST bash -c 'mkdir -p "databases"'
