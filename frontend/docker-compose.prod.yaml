@@ -7,25 +7,19 @@ networks:
 
 services:
   frontend:
-    build:
-      context: .
-      dockerfile: Dockerfile
-      target: production
-    ports:
-      - 80:80
     deploy:
-#      labels: #Labels voor reverse proxy
-#        - "traefik.enable=true"
-#        - "traefik.http.routers.databases-frontend.rule=Host(`dashboard.${PRIMARY_DOMAIN}`)"
-#        - "traefik.http.routers.databases-frontend.middlewares=authtraefik"
-#        - "traefik.http.routers.databases-frontend.entrypoints=websecure"
-#        - "traefik.http.routers.databases-frontend.tls=true"
-#        - "traefik.http.routers.databases-frontend.tls.certresolver=le"
-#        - "traefik.http.services.databases-frontend.loadbalancer.server.port=${PORT}"
+      labels: #Labels voor reverse proxy
+        - "traefik.enable=true"
+        - "traefik.http.routers.databases-frontend.rule=Host(`dashboard.${PRIMARY_DOMAIN}`)"
+        - "traefik.http.routers.databases-frontend.middlewares=authtraefik"
+        - "traefik.http.routers.databases-frontend.entrypoints=websecure"
+        - "traefik.http.routers.databases-frontend.tls=true"
+        - "traefik.http.routers.databases-frontend.tls.certresolver=le"
+        - "traefik.http.services.databases-frontend.loadbalancer.server.port=${PORT}"
       mode: replicated
-      replicas: 1
+      replicas: 2
       placement:
-        max_replicas_per_node: 2
+        max_replicas_per_node: 1
         #        preferences:
         #          - spread: node.id
         constraints: # alleen op manager/worker node
