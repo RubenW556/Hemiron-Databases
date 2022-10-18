@@ -72,9 +72,9 @@ CI_DEPLOY_BACKEND:
         # setup ssh key to communicate with server
         - eval $(ssh-agent -s)
         - echo "$SSH_PRIVATE_KEY" | tr -d '\r' | ssh-add - > /dev/null
-        - echo $SSH_DEPLOYMENT_IP $SSH_DEPLOYMENT_HOST >> /etc/hosts
         - mkdir -p ~/.ssh
         - chmod 700 ~/.ssh
+        - echo $SSH_DEPLOYMENT_IP $SSH_DEPLOYMENT_HOST >> /etc/hosts
         # login to the registry
         - docker login -u pipeline -p $BUILD_TOKEN $CI_REGISTRY
 #        - scp -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no deployment/nginx.config $SSH_DEPLOYMENT_USER@$SSH_DEPLOYMENT_HOST:/home/student/dashboard/nginx.config
