@@ -80,8 +80,8 @@ CI_DEPLOY_BACKEND:
 #        - cd backend
 #        - ls -l
 #        - cd ../
-#        - mkdir /home/student/databases
-        - ssh -o StrictHostKeyChecking=no -t student@manager-2.inf-hsleiden 'bash mkdir /home/student/databases'
+#        - sudo mkdir /home/student/databases
+        - ssh -o StrictHostKeyChecking=no -t student@manager-2.inf-hsleiden 'bash sudo mkdir /home/student/databases'
         - scp -o StrictHostKeyChecking=no docker-stack.yml student@manager-2.inf-hsleiden:/home/student/databases/docker-stack.yml
 #        - ssh -o StrictHostKeyChecking=no -t student@manager-2.inf-hsleiden 'bash -s' < backend/deploy-backend.sh
 
