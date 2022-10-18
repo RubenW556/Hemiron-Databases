@@ -86,3 +86,4 @@ CI_VERIFY_BACKEND:
         - docker login -u pipeline -p $BUILD_TOKEN $CI_REGISTRY
     script:
         - ssh -o StrictHostKeyChecking=no $SSH_DEPLOYMENT_USER@$SSH_DEPLOYMENT_HOST bash -c 'docker stack ls'
+        - ssh -o StrictHostKeyChecking=no $SSH_DEPLOYMENT_USER@$SSH_DEPLOYMENT_HOST bash -c 'docker service logs databases-backend_backend'
