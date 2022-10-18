@@ -12,7 +12,7 @@ stages:
         changes:
             - backend/**/*
 
-CI_BUILD:
+CI_BUILD_BACKEND:
     stage: build
     variables:
         BASE_IMAGE: ubuntu
