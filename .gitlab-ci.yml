@@ -1,8 +1,3 @@
-#only branch template
-x-only-branch:
-  &only-branch
-  only:
-    - feature/pipeline-api
 stages:
   - pre-check
   - build
@@ -14,7 +9,8 @@ CI_PRE_CHECK:
   stage: pre-check
   tags:
     - swarm
-  <<: *only-branch
+  only:
+    - feature/pipeline-api
   script:
     - echo "pre checking"
     - ls -l
@@ -26,7 +22,8 @@ CI_BUILD:
   stage: build
   tags:
     - swarm
-  <<: *only-branch
+  only:
+    - feature/pipeline-api
   script:
     - echo "building"
     - docker login -u pipeline -p $BUILD_TOKEN registry.inf-hsleiden.nl
@@ -36,7 +33,8 @@ CI_TEST:
   stage: test
   tags:
     - swarm
-  <<: *only-branch
+  only:
+    - feature/pipeline-api
   script:
     - echo "Testing"
     - docker container ls
@@ -46,7 +44,8 @@ CI_VERIFY:
   stage: verify
   tags:
     - swarm
-  <<: *only-branch
+  only:
+    - feature/pipeline-api
   script:
     - echo "Verify"
     - docker container ls
