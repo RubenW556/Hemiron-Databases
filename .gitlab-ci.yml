@@ -20,14 +20,18 @@ CI_PRE_CHECK:
 
 CI_BUILD:
   stage: build
+  variables:
+    IMAGE_NAME_FINAL: $IMAGE_NAME:1.0.$CI_PIPELINE_IID-ubuntu
   tags:
     - swarm
   only:
     - feature/pipeline-api
-  script:
+  before_script:
     - echo "building"
+  script:
     - docker login -u pipeline -p $BUILD_TOKEN $CI_REGISTRY
-    - docker build -t $IMAGE_NAME:1.0.0-ubuntu-$CI_PIPELINE_IID .
+    - docker build -t $IMAGE_NAME_FINAL .
+    - docker image push $IMAGE_NAME_FINAL
 
 CI_TEST:
   stage: test
@@ -40,13 +44,13 @@ CI_TEST:
     - docker container ls
     - docker image ls
 
-CI_VERIFY:
-  stage: verify
-  tags:
-    - swarm
-  only:
-    - feature/pipeline-api
-  script:
-    - echo "Verify"
-    - docker container ls
-    - docker service ls
+#CI_VERIFY: #no manager
+#  stage: verify
+#  tags:
+#    - swarm
+#  only:
+#    - feature/pipeline-api
+#  script:
+#    - echo "Verify"
+#    - docker container ls
+#    - docker service ls
