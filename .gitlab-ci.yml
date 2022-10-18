@@ -17,12 +17,15 @@ stages:
 
 image: docker:latest
 
-CI_PRE_CHECK:
-  stage: pre-check
+.job_docker_template: &template
   tags:
     - swarm
   only:
     - feature/pipeline-api
+
+CI_PRE_CHECK:
+  stage: pre-check
+  <<: *template
   allow_failure: true #On failure All jobs after this one, will not halt.
   script:
     - echo "pre checking"
@@ -39,8 +42,7 @@ CI_BUILD:
     BASE_IMAGE: ubuntu
     PROJECT_ID: test
     IMAGE_NAME_FINAL: $IMAGE_NAME_BASE/$PROJECT_ID:1.0.$CI_PIPELINE_IID-$BASE_IMAGE
-  tags:
-    - swarm
+
 #  rules:
 #    - if: $CI_COMMIT_BRANCH == "feature/pipeline-api"
 #      changes:
@@ -48,8 +50,7 @@ CI_BUILD:
   retry: 2
   inherit:
     default: false
-  only:
-    - feature/pipeline-api
+  <<: *template
   needs: [] # no dependencies
   before_script:
     - echo "building"
@@ -60,10 +61,10 @@ CI_BUILD:
   after_script:
     - docker image push $IMAGE_NAME_FINAL
     - docker images ls
-  cache:
-    key: $IMAGE_NAME_FINAL
-    paths:
-      - ./
+#  cache:
+#    key: $IMAGE_NAME_FINAL
+#    paths:
+#      - ./
   artifacts: # create artifact when job fails
     name: $IMAGE_NAME_FINAL
     when: on_failure
@@ -79,10 +80,7 @@ CI_BUILD_V2:
     BASE_IMAGE: ubuntu
     PROJECT_ID: testv2
     IMAGE_NAME_FINAL: $IMAGE_NAME_BASE/$PROJECT_ID:1.0.$CI_PIPELINE_IID-$BASE_IMAGE
-  tags:
-    - swarm
-  only:
-    - feature/pipeline-api
+  <<: *template
   needs: [CI_PRE_CHECK] # dependent on CI_PRE_CHECK. only runs after it
   before_script:
     - echo "building"
@@ -96,27 +94,36 @@ CI_BUILD_V2:
 
 CI_TEST:
   stage: test
-  tags:
-    - swarm
-  only:
-    - feature/pipeline-api
+  <<: *template
   when: manual # only execute when approved manually
   script:
     - echo "Testing"
     - docker container ls
     - docker image ls
 
-pages:
-  stage: deploy
-  tags:
-    - swarm
-  script:
-    - mkdir .public
-    - cp -r * .public
-    - mv .public public
-  artifacts:
-    paths:
-      - public
+#CI_Deploy_Testing:
+#  stage: deploy
+#  tags:
+#    - CI
+#    - Devops
+#  only:
+#    - main
+#  script:
+#    - sudo docker run -itd -p 80:80 httpd
+#  environment:
+#    name: Testing
+
+#pages:
+#  stage: deploy
+#  tags:
+#    - swarm
+#  script:
+#    - mkdir .public
+#    - cp -r * .public
+#    - mv .public public
+#  artifacts:
+#    paths:
+#      - public
 
 #CI_VERIFY: #no manager
 #  stage: verify

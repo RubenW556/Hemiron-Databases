@@ -1,12 +1,14 @@
 stages:
     - test
 
-CI_Cleanup:
-    stage: test
+.job_docker_template: &template
     tags:
         - swarm
-    parallel: 5 # we have 5 runners
     only:
         - feature/pipeline-api
+CI_Cleanup:
+    stage: test
+    parallel: 5 # we have 5 runners
+    <<: *template
     script:
         - docker image prune -a -f # cleanup unused images after each time to reduce disk space waste
