@@ -11,7 +11,7 @@ CI_PRE_CHECK:
     - swarm
   only:
     - $BRANCH_TO_TRIGGER_RUNNERS
-  allow_failure: true #On failure All jobs after this one, will not halt
+  allow_failure: true #On failure All jobs after this one, will not halt.
   script:
     - echo "pre checking"
     - ls -l
