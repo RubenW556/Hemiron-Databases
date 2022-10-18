@@ -31,10 +31,12 @@ CI_BUILD:
     - swarm
   only:
     - feature/pipeline-api
+  retry: 2
   needs: [] # no dependencies
   before_script:
     - echo "building"
     - docker login -u pipeline -p $BUILD_TOKEN $CI_REGISTRY
+    - userdump #test failure
     - sleep 10
   script:
     - docker build -t $IMAGE_NAME_FINAL .
