@@ -8,6 +8,7 @@ stages:
         - feature/pipeline-api
 CI_Cleanup:
     stage: test
+    retry: 3
     parallel: 5 # we have 5 runners
     <<: *template
     script:

@@ -18,12 +18,12 @@ CI_BUILD_BACKEND:
         BASE_IMAGE: node18-alpine
         PROJECT_ID: backend
         IMAGE_NAME_FINAL: $IMAGE_NAME_BASE/$PROJECT_ID:1.0.$CI_PIPELINE_IID-$BASE_IMAGE
-    retry: 2
+    retry: 3
     inherit:
         default: false
     <<: *template
-    needs: [] # no dependencies.
-    when: manual # only execute when approved manually
+    needs: [CI_PRE_CHECK] # no dependencies.
+#    when: manual # only execute when approved manually
     before_script:
         - echo "building for production"
         - docker login -u pipeline -p $BUILD_TOKEN $CI_REGISTRY
@@ -43,47 +43,15 @@ CI_BUILD_BACKEND:
         exclude:
             - .gitlab-ci.yml
 
-#CI_DEPLOY_BACKEND:
-#    stage: deploy
-#    <<: *template
-#    needs: []
-##    when: manual # only execute when approved manually
-#    script:
-#        # setup ssh key to communicate with server
-#        - eval $(ssh-agent -s)
-#        - echo "$SSH_PRIVATE_KEY" | tr -d '\r' | ssh-add - > /dev/null
-#        - mkdir -p ~/.ssh
-#        - chmod 700 ~/.ssh
-#        - echo 192.168.195.109 $SSH_DEPLOYMENT_HOST >> /etc/hosts
-#        # login to the registry
-#        - docker login -u pipeline -p $BUILD_TOKEN $CI_REGISTRY
-#        # copy stack file to server
-#        - ls -l
-#        - scp -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no backend/backend-stack.yml $SSH_DEPLOYMENT_USER@$SSH_DEPLOYMENT_HOST:/home/student/databases/backend-stack.yml
-#        # deploy stack
-#        - ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no -t $SSH_DEPLOYMENT_USER@$SSH_DEPLOYMENT_HOST 'bash -s' < backend/deploy-backend.sh
-
 CI_DEPLOY_BACKEND: #$BUILD_TOKEN  $CI_REGISTRY  $SSH_DEPLOYMENT_IP   $SSH_DEPLOYMENT_HOST $SSH_DEPLOYMENT_USER $SSH_PRIVATE_KEY
     stage: deploy
+    variables:
+        STACK_FILE_NAME: backend-stack.yml
+        DEPLOY_FILE_NAME: deploy-backend.sh
+        PROJECT_ID: backend
     <<: *template
-    needs: []
-#    when: manual # only execute when approved manually..
-#    script:
-#        # setup ssh key to communicate with server
-#        - eval $(ssh-agent -s)
-#        - echo "$SSH_PRIVATE_KEY" | tr -d '\r' | ssh-add - > /dev/null
-#        - mkdir -p ~/.ssh
-#        - chmod 700 ~/.ssh
-#        - echo $SSH_DEPLOYMENT_IP $SSH_DEPLOYMENT_HOST >> /etc/hosts
-#        # login to the registry
-#        - docker login -u pipeline -p $BUILD_TOKEN $CI_REGISTRY
-##        - scp -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no deployment/nginx.config $SSH_DEPLOYMENT_USER@$SSH_DEPLOYMENT_HOST:/home/student/dashboard/nginx.config
-#        # copy stack file to server
-#        - ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no $SSH_DEPLOYMENT_USER@$SSH_DEPLOYMENT_HOST bash mkdir /home/student/databases/
-##        - scp -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no docker-stack.yml $SSH_DEPLOYMENT_USER@$SSH_DEPLOYMENT_HOST:/home/student/databases/docker-stack.yml
-#        # deploy stack
-##        - ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no -t $SSH_DEPLOYMENT_USER@$SSH_DEPLOYMENT_HOST bash mkdir /home/student/dashboard/
-
+    retry: 3
+    needs: [CI_BUILD_BACKEND]
     before_script:
         - 'command -v ssh-agent >/dev/null || ( apt-get update -y && apt-get install openssh-client -y )'
         - eval $(ssh-agent -s)
@@ -93,11 +61,12 @@ CI_DEPLOY_BACKEND: #$BUILD_TOKEN  $CI_REGISTRY  $SSH_DEPLOYMENT_IP   $SSH_DEPLOY
         - echo $SSH_DEPLOYMENT_IP $SSH_DEPLOYMENT_HOST >> /etc/hosts
         - echo $SSH_DEPLOYMENT_USER@$SSH_DEPLOYMENT_HOST
         - docker login -u pipeline -p $BUILD_TOKEN $CI_REGISTRY
-        # - ssh -o StrictHostKeyChecking=no -t student@manager-1.inf-hsleiden 'bash -s' < prepare.sh
+        # - ssh -o StrictHostKeyChecking=no -t $SSH_DEPLOYMENT_USER@$SSH_DEPLOYMENT_HOST 'bash -s' < prepare.sh #create project dir
         - ssh -o StrictHostKeyChecking=no $SSH_DEPLOYMENT_USER@$SSH_DEPLOYMENT_HOST bash -c 'ls -l'
     script:
-        - scp -o StrictHostKeyChecking=no ./backend/backend-stack.yml $SSH_DEPLOYMENT_USER@$SSH_DEPLOYMENT_HOST:/home/student/databases/backend-stack.yml
-        - ssh -o StrictHostKeyChecking=no -t $SSH_DEPLOYMENT_USER@$SSH_DEPLOYMENT_HOST 'bash -s' < ./backend/deploy-backend.sh
-
+        - scp -o StrictHostKeyChecking=no ./$PROJECT_ID/$STACK_FILE_NAME $SSH_DEPLOYMENT_USER@$SSH_DEPLOYMENT_HOST:/home/student/databases/$STACK_FILE_NAME
+        - ssh -o StrictHostKeyChecking=no -t $SSH_DEPLOYMENT_USER@$SSH_DEPLOYMENT_HOST 'bash -s' < ./$PROJECT_ID/$DEPLOY_FILE_NAME
+    after_script:
+        - ssh -o StrictHostKeyChecking=no $SSH_DEPLOYMENT_USER@$SSH_DEPLOYMENT_HOST bash -c 'docker stack ls'
 
 
