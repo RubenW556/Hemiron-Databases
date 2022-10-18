@@ -29,10 +29,12 @@ CI_BUILD:
     - feature/pipeline-api
   before_script:
     - echo "building"
-  script:
     - docker login -u pipeline -p $BUILD_TOKEN $CI_REGISTRY
+  script:
     - docker build -t $IMAGE_NAME_FINAL .
+  after_script:
     - docker image push $IMAGE_NAME_FINAL
+    - docker images
 
 CI_TEST:
   stage: test
