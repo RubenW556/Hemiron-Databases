@@ -38,60 +38,60 @@ CI_PRE_CHECK:
     - sleep 20
 #    - userdump #test failure. All jobs after this one, not ran (with allow_failure false).
 
-CI_BUILD:
-  stage: build
-  variables:
-    BASE_IMAGE: ubuntu
-    PROJECT_ID: test
-    IMAGE_NAME_FINAL: $IMAGE_NAME_BASE/$PROJECT_ID:1.0.$CI_PIPELINE_IID-$BASE_IMAGE
-#  rules:
-#    - if: $CI_COMMIT_BRANCH == "feature/pipeline-api"
-#      changes:
-#        - Dockerfile
-  retry: 2
-  inherit:
-    default: false
-  <<: *template
-  needs: [] # no dependencies
-  before_script:
-    - echo "building"
-    - docker login -u pipeline -p $BUILD_TOKEN $CI_REGISTRY
-    - sleep 10
-  script:
-    - docker build -t $IMAGE_NAME_FINAL .
-  after_script:
-    - docker image push $IMAGE_NAME_FINAL
-    - docker images ls
-#  cache:
-#    key: $IMAGE_NAME_FINAL
+#CI_BUILD:
+#  stage: build
+#  variables:
+#    BASE_IMAGE: ubuntu
+#    PROJECT_ID: test
+#    IMAGE_NAME_FINAL: $IMAGE_NAME_BASE/$PROJECT_ID:1.0.$CI_PIPELINE_IID-$BASE_IMAGE
+##  rules:
+##    - if: $CI_COMMIT_BRANCH == "feature/pipeline-api"
+##      changes:
+##        - Dockerfile
+#  retry: 2
+#  inherit:
+#    default: false
+#  <<: *template
+#  needs: [] # no dependencies
+#  before_script:
+#    - echo "building"
+#    - docker login -u pipeline -p $BUILD_TOKEN $CI_REGISTRY
+#    - sleep 10
+#  script:
+#    - docker build -t $IMAGE_NAME_FINAL .
+#  after_script:
+#    - docker image push $IMAGE_NAME_FINAL
+#    - docker images ls
+##  cache:
+##    key: $IMAGE_NAME_FINAL
+##    paths:
+##      - ./
+#  artifacts: # create artifact when job fails
+#    name: $IMAGE_NAME_FINAL
+#    when: on_failure
 #    paths:
 #      - ./
-  artifacts: # create artifact when job fails
-    name: $IMAGE_NAME_FINAL
-    when: on_failure
-    paths:
-      - ./
-    expire_in: 2 days
-    exclude:
-      - .gitlab-ci.yml
+#    expire_in: 2 days
+#    exclude:
+#      - .gitlab-ci.yml
 
-CI_BUILD_V2:
-  stage: build
-  variables:
-    BASE_IMAGE: ubuntu
-    PROJECT_ID: testv2
-    IMAGE_NAME_FINAL: $IMAGE_NAME_BASE/$PROJECT_ID:1.0.$CI_PIPELINE_IID-$BASE_IMAGE
-  <<: *template
-  needs: [CI_PRE_CHECK] # dependent on CI_PRE_CHECK. only runs after it
-  before_script:
-    - echo "building"
-    - docker login -u pipeline -p $BUILD_TOKEN $CI_REGISTRY
-    - sleep 10
-  script:
-    - docker build -t $IMAGE_NAME_FINAL .
-  after_script:
-    - docker image push $IMAGE_NAME_FINAL
-    - docker images ls
+#CI_BUILD_V2:
+#  stage: build
+#  variables:
+#    BASE_IMAGE: ubuntu
+#    PROJECT_ID: testv2
+#    IMAGE_NAME_FINAL: $IMAGE_NAME_BASE/$PROJECT_ID:1.0.$CI_PIPELINE_IID-$BASE_IMAGE
+#  <<: *template
+#  needs: [CI_PRE_CHECK] # dependent on CI_PRE_CHECK. only runs after it
+#  before_script:
+#    - echo "building"
+#    - docker login -u pipeline -p $BUILD_TOKEN $CI_REGISTRY
+#    - sleep 10
+#  script:
+#    - docker build -t $IMAGE_NAME_FINAL .
+#  after_script:
+#    - docker image push $IMAGE_NAME_FINAL
+#    - docker images ls
 
 CI_TEST:
   stage: test
