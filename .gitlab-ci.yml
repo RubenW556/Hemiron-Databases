@@ -24,8 +24,6 @@ image: docker:latest
   only:
     refs:
       - feature/pipeline-api
-    changes:
-      - service-one/**/*
 
 CI_PRE_CHECK:
   stage: pre-check
