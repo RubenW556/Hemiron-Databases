@@ -52,6 +52,8 @@ CI_DEPLOY_BACKEND:
         # setup ssh key to communicate with server
         - eval $(ssh-agent -s)
         - echo "$SSH_PRIVATE_KEY" | tr -d '\r' | ssh-add - > /dev/null
+        - mkdir -p ~/.ssh
+        - chmod 700 ~/.ssh
         - echo 192.168.195.109 $SSH_DEPLOYMENT_HOST >> /etc/hosts
         # login to the registry
         - docker login -u pipeline -p $BUILD_TOKEN $CI_REGISTRY
