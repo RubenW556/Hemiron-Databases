@@ -6,4 +6,8 @@ CI_Build:
     - docker
   script:
     - echo "building"
+    - ls -l
+    - apt-get -y update
+    - apt-get -y install docker
+    - apt-get -y install docker.io
     - docker images
