@@ -29,14 +29,15 @@ CI_BUILD:
     IMAGE_NAME_FINAL: $IMAGE_NAME_BASE/$PROJECT_ID:1.0.$CI_PIPELINE_IID-$BASE_IMAGE
   tags:
     - swarm
-  only:
-    - feature/pipeline-api
+  rules:
+    - if: $CI_COMMIT_BRANCH == feature/pipeline-api
+      changes:
+        - Dockerfile
   retry: 2
   needs: [] # no dependencies
   before_script:
     - echo "building"
     - docker login -u pipeline -p $BUILD_TOKEN $CI_REGISTRY
-    - userdump #test failure
     - sleep 10
   script:
     - docker build -t $IMAGE_NAME_FINAL .
