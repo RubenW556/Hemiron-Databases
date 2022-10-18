@@ -74,9 +74,9 @@ CI_DEPLOY_BACKEND:
         - echo "$SSH_PRIVATE_KEY" | tr -d '\r' | ssh-add -
         - mkdir -p ~/.ssh
         - chmod 700 ~/.ssh
-        - echo "192.168.195.168 manager-2.inf-hsleiden" > /etc/hosts
+        - echo 192.168.195.109 $SSH_DEPLOYMENT_HOST >> /etc/hosts
     script:
         - docker login -u pipeline -p $BUILD_TOKEN $CI_REGISTRY
-        - scp -o StrictHostKeyChecking=no backend/backend-stack.yml student@manager-2.inf-hsleiden:/home/student/databases/backend-stack.yml
-        - ssh -o StrictHostKeyChecking=no -t student@manager-2.inf-hsleiden 'bash -s' < backend/deploy-backend.sh
+        - scp -o StrictHostKeyChecking=no backend/backend-stack.yml student@$SSH_DEPLOYMENT_HOST:/home/student/databases/backend-stack.yml
+        - ssh -o StrictHostKeyChecking=no -t student@$SSH_DEPLOYMENT_HOST 'bash -s' < backend/deploy-backend.sh
 
