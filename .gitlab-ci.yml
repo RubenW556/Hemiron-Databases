@@ -1,3 +1,6 @@
+trigger_job:
+  trigger:
+    include: child-pipeline.yml
 default:
   timeout: 1 hour # terminate any job taking longer than 1 hour
 stages:
@@ -19,7 +22,7 @@ CI_PRE_CHECK:
     - ls -l
     - docker version
     - docker container ls
-    - docker images
+    - docker images ls
     - sleep 20
 #    - userdump #test failure. All jobs after this one, not ran (without allow_failure)
 
@@ -36,6 +39,7 @@ CI_BUILD:
 #      changes:
 #        - Dockerfile
   retry: 2
+  parallel: 2
   only:
     - feature/pipeline-api
   needs: [] # no dependencies
@@ -47,7 +51,7 @@ CI_BUILD:
     - docker build -t $IMAGE_NAME_FINAL .
   after_script:
     - docker image push $IMAGE_NAME_FINAL
-    - docker images
+    - docker images ls
 
 CI_BUILD_V2:
   stage: build
@@ -68,7 +72,7 @@ CI_BUILD_V2:
     - docker build -t $IMAGE_NAME_FINAL .
   after_script:
     - docker image push $IMAGE_NAME_FINAL
-    - docker images
+    - docker images ls
 
 CI_TEST:
   stage: test

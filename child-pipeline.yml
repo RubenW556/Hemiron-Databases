@@ -1,0 +1,12 @@
+stages:
+    - test
+
+CI_Child_Test:
+    stage: test
+    tags:
+        - swarm
+    only:
+        - main
+    script:
+        - docker container ls
+        - docker images ls
