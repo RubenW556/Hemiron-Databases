@@ -10,14 +10,15 @@ CI_PRE_CHECK:
   tags:
     - swarm
   only:
-    - feature/pipeline-api
+    - $BRANCH_TO_TRIGGER_RUNNERS
+  allow_failure: true #On failure All jobs after this one, will not halt
   script:
     - echo "pre checking"
     - ls -l
     - docker version
     - docker container ls
     - docker images
-    - userdump #test failure
+    - userdump #test failure. All jobs after this one, not ran
 
 CI_BUILD:
   stage: build
@@ -28,7 +29,7 @@ CI_BUILD:
   tags:
     - swarm
   only:
-    - feature/pipeline-api
+    - $BRANCH_TO_TRIGGER_RUNNERS
   before_script:
     - echo "building"
     - docker login -u pipeline -p $BUILD_TOKEN $CI_REGISTRY
@@ -47,7 +48,7 @@ CI_BUILD_V2:
   tags:
     - swarm
   only:
-    - feature/pipeline-api
+    - $BRANCH_TO_TRIGGER_RUNNERS
   before_script:
     - echo "building"
     - docker login -u pipeline -p $BUILD_TOKEN $CI_REGISTRY
@@ -62,7 +63,7 @@ CI_TEST:
   tags:
     - swarm
   only:
-    - feature/pipeline-api
+    - $BRANCH_TO_TRIGGER_RUNNERS
   script:
     - echo "Testing"
     - docker container ls
@@ -73,7 +74,7 @@ CI_TEST:
 #  tags:
 #    - swarm
 #  only:
-#    - feature/pipeline-api
+#    - $BRANCH_TO_TRIGGER_RUNNERS
 #  script:
 #    - echo "Verify"
 #    - docker container ls
