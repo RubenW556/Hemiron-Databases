@@ -23,6 +23,7 @@ CI_BUILD_BACKEND:
         default: false
     <<: *template
     needs: [] # no dependencies.
+    when: manual # only execute when approved manually
     before_script:
         - echo "building for production"
         - docker login -u pipeline -p $BUILD_TOKEN $CI_REGISTRY
@@ -49,11 +50,12 @@ CI_DEPLOY_BACKEND:
     script:
         # setup ssh key to communicate with server
         - eval $(ssh-agent -s)
-        - echo "$SSH_PRIVATE_KEY" | tr -d '\r' | ssh-add - > /dev/null
+        - echo "SSH_KEY" | tr -d '\r' | ssh-add - > /dev/null
         - echo 192.168.195.109 $SSH_DEPLOYMENT_HOST >> /etc/hosts
         # login to the registry
         - docker login -u pipeline -p $BUILD_TOKEN $CI_REGISTRY
         # copy stack file to server
+        - ls -l
         - scp -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no backend/backend-stack.yml $SSH_DEPLOYMENT_USER@$SSH_DEPLOYMENT_HOST:/home/student/databases/backend-stack.yml
         # deploy stack
         - ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no -t $SSH_DEPLOYMENT_USER@$SSH_DEPLOYMENT_HOST 'bash -s' < backend/deploy-backend.sh
