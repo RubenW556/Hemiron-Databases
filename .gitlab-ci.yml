@@ -4,7 +4,7 @@
 
 include:
   - local: "child-pipeline.yml"
-  - local: "./backend/child-pipeline-backend.yml"
+  - local: "backend/child-pipeline-backend.yml"
 
 default:
   timeout: 2 hours # terminate any job taking longer than 1 hour
