@@ -2,7 +2,7 @@ stages:
   - pre-check
   - build
   - test
-image: ubuntu:latest
+image: docker:latest
 
 CI_Pre_Check:
   stage: pre-check
