@@ -67,7 +67,7 @@ CI_DEPLOY_BACKEND:
     stage: deploy
     <<: *template
     needs: []
-#    when: manual # only execute when approved manually.
+#    when: manual # only execute when approved manually..
     script:
         # setup ssh key to communicate with server
         - eval $(ssh-agent -s)
