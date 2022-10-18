@@ -95,6 +95,19 @@ CI_Cleanup:
         - docker image prune -a -f # cleanup unused images after each time to reduce disk space waste
 ```
 
+## Remote trigger
+
+1. Go to [pipeline triggers](https://gitlab.inf-hsleiden.nl/2223.ipsenh-p1-p2/databases/-/settings/ci_cd#js-pipeline-triggers)
+2. Add trigger
+3. Run Curl command and replace `TOKEN` with your token and `REF_NAME` with your branch
+```
+curl -X POST \
+--fail \
+-F token=TOKEN \
+-F ref=REF_NAME \
+https://gitlab.inf-hsleiden.nl/api/v4/projects/537/trigger/pipeline
+```
+
 ## Sources
 
 - https://gitlab.inf-hsleiden.nl/2223.ipsenh-p1-p2/databases/-/settings/ci_cd
