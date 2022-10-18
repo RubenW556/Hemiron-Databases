@@ -6,7 +6,7 @@ CI_Child_Test:
     tags:
         - swarm
     only:
-        - main
+        - feature/pipeline-api
     script:
         - docker container ls
         - docker images ls
