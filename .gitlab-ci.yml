@@ -6,12 +6,13 @@ include:
   - local: "child-pipeline.yml"
 
 default:
-  timeout: 1 hour # terminate any job taking longer than 1 hour
+  timeout: 2 hours # terminate any job taking longer than 1 hour
+
 stages:
   - pre-check
   - build
   - test
-  - verify
+#  - verify
 image: docker:latest
 
 CI_PRE_CHECK:
@@ -43,7 +44,8 @@ CI_BUILD:
 #      changes:
 #        - Dockerfile
   retry: 2
-  parallel: 2
+  inherit:
+    default: false
   only:
     - feature/pipeline-api
   needs: [] # no dependencies
@@ -56,6 +58,14 @@ CI_BUILD:
   after_script:
     - docker image push $IMAGE_NAME_FINAL
     - docker images ls
+  artifacts: # create artifact when job fails
+    name: $IMAGE_NAME_FINAL
+    when: on_failure
+    paths:
+      - ./
+    expire_in: 2 days
+    exclude:
+      - .gitlab-ci.yml
 
 CI_BUILD_V2:
   stage: build

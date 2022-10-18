@@ -5,7 +5,7 @@ CI_Cleanup:
     stage: test
     tags:
         - swarm
-    parallel: 5
+    parallel: 5 # we have 5 runners
     only:
         - feature/pipeline-api
     script:
