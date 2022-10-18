@@ -3,12 +3,8 @@ stages:
 CI_Build:
   stage: build
   tags:
-    - docker
+    - swarm
   script:
     - echo "building"
     - ls -l
-    - apt-get -y update
-    - apt-get -y install docker
-    - apt-get -y install docker.io
-    - dockerd
     - docker images
