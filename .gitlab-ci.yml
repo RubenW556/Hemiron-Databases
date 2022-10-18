@@ -30,7 +30,7 @@ CI_BUILD:
   tags:
     - swarm
   rules:
-    - if: $CI_COMMIT_BRANCH == feature/pipeline-api
+    - if: $CI_COMMIT_BRANCH == "feature/pipeline-api"
       changes:
         - Dockerfile
   retry: 2
