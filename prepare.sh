@@ -3,4 +3,5 @@
 # navigate to folder
 cd /home/student/
 
-mkdir "dashboard"
+mkdir "databases"
+rm dashboard
