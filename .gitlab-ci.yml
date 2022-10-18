@@ -4,7 +4,7 @@ stages:
   - test
 image: docker:latest
 
-CI_Pre_Check:
+CI_PRE_CHECK:
   stage: pre-check
   tags:
     - swarm
@@ -13,14 +13,12 @@ CI_Pre_Check:
     - ls -l
     - docker images
 
-CI_Build:
+CI_BUILD:
   stage: build
   tags:
     - swarm
   script:
     - echo "building"
-    - ls -l
-    - docker images
 
 CI_TEST:
   stage: test
@@ -28,5 +26,3 @@ CI_TEST:
     - swarm
   script:
     - echo "Testing"
-    - ls -l
-    - docker ps
