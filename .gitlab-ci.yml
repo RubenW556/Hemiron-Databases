@@ -76,6 +76,7 @@ CI_TEST:
     - swarm
   only:
     - feature/pipeline-api
+  when: manual # only execute when approved manually
   script:
     - echo "Testing"
     - docker container ls
