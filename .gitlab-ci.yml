@@ -27,7 +27,7 @@ CI_BUILD:
   script:
     - echo "building"
     - docker login -u pipeline -p $BUILD_TOKEN registry.inf-hsleiden.nl
-    - docker build -t registry.inf-hsleiden.nl/pipeline-build-test-1 .
+    - docker build -t registry.inf-hsleiden.nl/pipeline-build-test-1:1.0.0-ubuntu-$CI_PIPELINE_IID .
 
 CI_TEST:
   stage: test
