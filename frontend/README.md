@@ -16,6 +16,10 @@ docker stack deploy --compose-file docker-compose.yaml -c docker-compose.prod.ya
  
 # create swarm network
 docker network create -d overlay --attachable databases-frontend
+
+# debug images
+docker image build -o docker_build/dev --target development .
+docker image build -o docker_build/prod --target production .
 ```
 
 
@@ -42,3 +46,11 @@ Run `ng e2e` to execute the end-to-end tests via a platform of your choice. To u
 ## Further help
 
 To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI Overview and Command Reference](https://angular.io/cli) page.
+
+## Further Reading
+- https://stackoverflow.com/questions/39868369/run-docker-compose-build-in-gitlab-ci-yml#comment130667415_42697808
+- https://docs.gitlab.com/ee/ci/docker/using_docker_build.html
+- https://docs.gitlab.com/ee/ci/docker/using_docker_images.html#define-image-in-the-gitlab-ciyml-file
+- https://blog.callr.tech/static-blog-hugo-docker-gitlab/
+- https://blog.callr.tech/building-docker-images-with-gitlab-ci-best-practices/
+- https://michalwojcik.com.pl/2021/01/21/using-cache-in-multi-stage-builds-in-gitlab-ci-docker/
