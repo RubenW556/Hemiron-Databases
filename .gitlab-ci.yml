@@ -9,6 +9,8 @@ CI_PRE_CHECK:
   stage: pre-check
   tags:
     - swarm
+  only:
+    - feature/pipeline-api
   script:
     - echo "pre checking"
     - ls -l
