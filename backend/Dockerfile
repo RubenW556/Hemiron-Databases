@@ -64,6 +64,10 @@ FROM node:18-alpine As production
 ARG NODE_ENV=production
 ENV NODE_ENV $NODE_ENV
 
+# set ports to open
+ARG PORT=3000
+ENV PORT $PORT
+
 # Install node, which is all we require!
 #RUN apk add --update \
 #    && apk add --no-cache nodejs-current
@@ -72,7 +76,13 @@ ENV NODE_ENV $NODE_ENV
 COPY --chown=node:node --from=build /usr/src/app/node_modules ./node_modules
 COPY --chown=node:node --from=build /usr/src/app/dist ./dist
 
+#Expose port 3000
+EXPOSE ${PORT}
+
+# check every 30s to ensure this service returns HTTP 200
+#HEALTHCHECK --interval=30s CMD wget --no-verbose --tries=1 --spider http://0.0.0.0:$PORT/v1/healthz #todo
+
 USER node
 
 # Start the server using the production build
-CMD [ "node", "dist/main.js" ]
+CMD [ "node", "--max_old_space_size=450", "dist/main.js" ]

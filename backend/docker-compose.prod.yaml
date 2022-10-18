@@ -7,28 +7,23 @@ networks:
 
 services:
   backend:
-#    command: npm run start:prod
-    build:
-      context: .
-      dockerfile: Dockerfile
-      target: production
     deploy:
-#      labels: #Labels voor reverse proxy
-#        - "traefik.enable=true"
-#        - "traefik.http.routers.databases-backend.rule=Host(`api.${PRIMARY_DOMAIN}`)"
-#        - "traefik.http.routers.databases-backend.middlewares=authtraefik"
-#        - "traefik.http.routers.databases-backend.entrypoints=websecure"
-#        - "traefik.http.routers.databases-backend.tls=true"
-#        - "traefik.http.routers.databases-backend.tls.certresolver=le"
-#        - "traefik.http.services.databases-backend.loadbalancer.server.port=${PORT}"
+      labels: #Labels voor reverse proxy
+        - "traefik.enable=true"
+        - "traefik.http.routers.databases-backend.rule=Host(`api.${PRIMARY_DOMAIN}`)"
+        - "traefik.http.routers.databases-backend.middlewares=authtraefik"
+        - "traefik.http.routers.databases-backend.entrypoints=websecure"
+        - "traefik.http.routers.databases-backend.tls=true"
+        - "traefik.http.routers.databases-backend.tls.certresolver=le"
+        - "traefik.http.services.databases-backend.loadbalancer.server.port=${PORT}"
       mode: replicated
-      replicas: 1
+      replicas: 2
       placement:
         max_replicas_per_node: 2
         #        preferences:
         #          - spread: node.id
         constraints: # alleen op manager/worker node
-          - node.role == manager
+          - node.role == worker
       restart_policy:
         condition: on-failure
         delay: 15s
