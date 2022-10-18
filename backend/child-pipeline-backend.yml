@@ -4,6 +4,7 @@ stages:
     - deploy
 
 .job_docker_template: &template
+    retry: 2
     tags:
         - swarm
     only:
@@ -18,7 +19,6 @@ CI_BUILD_BACKEND:
         BASE_IMAGE: node18-alpine
         PROJECT_ID: backend
         IMAGE_NAME_FINAL: $IMAGE_NAME_BASE/$PROJECT_ID:1.0.$CI_PIPELINE_IID-$BASE_IMAGE
-    retry: 3
     inherit:
         default: false
     <<: *template
@@ -50,7 +50,6 @@ CI_DEPLOY_BACKEND: #$BUILD_TOKEN  $CI_REGISTRY  $SSH_DEPLOYMENT_IP   $SSH_DEPLOY
         DEPLOY_FILE_NAME: deploy-backend.sh
         PROJECT_ID: backend
     <<: *template
-    retry: 3
     needs: [CI_BUILD_BACKEND]
     before_script:
         - 'command -v ssh-agent >/dev/null || ( apt-get update -y && apt-get install openssh-client -y )'

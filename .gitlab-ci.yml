@@ -19,6 +19,7 @@ stages:
 image: docker:latest
 
 .job_docker_template: &template
+  retry: 2
   tags:
     - swarm
   only:
