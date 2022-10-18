@@ -2,6 +2,7 @@ stages:
   - pre-check
   - build
   - test
+  - verify
 image: docker:latest
 
 CI_PRE_CHECK:
@@ -29,3 +30,12 @@ CI_TEST:
     - swarm
   script:
     - echo "Testing"
+
+CI_VERIFY:
+  stage: verify
+  tags:
+    - swarm
+  script:
+    - echo "Verify"
+    - docker container ls
+    - docker service ls
