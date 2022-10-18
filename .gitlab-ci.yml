@@ -10,6 +10,8 @@ CI_Pre_Check:
     - swarm
   script:
     - echo "pre checking"
+    - ls -l
+    - docker images
 
 CI_Build:
   stage: build
@@ -26,3 +28,5 @@ CI_TEST:
     - swarm
   script:
     - echo "Testing"
+    - ls -l
+    - docker ps
