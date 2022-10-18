@@ -72,15 +72,17 @@ CI_DEPLOY_BACKEND:
         # setup ssh key to communicate with server
         - eval $(ssh-agent -s)
         - echo "$SSH_PRIVATE_KEY" | tr -d '\r' | ssh-add - > /dev/null
-        - mkdir -p ~/.ssh/id_rsa
-        - chmod 700 ~/.ssh/id_rsa
+        - mkdir -p ~/.ssh
+        - chmod 700 ~/.ssh
         - echo $SSH_DEPLOYMENT_IP $SSH_DEPLOYMENT_HOST >> /etc/hosts
         # login to the registry
         - docker login -u pipeline -p $BUILD_TOKEN $CI_REGISTRY
 #        - scp -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no deployment/nginx.config $SSH_DEPLOYMENT_USER@$SSH_DEPLOYMENT_HOST:/home/student/dashboard/nginx.config
         # copy stack file to server
-        - scp -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no docker-stack.yml $SSH_DEPLOYMENT_USER@$SSH_DEPLOYMENT_HOST:/home/student/dashboard/docker-stack.yml
+        - ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no -t $SSH_DEPLOYMENT_USER@$SSH_DEPLOYMENT_HOST bash mkdir /home/student/databases/
+        - scp -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no docker-stack.yml $SSH_DEPLOYMENT_USER@$SSH_DEPLOYMENT_HOST:/home/student/databases/docker-stack.yml
+        - scp -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no docker-stack.yml $SSH_DEPLOYMENT_USER@$SSH_DEPLOYMENT_HOST:/home/student/databases/docker-stack.yml
         # deploy stack
-#        - ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no -t $SSH_DEPLOYMENT_USER@$SSH_DEPLOYMENT_HOST 'bash -s' < deployment/deploy-swarm.sh
+#        - ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no -t $SSH_DEPLOYMENT_USER@$SSH_DEPLOYMENT_HOST bash mkdir /home/student/dashboard/
 
 
