@@ -21,7 +21,8 @@ CI_PRE_CHECK:
 CI_BUILD:
   stage: build
   variables:
-    IMAGE_NAME_FINAL: $IMAGE_NAME:1.0.$CI_PIPELINE_IID-ubuntu
+    PROJECT_ID: test
+    IMAGE_NAME_FINAL: $IMAGE_NAME/$PROJECT_ID:1.0.$CI_PIPELINE_IID-ubuntu
   tags:
     - swarm
   only:
