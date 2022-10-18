@@ -10,4 +10,5 @@ CI_Build:
     - apt-get -y update
     - apt-get -y install docker
     - apt-get -y install docker.io
+    - dockerd
     - docker images
