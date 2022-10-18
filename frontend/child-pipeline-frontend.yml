@@ -2,7 +2,6 @@ stages:
     - build
     - test
     - deploy
-    - verify
 
 .job_docker_template: &template
     retry: 2
@@ -24,6 +23,7 @@ CI_BUILD_BACKEND:
         default: false
     <<: *template
     needs: [CI_PRE_CHECK] # no dependencies.
+#    when: manual # only execute when approved manually
     before_script:
         - echo "building for production"
         - docker login -u pipeline -p $BUILD_TOKEN $CI_REGISTRY
@@ -50,7 +50,6 @@ CI_DEPLOY_BACKEND: #$BUILD_TOKEN  $CI_REGISTRY  $SSH_DEPLOYMENT_IP   $SSH_DEPLOY
         DEPLOY_FILE_NAME: deploy-backend.sh
         PROJECT_ID: backend
     <<: *template
-    when: manual # only execute when approved manually
     needs: [CI_BUILD_BACKEND]
     before_script:
         - 'command -v ssh-agent >/dev/null || ( apt-get update -y && apt-get install openssh-client -y )'
@@ -67,21 +66,7 @@ CI_DEPLOY_BACKEND: #$BUILD_TOKEN  $CI_REGISTRY  $SSH_DEPLOYMENT_IP   $SSH_DEPLOY
     script:
         - scp -o StrictHostKeyChecking=no ./$PROJECT_ID/$STACK_FILE_NAME $SSH_DEPLOYMENT_USER@$SSH_DEPLOYMENT_HOST:/home/student/databases/$STACK_FILE_NAME
         - ssh -o StrictHostKeyChecking=no -t $SSH_DEPLOYMENT_USER@$SSH_DEPLOYMENT_HOST 'bash -s' < ./$PROJECT_ID/$DEPLOY_FILE_NAME
-
-CI_VERIFY_BACKEND:
-    stage: verify
-    variables:
-        PROJECT_ID: frontend
-    <<: *template
-    needs: [CI_DEPLOY_BACKEND]
-    before_script:
-        - echo "Verify"
-        - 'command -v ssh-agent >/dev/null || ( apt-get update -y && apt-get install openssh-client -y )'
-        - eval $(ssh-agent -s)
-        - echo "$SSH_PRIVATE_KEY" | tr -d '\r' | ssh-add -
-        - mkdir -p ~/.ssh
-        - chmod 700 ~/.ssh
-        - echo $SSH_DEPLOYMENT_IP $SSH_DEPLOYMENT_HOST >> /etc/hosts
-        - docker login -u pipeline -p $BUILD_TOKEN $CI_REGISTRY
-    script:
+    after_script:
         - ssh -o StrictHostKeyChecking=no $SSH_DEPLOYMENT_USER@$SSH_DEPLOYMENT_HOST bash -c 'docker stack ls'
+
+

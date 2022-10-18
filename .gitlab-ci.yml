@@ -5,6 +5,7 @@
 include:
   - local: "child-pipeline.yml"
   - local: "backend/child-pipeline-backend.yml"
+  - local: "frontend/child-pipeline-frontend.yml"
 
 default:
   timeout: 2 hours # terminate any job taking longer than 1 hour
@@ -14,7 +15,7 @@ stages:
   - build
   - test
   - deploy
-#  - verify
+  - verify
 
 image: docker:latest
 
@@ -107,13 +108,3 @@ CI_TEST:
 #    - sudo docker run -itd -p 80:80 httpd
 #  environment:
 #    name: Testing
-
-
-
-#CI_VERIFY: #no manager
-#  stage: verify
-#  <<: *template
-#  script:
-#    - echo "Verify"
-#    - docker container ls
-#    - docker service ls

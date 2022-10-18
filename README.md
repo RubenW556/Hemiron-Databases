@@ -31,46 +31,67 @@ stages:
   - pre-check
   - build
   - test
+  - deploy
+  - verify
 image: docker:latest
+```
 
-CI_PRE_CHECK:
-  stage: pre-check
+Specify few reused configs in a template
+
+```yaml
+.job_docker_template: &template
+  retry: 2
   tags:
     - swarm
   only:
-    - feature/pipeline-api
+    refs:
+      - branch
+    changes:
+      - folder/**/*
+```
+
+Few checks before running other jobs
+
+```yaml
+CI_PRE_CHECK:
+  stage: pre-check
+  <<: *template
   allow_failure: true #On failure All jobs after this one, will not halt.
   script:
     - echo "pre checking"
     - ls -l
     - docker version
-    - docker container ls
-    - docker images ls
-#    - userdump #test failure. All jobs after this one, not ran (without allow_failure)
-
-CI_BUILD:
+#    - userdump #test failure. All jobs after this one, not ran (with allow_failure false).
+```
+Generic build template
+```yaml
+CI_BUILD_BACKEND:
   stage: build
   variables:
-    BASE_IMAGE: ubuntu
-    PROJECT_ID: test
+    BASE_IMAGE: node18-alpine
+    PROJECT_ID: backend
     IMAGE_NAME_FINAL: $IMAGE_NAME_BASE/$PROJECT_ID:1.0.$CI_PIPELINE_IID-$BASE_IMAGE
-  tags:
-    - swarm
-  retry: 2
-  only:
-    - feature/pipeline-api
-#  rules: #use for subfolders
-#    changes:
-#      - folder/
-  needs: [] # no dependencies
+  <<: *template
+  needs: [CI_PRE_CHECK] # dependent on CI_PRE_CHECK.
+  #    when: manual # only execute when approved manually
   before_script:
-    - echo "building"
+    - echo "building for production"
     - docker login -u pipeline -p $BUILD_TOKEN $CI_REGISTRY
   script:
-    - docker build -t $IMAGE_NAME_FINAL .
+    - docker build -t $IMAGE_NAME_FINAL --target production $PROJECT_ID/.
   after_script:
-    - docker image push $IMAGE_NAME_FINAL
+    - docker image push $IMAGE_NAME_FINAL # push with versioning
+    - docker image tag $IMAGE_NAME_FINAL $IMAGE_NAME_BASE/$PROJECT_ID:production # retag same image and push with production tag
+    - docker image push $IMAGE_NAME_BASE/$PROJECT_ID:production
     - docker images ls
+  artifacts: # create artifact when job fails
+    name: $IMAGE_NAME_FINAL
+    when: on_failure
+    paths:
+      - ./
+    expire_in: 2 days
+    exclude:
+      - .gitlab-ci.yml
 
 CI_TEST:
   stage: test
@@ -85,14 +106,11 @@ Add a cleanup for all runners
 ```yaml
 
 CI_Cleanup:
-    stage: test
-    tags:
-        - swarm
-    parallel: 5 # we have 5 runners
-    only:
-        - feature/pipeline-api
-    script:
-        - docker image prune -a -f # cleanup unused images after each time to reduce disk space waste
+  stage: test
+  parallel: 5 # we have 5 runners
+  <<: *template
+  script:
+    - docker image prune -a -f # cleanup unused images after each time to reduce disk space waste
 ```
 
 ## Remote trigger
