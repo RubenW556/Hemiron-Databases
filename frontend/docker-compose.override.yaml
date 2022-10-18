@@ -1,25 +1,8 @@
 networks:
   databases-frontend-dev:
     name: databases-frontend-dev
-  databases-backend-dev:
-    name: databases-backend-dev
 
 services: # docker compose up --build
-  backend: # docker compose up --build backend
-    restart: unless-stopped
-    build:
-      context: .
-      dockerfile: Dockerfile
-      target: development
-    container_name: api
-    image: registry.inf-hsleiden.nl/2223.ipsenh-p1-p2/databases/frontend:dev-1.0.0-node18-alpine #schrijft prod image over
-    command: npm run start
-    volumes:
-      - .:/usr/src/app
-    ports:
-      - ${PORT}:${PORT}
-    networks:
-      - databases-frontend-dev
   frontend:
     restart: unless-stopped
     build:
@@ -27,12 +10,11 @@ services: # docker compose up --build
       dockerfile: Dockerfile
       target: development
     container_name: dashboard
-    #todo  te veranderen naar hsleiden registery
     # conventie: [branch]-[versie]-[base]
     # branch leeg alleen bij productie, anders afkorting branch/feature naam
     # gebruik altijd de base image van de target stage en haal de : weg
-    image: mcdefault/databases-frontend:dev-0.0.1-node18-alpine
-    command: npm run start # altijd makkelijker om npm te gebruiken zodat je docker (config) files kan hergebruiken (package,json specificeerd het verder per project)
+    image: registry.inf-hsleiden.nl/2223.ipsenh-p1-p2/databases/frontend:dev-0.0.1-node18-alpine
+    command: npm run start # altijd makkelijker om npm te gebruiken zodat je docker (config) files kan hergebruiken (package.json specificeert het verder per project)
     volumes: # volume mount om veranderingen in realtime door te voeren.
       - .:/usr/src/app
     ports:
