@@ -8,3 +8,4 @@ ls -l
 docker network create -d overlay --attachable databases-backend
 # deploy stack
 docker stack deploy -c backend-stack.yml databases-backend --with-registry-auth --prune
+docker service ls
