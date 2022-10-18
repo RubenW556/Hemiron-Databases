@@ -68,20 +68,33 @@ CI_DEPLOY_BACKEND:
     <<: *template
     needs: []
 #    when: manual # only execute when approved manually..
-    script:
-        # setup ssh key to communicate with server
+#    script:
+#        # setup ssh key to communicate with server
+#        - eval $(ssh-agent -s)
+#        - echo "$SSH_PRIVATE_KEY" | tr -d '\r' | ssh-add - > /dev/null
+#        - mkdir -p ~/.ssh
+#        - chmod 700 ~/.ssh
+#        - echo $SSH_DEPLOYMENT_IP $SSH_DEPLOYMENT_HOST >> /etc/hosts
+#        # login to the registry
+#        - docker login -u pipeline -p $BUILD_TOKEN $CI_REGISTRY
+##        - scp -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no deployment/nginx.config $SSH_DEPLOYMENT_USER@$SSH_DEPLOYMENT_HOST:/home/student/dashboard/nginx.config
+#        # copy stack file to server
+#        - ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no $SSH_DEPLOYMENT_USER@$SSH_DEPLOYMENT_HOST bash mkdir /home/student/databases/
+##        - scp -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no docker-stack.yml $SSH_DEPLOYMENT_USER@$SSH_DEPLOYMENT_HOST:/home/student/databases/docker-stack.yml
+#        # deploy stack
+##        - ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no -t $SSH_DEPLOYMENT_USER@$SSH_DEPLOYMENT_HOST bash mkdir /home/student/dashboard/
+
+    before_script:
+        - 'command -v ssh-agent >/dev/null || ( apt-get update -y && apt-get install openssh-client -y )'
         - eval $(ssh-agent -s)
-        - echo "$SSH_PRIVATE_KEY" | tr -d '\r' | ssh-add - > /dev/null
+        - echo "$SSH_KEY" | tr -d '\r' | ssh-add -
         - mkdir -p ~/.ssh
         - chmod 700 ~/.ssh
-        - echo $SSH_DEPLOYMENT_IP $SSH_DEPLOYMENT_HOST >> /etc/hosts
-        # login to the registry
+        - echo "$SSH_DEPLOYMENT_IP $SSH_DEPLOYMENT_HOST" > /etc/hosts
+    script:
         - docker login -u pipeline -p $BUILD_TOKEN $CI_REGISTRY
-#        - scp -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no deployment/nginx.config $SSH_DEPLOYMENT_USER@$SSH_DEPLOYMENT_HOST:/home/student/dashboard/nginx.config
-        # copy stack file to server
-        - ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no $SSH_DEPLOYMENT_USER@$SSH_DEPLOYMENT_HOST bash mkdir /home/student/databases/
-#        - scp -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no docker-stack.yml $SSH_DEPLOYMENT_USER@$SSH_DEPLOYMENT_HOST:/home/student/databases/docker-stack.yml
-        # deploy stack
-#        - ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no -t $SSH_DEPLOYMENT_USER@$SSH_DEPLOYMENT_HOST bash mkdir /home/student/dashboard/
+        - scp -o StrictHostKeyChecking=no docker-stack.yml student@manager-2.inf-hsleiden:/home/student/databases/docker-stack.yml
+#        - ssh -o StrictHostKeyChecking=no -t student@manager-2.inf-hsleiden 'bash -s' < deploy.sh
+
 
 
