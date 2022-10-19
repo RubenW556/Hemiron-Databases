@@ -4,6 +4,10 @@
 
 FROM node:18-alpine As development
 
+# set ports to open
+ARG PORT=3000
+ENV PORT $PORT
+
 # Create app directory
 WORKDIR /usr/src/app
 
