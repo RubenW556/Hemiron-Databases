@@ -1,29 +1,29 @@
 version: '3.8'
 
 networks:
-  databases-backend:
+  databases-frontend:
     external: true
-    name: databases-backend
+    name: databases-frontend
 
 services:
-  backend:
+  frontend:
     deploy:
       labels: #Labels voor reverse proxy
         - "traefik.enable=true"
-        - "traefik.http.routers.databases-backend.rule=Host(`api.${PRIMARY_DOMAIN}`)"
-        - "traefik.http.routers.databases-backend.middlewares=authtraefik"
-        - "traefik.http.routers.databases-backend.entrypoints=websecure"
-        - "traefik.http.routers.databases-backend.tls=true"
-        - "traefik.http.routers.databases-backend.tls.certresolver=le"
-        - "traefik.http.services.databases-backend.loadbalancer.server.port=${PORT}"
+        - "traefik.http.routers.databases-frontend.rule=Host(`dashboard.${PRIMARY_DOMAIN}`)"
+        - "traefik.http.routers.databases-frontend.middlewares=authtraefik"
+        - "traefik.http.routers.databases-frontend.entrypoints=websecure"
+        - "traefik.http.routers.databases-frontend.tls=true"
+        - "traefik.http.routers.databases-frontend.tls.certresolver=le"
+        - "traefik.http.services.databases-frontend.loadbalancer.server.port=${PORT}"
       mode: replicated
       replicas: 2
       placement:
-        max_replicas_per_node: 2
+        max_replicas_per_node: 1
         #        preferences:
         #          - spread: node.id
         constraints: # alleen op manager/worker node
-          - node.role == worker
+          - node.role == manager
       restart_policy:
         condition: on-failure
         delay: 15s
@@ -39,4 +39,4 @@ services:
         reservations:
           memory: 64M
     networks:
-      - databases-backend
+      - databases-frontend
