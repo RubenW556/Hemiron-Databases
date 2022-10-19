@@ -10,7 +10,7 @@ stages:
         - swarm
     only:
         refs:
-            - feature/pipeline-api
+            - main
         changes:
             - backend/**/*
 
