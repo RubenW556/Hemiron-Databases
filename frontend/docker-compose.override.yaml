@@ -17,7 +17,8 @@ services: # docker compose up --build
     command: npm run start # altijd makkelijker om npm te gebruiken zodat je docker (config) files kan hergebruiken (package.json specificeert het verder per project)
     volumes: # volume mount om veranderingen in realtime door te voeren.
       - .:/usr/src/app
+      - /usr/src/app/node_modules
     ports:
-      - 4200:4200
+      - 49153:49153
     networks:
       - databases-frontend-dev
