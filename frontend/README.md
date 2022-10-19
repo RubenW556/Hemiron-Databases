@@ -66,7 +66,7 @@ Deploy the dev image using Docker Compose. This will automatically sync changes 
 
 Monitor the logs
 
-- `docker container logs -f $(docker ps -qf name=api)`
+- `docker container logs -f $(docker ps -qf name=dashboard)`
 
 ## Production
 
