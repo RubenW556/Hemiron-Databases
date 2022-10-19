@@ -19,6 +19,6 @@ services: # docker compose up --build
       - .:/usr/src/app
       - /usr/src/app/node_modules
     ports:
-      - 4200:4200
+      - 49153:49153
     networks:
       - databases-frontend-dev

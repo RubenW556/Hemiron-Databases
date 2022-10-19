@@ -19,7 +19,7 @@ RUN npm ci
 COPY --chown=node:node . .
 
 # Expose port for ng serve
-EXPOSE 4200
+EXPOSE 49153
 
 # Use the node user from the image (instead of the root user)
 USER node
