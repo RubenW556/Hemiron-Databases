@@ -32,7 +32,7 @@ CI_BUILD_BACKEND:
         - docker build -t $IMAGE_NAME_FINAL --target production $PROJECT_ID/.
     after_script:
         - docker image push $IMAGE_NAME_FINAL # push with versioning
-        - docker image tag $IMAGE_NAME_FINAL $IMAGE_NAME_BASE/$PROJECT_ID:production # retag same image and push with production tag
+        - docker image tag $IMAGE_NAME_FINAL $IMAGE_NAME_BASE/$PROJECT_ID:production # re-tag same image and push with production tag
         - docker image push $IMAGE_NAME_BASE/$PROJECT_ID:production
         - docker images ls
     artifacts: # create artifact when job fails
@@ -66,13 +66,14 @@ CI_DEPLOY_BACKEND: #$BUILD_TOKEN  $CI_REGISTRY  $SSH_DEPLOYMENT_IP   $SSH_DEPLOY
         - ssh -o StrictHostKeyChecking=no $SSH_DEPLOYMENT_USER@$SSH_DEPLOYMENT_HOST bash -c 'ls -l'
         - ssh -o StrictHostKeyChecking=no $SSH_DEPLOYMENT_USER@$SSH_DEPLOYMENT_HOST bash -c 'docker network ls'
     script:
-        - scp -o StrictHostKeyChecking=no ./$PROJECT_ID/$STACK_FILE_NAME $SSH_DEPLOYMENT_USER@$SSH_DEPLOYMENT_HOST:/home/student/databases/$STACK_FILE_NAME
-        - ssh -o StrictHostKeyChecking=no -t $SSH_DEPLOYMENT_USER@$SSH_DEPLOYMENT_HOST 'bash -s' < ./$PROJECT_ID/$DEPLOY_FILE_NAME
+        - scp -o StrictHostKeyChecking=no ./$PROJECT_ID/$STACK_FILE_NAME $SSH_DEPLOYMENT_USER@$SSH_DEPLOYMENT_HOST:/home/student/databases/$STACK_FILE_NAME #copy over stack files
+        - ssh -o StrictHostKeyChecking=no -t $SSH_DEPLOYMENT_USER@$SSH_DEPLOYMENT_HOST 'bash -s' < ./$PROJECT_ID/$DEPLOY_FILE_NAME #execute file
 
 CI_VERIFY_BACKEND:
     stage: verify
     variables:
-        PROJECT_ID: frontend
+        VERIFY_FILE_NAME: verify-backend.sh
+        PROJECT_ID: backend
     <<: *template
     needs: [CI_DEPLOY_BACKEND]
     before_script:
@@ -85,5 +86,4 @@ CI_VERIFY_BACKEND:
         - echo $SSH_DEPLOYMENT_IP $SSH_DEPLOYMENT_HOST >> /etc/hosts
         - docker login -u pipeline -p $BUILD_TOKEN $CI_REGISTRY
     script:
-        - ssh -o StrictHostKeyChecking=no $SSH_DEPLOYMENT_USER@$SSH_DEPLOYMENT_HOST bash -c 'docker stack ls'
-        - ssh -o StrictHostKeyChecking=no $SSH_DEPLOYMENT_USER@$SSH_DEPLOYMENT_HOST bash -c 'docker service logs databases-backend_backend'
+        - ssh -o StrictHostKeyChecking=no -t $SSH_DEPLOYMENT_USER@$SSH_DEPLOYMENT_HOST 'bash -s' < ./$PROJECT_ID/$VERIFY_FILE_NAME #execute verify file
