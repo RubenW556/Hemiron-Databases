@@ -3,7 +3,7 @@ networks:
     name: databases-frontend-dev
 
 services: # docker compose -f docker-compose.yaml -f docker-compose.test.yaml up
-  backend:
+  backend-test:
     build:
       context: .
       dockerfile: Dockerfile
