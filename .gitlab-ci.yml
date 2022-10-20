@@ -1,146 +1,110 @@
-image: nielsprins/ipsenh-ci
+#trigger_job:
+#  trigger:
+#    include: child-pipeline.yml
 
-.pull_backend_npm_cache:
-  before_script:
-    - (cd ./backend && npm ci --cache .npm --prefer-offline)
-  cache:
-    untracked: true
-    policy: pull
-    key:
-      files:
-        - backend/package-lock.json
-    paths:
-      - backend/.npm/
+include:
+  - local: "child-pipeline.yml"
+  - local: "backend/child-pipeline-backend.yml"
+  - local: "frontend/child-pipeline-frontend.yml"
 
-.pull_frontend_npm_cache:
-  before_script:
-    - (cd ./frontend && npm ci --cache .npm --prefer-offline)
-  cache:
-    untracked: true
-    policy: pull
-    key:
-      files:
-        - frontend/package-lock.json
-    paths:
-      - frontend/.npm/
+default:
+  timeout: 2 hours # terminate any job taking longer than 1 hour
 
 stages:
-  - setup
-  - test
+  - pre-check
   - build
+  - test
   - deploy
+  - verify
 
-backend_npm_install:
-  stage: setup
-  cache:
-    key:
-      files:
-        - backend/package-lock.json
-    paths:
-      - backend/.npm/
-  script:
-    - (cd ./backend && npm ci --include=dev --cache .npm)
+image: docker:latest
 
-frontend_npm_install:
-  stage: setup
-  cache:
-    key:
-      files:
-        - frontend/package-lock.json
-    paths:
-      - frontend/.npm/
-  script:
-    - (cd ./frontend && npm ci --include=dev --cache .npm)
-
-backend_audit:
-  stage: test
-  allow_failure: true
-  needs:
-    - backend_npm_install
-  extends: .pull_backend_npm_cache
-  script:
-    - (cd ./backend && npm audit)
-
-frontend_audit:
-  stage: test
-  allow_failure: true
-  needs:
-    - frontend_npm_install
-  extends: .pull_frontend_npm_cache
-  script:
-    - (cd ./frontend && npm audit)
-
-backend_lint:
-  stage: test
-  needs:
-    - backend_npm_install
-  extends: .pull_backend_npm_cache
-  script:
-    - (cd ./backend && npm run lint)
-
-frontend_lint:
-  stage: test
-  needs:
-    - frontend_npm_install
-  extends: .pull_frontend_npm_cache
-  script:
-    - (cd ./frontend && npm run lint)
-
-backend_test:
-  stage: test
-  needs:
-    - backend_npm_install
-  extends: .pull_backend_npm_cache
-  script:
-    - (cd ./backend && npm run test)
-
-frontend_test:
-  stage: test
-  needs:
-    - frontend_npm_install
-  extends: .pull_frontend_npm_cache
-  script:
-    - (cd ./frontend && npm run test)
-
-backend_build:
-  stage: build
-  needs:
-    - backend_lint
-    - backend_test
-  script:
-    - docker login -u pipeline -p $DOCKER_PASSWORD registry.inf-hsleiden.nl
-    - (cd ./backend && docker build -t registry.inf-hsleiden.nl/2223.ipsenh-p1-p2/databases/backend .)
-    - docker push registry.inf-hsleiden.nl/2223.ipsenh-p1-p2/databases/backend
+.job_docker_template: &template
+  retry: 2
+  tags:
+    - swarm
   only:
-    - main
+    refs:
+      - main
 
-frontend_build:
-  stage: build
-  needs:
-    - frontend_lint
-    - frontend_test
+CI_PRE_CHECK:
+  stage: pre-check
+  <<: *template
+  allow_failure: true #On failure All jobs after this one, will not halt.
   script:
-    - docker login -u pipeline -p $DOCKER_PASSWORD registry.inf-hsleiden.nl
-    - (cd ./frontend && docker build -t registry.inf-hsleiden.nl/2223.ipsenh-p1-p2/databases/frontend .)
-    - docker push registry.inf-hsleiden.nl/2223.ipsenh-p1-p2/databases/frontend
-  only:
-    - main
+    - echo "pre checking"
+    - ls -l
+    - docker version
+#    - userdump #test failure. All jobs after this one, not ran (with allow_failure false).
 
-deploy_to_swarm:
-  stage: deploy
-  needs:
-    - backend_build
-    - frontend_build
-  before_script:
-    - 'command -v ssh-agent >/dev/null || ( apt-get update -y && apt-get install openssh-client -y )'
-    - eval $(ssh-agent -s)
-    - echo "$SSH_KEY" | tr -d '\r' | ssh-add -
-    - mkdir -p ~/.ssh
-    - chmod 700 ~/.ssh
-    - echo "192.168.195.168 manager-2.inf-hsleiden" > /etc/hosts
+#CI_BUILD:
+#  stage: build
+#  variables:
+#    BASE_IMAGE: ubuntu
+#    PROJECT_ID: test
+#    IMAGE_NAME_FINAL: $IMAGE_NAME_BASE/$PROJECT_ID:1.0.$CI_PIPELINE_IID-$BASE_IMAGE
+##  rules:
+##    - if: $CI_COMMIT_BRANCH == "feature/pipeline-api"
+##      changes:
+##        - Dockerfile
+#  retry: 2
+#  inherit:
+#    default: false
+#  <<: *template
+#  needs: [] # no dependencies
+#  before_script:
+#    - echo "building"
+#    - docker login -u pipeline -p $BUILD_TOKEN $CI_REGISTRY
+#    - sleep 10
+#  script:
+#    - docker build -t $IMAGE_NAME_FINAL .
+#  after_script:
+#    - docker image push $IMAGE_NAME_FINAL
+#    - docker images ls
+##  cache:
+##    key: $IMAGE_NAME_FINAL
+##    paths:
+##      - ./
+#  artifacts: # create artifact when job fails
+#    name: $IMAGE_NAME_FINAL
+#    when: on_failure
+#    paths:
+#      - ./
+#    expire_in: 2 days
+#    exclude:
+#      - .gitlab-ci.yml
+
+#CI_BUILD_V2:
+#  stage: build
+#  variables:
+#    BASE_IMAGE: ubuntu
+#    PROJECT_ID: testv2
+#    IMAGE_NAME_FINAL: $IMAGE_NAME_BASE/$PROJECT_ID:1.0.$CI_PIPELINE_IID-$BASE_IMAGE
+#  <<: *template
+#  needs: [CI_PRE_CHECK] # dependent on CI_PRE_CHECK. only runs after it
+#  before_script:
+#    - echo "building"
+#    - docker login -u pipeline -p $BUILD_TOKEN $CI_REGISTRY
+#    - sleep 10
+#  script:
+#    - docker build -t $IMAGE_NAME_FINAL .
+#  after_script:
+#    - docker image push $IMAGE_NAME_FINAL
+#    - docker images ls
+
+CI_TEST:
+  stage: test
+  <<: *template
+  when: manual # only execute when approved manually
   script:
-    - docker login -u pipeline -p $DOCKER_PASSWORD registry.inf-hsleiden.nl
-    - scp -o StrictHostKeyChecking=no docker-stack.yml student@manager-2.inf-hsleiden:/home/student/serverless/docker-stack.yml
-    - ssh -o StrictHostKeyChecking=no -t student@manager-2.inf-hsleiden 'bash -s' < deploy.sh
-  only:
-    - main
+    - echo "Testing"
+    - docker container ls
+    - docker image ls
+
+#CI_Deploy_Testing:
+#  stage: deploy
+#  <<: *template
+#  script:
+#    - sudo docker run -itd -p 80:80 httpd
+#  environment:
+#    name: Testing

@@ -13,3 +13,4 @@ Max:
 Vorige week was ik er niet bij maar ik ben benieuwd naar hoe de pipeline werkt. Maar ik zou het fijn vinden als Niels de pipeline deze week uitlegd zodat iedereen die begrijpt.
 
 ### Week 7
+

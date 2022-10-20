@@ -4,6 +4,10 @@
 
 FROM node:18-alpine As development
 
+# set ports to open
+ARG PORT=3000
+ENV PORT $PORT
+
 # Create app directory
 WORKDIR /usr/src/app
 
@@ -57,20 +61,32 @@ USER node
 ###################
 
 # Use apline package to keep it small
-FROM alpine:3.15 As production
+FROM node:18-alpine As production
 
 # set our node environment, either development or production
 # defaults to production, compose overrides this to development on build and run
 ARG NODE_ENV=production
 ENV NODE_ENV $NODE_ENV
 
+# set ports to open
+ARG PORT=3000
+ENV PORT $PORT
+
 # Install node, which is all we require!
-RUN apk add --update \
-    && apk add --no-cache nodejs-current
+#RUN apk add --update \
+#    && apk add --no-cache nodejs-current
 
 # Copy the bundled code from the build stage to the production image
 COPY --chown=node:node --from=build /usr/src/app/node_modules ./node_modules
 COPY --chown=node:node --from=build /usr/src/app/dist ./dist
 
+#Expose port 3000
+EXPOSE ${PORT}
+
+# check every 30s to ensure this service returns HTTP 200
+#HEALTHCHECK --interval=30s CMD wget --no-verbose --tries=1 --spider http://0.0.0.0:$PORT/v1/healthz #todo
+
+USER node
+
 # Start the server using the production build
-CMD [ "node", "dist/main.js" ]
+CMD [ "node", "--max_old_space_size=450", "dist/main.js" ]
