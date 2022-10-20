@@ -1,0 +1,19 @@
+networks:
+  databases-frontend-dev:
+    name: databases-frontend-dev
+
+services: # docker compose -f docker-compose.yaml -f docker-compose.test.yaml up
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: development
+    container_name: api
+    image: databases-backend:dev-0.0.1-alpine3.15 #schrijft prod image over
+    command: npm run test
+    volumes:
+      - .:/usr/src/app
+    ports:
+      - ${PORT}:${PORT}
+    networks:
+      - databases-frontend-dev
