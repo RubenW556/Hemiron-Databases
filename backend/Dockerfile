@@ -43,6 +43,14 @@ COPY --chown=node:node --from=development /usr/src/app/node_modules ./node_modul
 
 COPY --chown=node:node . .
 
+
+# Run the build command which creates the production bundle
+RUN npm run test
+RUN npm run lint
+RUN npm run test:e2e
+RUN npm run test:cov
+RUN npm audit
+
 # Run the build command which creates the production bundle
 RUN npm run build
 
@@ -55,7 +63,6 @@ ENV NODE_ENV production
 RUN npm ci --only=production && npm cache clean --force
 
 USER node
-
 ###################
 # PRODUCTION
 ###################
