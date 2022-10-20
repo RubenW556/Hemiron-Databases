@@ -10,7 +10,7 @@ stages:
         - swarm
     only:
         refs:
-            - feature/CI_VERIFY
+            - main
         changes:
             - backend/**/*
 

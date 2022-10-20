@@ -25,7 +25,7 @@ image: docker:latest
     - swarm
   only:
     refs:
-      - feature/CI_VERIFY
+      - main
 
 CI_PRE_CHECK:
   stage: pre-check
