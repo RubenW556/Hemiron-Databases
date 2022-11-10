@@ -43,8 +43,7 @@ COPY --chown=node:node --from=development /usr/src/app/node_modules ./node_modul
 
 COPY --chown=node:node . .
 
-
-# Run the build command which creates the production bundle
+# Run the tests
 RUN npm run test
 RUN npm run lint
 RUN npm run test:e2e
