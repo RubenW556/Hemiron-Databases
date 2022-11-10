@@ -1,0 +1,17 @@
+networks:
+  databases-db-dev:
+    name: databases-db-dev
+
+services: # docker compose up --build
+  db: # docker compose up --build db
+    image: postgres
+    container_name: db
+    restart: unless-stopped
+    env_file:
+      - .env.dev
+    volumes:
+      - ./entrypoint.sql:/docker-entrypoint-initdb.d/docker-entrypoint.sql
+    ports:
+      - "5432:5432"
+    networks:
+      - databases-db-dev

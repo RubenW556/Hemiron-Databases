@@ -1,0 +1,11 @@
+version: '3.8'
+networks:
+  databases-frontend:
+    external: true
+    name: databases-db
+
+services:
+  db:
+    image: postgres:15.0-alpine
+    env_file:
+      - .env
