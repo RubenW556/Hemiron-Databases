@@ -1,3 +1,6 @@
+volumes:
+  postgres:
+
 networks:
   databases-db-dev:
     name: databases-db-dev
