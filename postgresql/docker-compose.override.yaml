@@ -4,7 +4,6 @@ networks:
 
 services: # docker compose up --build
   db: # docker compose up --build db
-    image: postgres
     container_name: db
     restart: unless-stopped
     env_file:
@@ -13,5 +12,8 @@ services: # docker compose up --build
       - ./entrypoint.sql:/docker-entrypoint-initdb.d/docker-entrypoint.sql
     ports:
       - "5432:5432"
+    networks:
+      - databases-db-dev
+  adminer:
     networks:
       - databases-db-dev

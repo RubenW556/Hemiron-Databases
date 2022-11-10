@@ -9,3 +9,8 @@ services:
     image: postgres:15.0-alpine
     env_file:
       - .env
+  adminer:
+    image: adminer
+    restart: always
+    ports:
+      - 8080:8080
