@@ -1,12 +1,14 @@
 CREATE TABLE "Database" (
-	"database_id" serial NOT NULL,
+	"database_id" uuid NOT NULL,
 	"database_name" character varying(50) NOT NULL,
 	"database_type" character varying(15) NOT NULL,
-	"creation_date" DATE(15) NOT NULL,
+	"creation_date" DATE NOT NULL,
 	CONSTRAINT "Database_pk" PRIMARY KEY ("database_id")
 ) WITH (
   OIDS=FALSE
 );
+
+
 
 CREATE TABLE "User" (
 	"username" character varying(50) NOT NULL,
@@ -15,6 +17,8 @@ CREATE TABLE "User" (
 ) WITH (
   OIDS=FALSE
 );
+
+
 
 CREATE TABLE "Query" (
 	"resource_used" int NOT NULL,
@@ -26,17 +30,21 @@ CREATE TABLE "Query" (
   OIDS=FALSE
 );
 
+
+
 CREATE TABLE "User_Owns_Database" (
-	"user_id" bigint NOT NULL,
-	"database_id" bigint NOT NULL,
+	"user_id" uuid NOT NULL,
+	"database_id" uuid NOT NULL,
 	CONSTRAINT "User_Owns_Database_pk" PRIMARY KEY ("user_id","database_id")
 ) WITH (
   OIDS=FALSE
 );
 
 
-ALTER TABLE "Query" ADD CONSTRAINT "Query_fk0" FOREIGN KEY ("database_id") REFERENCES "Database"("database_id");
 
+
+
+ALTER TABLE "Query" ADD CONSTRAINT "Query_fk0" FOREIGN KEY ("database_id") REFERENCES "Database"("database_id");
 ALTER TABLE "User_Owns_Database" ADD CONSTRAINT "User_Owns_Database_fk0" FOREIGN KEY ("user_id") REFERENCES "User"("user_id");
 ALTER TABLE "User_Owns_Database" ADD CONSTRAINT "User_Owns_Database_fk1" FOREIGN KEY ("database_id") REFERENCES "Database"("database_id");
 
