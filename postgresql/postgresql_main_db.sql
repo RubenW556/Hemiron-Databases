@@ -1,8 +1,8 @@
 CREATE TABLE "Database" (
-	"database_id" serial NOT NULL,
+	"database_id" uuid NOT NULL,
 	"database_name" character varying(50) NOT NULL,
 	"database_type" character varying(15) NOT NULL,
-	"creation_date" DATE(15) NOT NULL,
+	"creation_date" DATE NOT NULL,
 	CONSTRAINT "Database_pk" PRIMARY KEY ("database_id")
 ) WITH (
   OIDS=FALSE
@@ -27,8 +27,8 @@ CREATE TABLE "Query" (
 );
 
 CREATE TABLE "User_Owns_Database" (
-	"user_id" bigint NOT NULL,
-	"database_id" bigint NOT NULL,
+	"user_id" uuid NOT NULL,
+	"database_id" uuid NOT NULL,
 	CONSTRAINT "User_Owns_Database_pk" PRIMARY KEY ("user_id","database_id")
 ) WITH (
   OIDS=FALSE
