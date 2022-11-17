@@ -24,6 +24,23 @@ COPY --chown=node:node . .
 
 # Use the node user from the image (instead of the root user)
 USER node
+###################
+# BUILD FOR ANALYSIS
+###################
+
+FROM node:18-alpine As analysis
+
+# Create app directory
+WORKDIR /usr/src/app
+
+# Install app dependencies using the `npm ci` command instead of `npm install`
+RUN npm ci
+
+# Bundle app source
+COPY --chown=node:node . .
+
+# Use the node user from the image (instead of the root user)
+USER node
 
 #install docker
 RUN curl -fsSLO https://get.docker.com/builds/Linux/x86_64/docker-17.04.0-ce.tgz \

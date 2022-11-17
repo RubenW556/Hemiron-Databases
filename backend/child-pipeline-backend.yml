@@ -1,4 +1,5 @@
 stages:
+    - analysis
     - build
     - test
     - deploy
@@ -15,6 +16,35 @@ stages:
         changes:
             - backend/**/*
 
+CI_ANALYSE_BACKEND:
+    stage: analysis
+    variables:
+        BASE_IMAGE: node18-alpine
+        PROJECT_ID: backend
+        IMAGE_NAME_FINAL: $IMAGE_NAME_BASE/$PROJECT_ID:1.0.$CI_PIPELINE_IID-$BASE_IMAGE
+    inherit:
+        default: false
+    <<: *template
+    #    when: manual # only execute when approved manually
+    needs: [CI_PRE_CHECK] # no dependencies.
+    before_script:
+        - echo "analysis"
+        - docker login -u pipeline -p $BUILD_TOKEN $CI_REGISTRY
+    script:
+        - docker build -t $IMAGE_NAME_FINAL --target production $PROJECT_ID/.
+    after_script:
+        - docker image push $IMAGE_NAME_FINAL # push with versioning
+        - docker image tag $IMAGE_NAME_FINAL $IMAGE_NAME_BASE/$PROJECT_ID:production # re-tag same image and push with production tag
+        - docker image push $IMAGE_NAME_BASE/$PROJECT_ID:production
+        - docker images ls
+    artifacts: # create artifact when job fails
+        name: $IMAGE_NAME_FINAL
+        when: on_failure
+        paths:
+            - ./
+        expire_in: 2 days
+        exclude:
+            - .gitlab-ci.yml
 
 CI_BUILD_BACKEND:
     stage: build
