@@ -2,9 +2,8 @@ import {Module, Post} from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import {User} from "./user.entity";
-import {UsersModule} from "./users.module";
-import {UsersService} from "./users.service";
+import {User} from "./user/user.entity";
+import {UsersModule} from "./user/users.module";
 import {DataSource} from "typeorm";
 
 
