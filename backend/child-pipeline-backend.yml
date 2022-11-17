@@ -11,6 +11,7 @@ stages:
     only:
         refs:
             - main
+            - sonarcube_installation_on_docker
         changes:
             - backend/**/*
 
