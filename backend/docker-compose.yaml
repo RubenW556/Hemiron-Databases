@@ -3,6 +3,9 @@ networks:
   databases-frontend:
     external: true
     name: databases-frontend-dev
+  databases-db:
+    external: true
+    name: databases-db
 
 services:
   backend:

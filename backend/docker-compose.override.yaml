@@ -1,6 +1,9 @@
 networks:
   databases-frontend-dev:
     name: databases-frontend-dev
+  databases-db-dev:
+    name: databases-db-dev
+
 
 services: # docker compose up --build
   backend: # docker compose up --build backend
@@ -19,3 +22,4 @@ services: # docker compose up --build
       - ${PORT}:${PORT}
     networks:
       - databases-frontend-dev
+      - databases-db-dev

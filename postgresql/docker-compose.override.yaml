@@ -1,6 +1,9 @@
 networks:
   databases-db-dev:
     name: databases-db-dev
+#volumes:
+#  pgdata:
+#    external: true
 
 services: # docker compose up --build
   db: # docker compose up --build db
@@ -11,7 +14,21 @@ services: # docker compose up --build
       - .env.dev
     volumes:
       - ./entrypoint.sql:/docker-entrypoint-initdb.d/docker-entrypoint.sql
+#      - pgdata:/var/lib/postgresql/data
     ports:
-      - "5432:5432"
+      - "${POSTGRES_PORT}:${POSTGRES_PORT}"
     networks:
       - databases-db-dev
+
+
+    # adminer not needed but gives easy access to the database contents for testing
+    # log in using the following
+    # database systeem: postgresql
+    # server: db
+    # username: postgres by default
+    # password: decided in .env, otherwise the default is "postgres"
+
+  adminer:
+    networks:
+      - databases-db-dev
+

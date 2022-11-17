@@ -1,4 +1,8 @@
-version: '3.1'
+version: '3.8'
+
+networks:
+  databases-frontend-dev:
+    name: databases-frontend-dev
 
 services: # docker compose -f postgresql.yml up
 
@@ -10,17 +14,8 @@ services: # docker compose -f postgresql.yml up
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
     ports:
       - "${POSTGRES_PORT}:5432"
+    networks:
+          - databases-frontend-dev
 
 
-# adminer not needed but gives easy access to the database contents for testing
-# log in using the following
-# database systeem: postgresql
-# server: db
-# username: postgres by default
-# password: listed in .env, otherwise the default is "postgres"
 
-  adminer:
-    image: adminer
-    restart: always
-    ports:
-      - "8070:8080"
