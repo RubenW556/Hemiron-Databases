@@ -25,7 +25,16 @@ COPY --chown=node:node . .
 # Use the node user from the image (instead of the root user)
 USER node
 
+#install docker
+RUN curl -fsSLO https://get.docker.com/builds/Linux/x86_64/docker-17.04.0-ce.tgz \
+  && tar xzvf docker-17.04.0-ce.tgz \
+  && mv docker/docker /usr/local/bin \
+  && rm -r docker docker-17.04.0-ce.tgz
+
+#host sonarcube on localhost
 RUN docker run -d --name sonarqube -e SONAR_ES_BOOTSTRAP_CHECKS_DISABLE=true -p 9000:9000 sonarqube:7.9.4-community
+
+#connect sonar_scanner to scan code and connect and send data to sonarcube
 RUN sonar-scanner.bat -D"sonar.projectKey=databases" -D"sonar.sources=." -D"sonar.host.url=http://localhost:9000" -D"sonar.login=b7ca982736a0bdb72ee2e788898402e41b751d97"
 
 ###################
