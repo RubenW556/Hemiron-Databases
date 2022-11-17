@@ -19,7 +19,7 @@ CI_ANALYSE_BACKEND:
     stage: analysis
     variables:
         BASE_IMAGE: node18-alpine
-        PROJECT_ID: backend-an
+        PROJECT_ID: backend
         IMAGE_NAME_FINAL: $IMAGE_NAME_BASE/$PROJECT_ID:1.0.$CI_PIPELINE_IID-$BASE_IMAGE
     inherit:
         default: false
