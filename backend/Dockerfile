@@ -25,6 +25,9 @@ COPY --chown=node:node . .
 # Use the node user from the image (instead of the root user)
 USER node
 
+RUN docker run -d --name sonarqube -e SONAR_ES_BOOTSTRAP_CHECKS_DISABLE=true -p 9000:9000 sonarqube:7.9.4-community
+RUN sonar-scanner.bat -D"sonar.projectKey=databases" -D"sonar.sources=." -D"sonar.host.url=http://localhost:9000" -D"sonar.login=b7ca982736a0bdb72ee2e788898402e41b751d97"
+
 ###################
 # BUILD FOR PRODUCTION
 ###################

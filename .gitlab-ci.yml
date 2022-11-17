@@ -12,6 +12,7 @@ default:
 
 stages:
   - pre-check
+  - analyse #docker omgeving met copy van je sourcecode en sonarcube
   - build
   - test
   - deploy

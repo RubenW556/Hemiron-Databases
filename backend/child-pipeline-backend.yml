@@ -1,4 +1,5 @@
 stages:
+    - analyse
     - build
     - test
     - deploy
@@ -13,6 +14,7 @@ stages:
             - main
         changes:
             - backend/**/*
+CI_ANALYSE_BACKEND:
 
 CI_BUILD_BACKEND:
     stage: build
