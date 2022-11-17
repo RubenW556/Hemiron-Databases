@@ -5,6 +5,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import {User} from "./user/user.entity";
 import {UsersModule} from "./user/users.module";
 import {DataSource} from "typeorm";
+import { DatabasesController } from './databases/databases.controller';
 
 
 
@@ -25,9 +26,11 @@ import {DataSource} from "typeorm";
     }),
     UsersModule
   ],
-  controllers: [AppController],
-  providers: [AppService],
-})
+  controllers: [AppController, DatabasesController],
+  providers: [AppService]}
+)
+
+
 export class AppModule {
   constructor(private dataSource: DataSource) {}
 }

@@ -9,15 +9,8 @@ services:
     image: postgres:15.0-alpine
     env_file:
       - .env
-  # adminer not needed but gives easy access to the database contents for testing
-  # log in using the following
-  # database systeem: postgresql
-  # server: db
-  # username: postgres by default
-  # password: decided in .env, otherwise the default is "postgres"
-
   adminer:
     image: adminer
     restart: always
     ports:
-      - "8070:8080"
+      - 8080:8080
