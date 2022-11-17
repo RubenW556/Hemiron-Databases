@@ -26,7 +26,6 @@ image: docker:latest
     - swarm
   only:
     refs:
-      - main
       - sonarcube_installation_on_docker
 
 CI_PRE_CHECK:

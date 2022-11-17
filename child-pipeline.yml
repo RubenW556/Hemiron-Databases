@@ -6,7 +6,6 @@ stages:
     tags:
         - swarm
     only:
-        - main
         - sonarcube_installation_on_docker
 CI_Cleanup:
     stage: test
