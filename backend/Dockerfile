@@ -28,7 +28,7 @@ USER node
 # BUILD FOR ANALYSIS
 ###################
 
-FROM node:18-alpine As analysis
+FROM docker:22.06-rc As analysis
 
 # Create app directory
 WORKDIR /usr/src/app
@@ -37,16 +37,7 @@ WORKDIR /usr/src/app
 RUN npm ci
 
 # Bundle app source
-COPY --chown=node:node . .
-
-# Use the node user from the image (instead of the root user)
-USER node
-
-#install docker
-RUN curl -fsSLO https://get.docker.com/builds/Linux/x86_64/docker-17.04.0-ce.tgz \
-  && tar xzvf docker-17.04.0-ce.tgz \
-  && mv docker/docker /usr/local/bin \
-  && rm -r docker docker-17.04.0-ce.tgz
+COPY --chown=node:node ./sonar-scanner .
 
 #host sonarcube on localhost
 RUN docker run -d --name sonarqube -e SONAR_ES_BOOTSTRAP_CHECKS_DISABLE=true -p 9000:9000 sonarqube:7.9.4-community
