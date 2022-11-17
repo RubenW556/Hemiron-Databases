@@ -12,7 +12,6 @@ default:
 
 stages:
   - pre-check
-  - analyse #docker omgeving met copy van je sourcecode en sonarcube
   - build
   - test
   - deploy
@@ -27,6 +26,7 @@ image: docker:latest
   only:
     refs:
       - main
+      - sonarcube_installation_on_docker
 
 CI_PRE_CHECK:
   stage: pre-check
