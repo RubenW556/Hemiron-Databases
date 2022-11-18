@@ -13,8 +13,8 @@ services: # docker compose up --build
       - .env.dev
     volumes:
       - postgres:/var/lib/postgresql/data
-      - ./init-user-db.sh:/docker-entrypoint-initdb.d/init-user-db.sh
-#      - ./entrypoint.sql:/docker-entrypoint-initdb.d/entrypoint.sql
+      - ./init-a-user-db.sh:/docker-entrypoint-initdb.d/init-a-user-db.sh
+      - ./init-z-schema-tables.sh:/docker-entrypoint-initdb.d/init-z-schema-tables.sh
     ports:
       - "5432:5432"
     networks:
