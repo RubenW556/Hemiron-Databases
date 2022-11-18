@@ -6,6 +6,7 @@ import {User} from "./user/user.entity";
 import {UsersModule} from "./user/users.module";
 import {DataSource} from "typeorm";
 import { DatabasesController } from './databases/databases.controller';
+import {CustomNamingStrategy} from "./NamingStrategy/NamingStrategy";
 
 
 
@@ -15,13 +16,14 @@ import { DatabasesController } from './databases/databases.controller';
       useFactory: () => ({
         type: 'postgres',
         host: process.env.POSTGRES_HOST,
+        schema: "docker",
         port: parseInt(process.env.POSTGRES_PORT),
         username: process.env.POSTGRES_USER_USERNAME,
         password: process.env.POSTGRES_USER_PASSWORD,
         database: process.env.POSTGRES_DATABASE,
         entities: [User],
-        synchronize: true,
-        logging: true
+        logging: true,
+        // namingStrategy : new  CustomNamingStrategy ( ) niet nodig maar ik behoud het omdat het mischien nodig zal zijn
       })
     }),
     UsersModule
@@ -32,7 +34,8 @@ import { DatabasesController } from './databases/databases.controller';
 
 
 export class AppModule {
-  constructor(private dataSource: DataSource) {}
+  constructor() {}
+
 }
 
 
