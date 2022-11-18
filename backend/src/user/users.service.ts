@@ -10,10 +10,6 @@ export class UsersService {
         private usersRepository: Repository<User>,
     ) {}
 
-    returnHello(): string{
-        return "hello";
-    }
-
     findAll(): Promise<User[]> {
         return this.usersRepository.find();
     }

@@ -4,9 +4,7 @@ import { AppService } from './app.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import {User} from "./user/user.entity";
 import {UsersModule} from "./user/users.module";
-import {DataSource} from "typeorm";
 import { DatabasesController } from './databases/databases.controller';
-import {CustomNamingStrategy} from "./NamingStrategy/NamingStrategy";
 
 
 
@@ -23,7 +21,6 @@ import {CustomNamingStrategy} from "./NamingStrategy/NamingStrategy";
         database: process.env.POSTGRES_DATABASE,
         entities: [User],
         logging: true,
-        // namingStrategy : new  CustomNamingStrategy ( ) niet nodig maar ik behoud het omdat het mischien nodig zal zijn
       })
     }),
     UsersModule
