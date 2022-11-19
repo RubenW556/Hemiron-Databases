@@ -39,7 +39,7 @@ Debugging for prod
 ## Building for production
 
 Run to build the docker image for production using docker compose.
-- `docker-compose -f docker-compose.yaml -f docker-compose.prod.yaml backend`
+- `docker compose -f docker-compose.yaml -f docker-compose.prod.yaml build`
 
 Or CLI
 
