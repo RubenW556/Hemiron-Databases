@@ -12,8 +12,8 @@ default:
 
 stages:
   - pre-check
-  - analysis
   - build
+  - analysis
   - test
   - deploy
   - verify
