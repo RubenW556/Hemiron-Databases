@@ -60,7 +60,7 @@ ENV NODE_ENV production
 # Passing in --only=production ensures that only the production dependencies are installed.
 # This ensures that the node_modules directory is as optimized as possible.
 #removed: RUN apk add --update nodejs nodejs-npm
-RUN npm ci --only=production && npm cache clean --force
+#removed: RUN npm ci --only=production && npm cache clean --force
 
 USER node
 
