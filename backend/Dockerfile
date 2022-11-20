@@ -63,7 +63,6 @@ COPY --chown=node:node --from=development /usr/src/app/node_modules ./node_modul
 
 COPY --chown=node:node . .
 
-
 # Run the build command which creates the production bundle
 RUN npm run test
 RUN npm run lint
@@ -80,6 +79,7 @@ ENV NODE_ENV development
 # Running `npm ci` removes the existing node_modules directory.
 # Passing in --only=production ensures that only the production dependencies are installed.
 # This ensures that the node_modules directory is as optimized as possible.
+RUN apk add --update nodejs nodejs-npm
 RUN npm install --only=production && npm cache clean --force
 
 USER node
