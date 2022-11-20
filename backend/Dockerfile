@@ -24,6 +24,26 @@ COPY --chown=node:node . .
 
 # Use the node user from the image (instead of the root user)
 USER node
+###################
+# BUILD FOR ANALYSIS
+###################
+
+FROM docker:22.06-rc As analysis
+
+# Create app directory
+WORKDIR /usr/src/app
+
+# Install app dependencies using the `npm ci` command instead of `npm install`
+RUN npm ci
+
+# Bundle app source
+COPY --chown=node:node ./sonar-scanner .
+
+#host sonarcube on localhost
+RUN docker run -d --name sonarqube -e SONAR_ES_BOOTSTRAP_CHECKS_DISABLE=true -p 9000:9000 sonarqube:7.9.4-community
+
+#connect sonar_scanner to scan code and connect and send data to sonarcube
+RUN sonar-scanner.bat -D"sonar.projectKey=databases" -D"sonar.sources=." -D"sonar.host.url=http://localhost:9000" -D"sonar.login=b7ca982736a0bdb72ee2e788898402e41b751d97"
 
 ###################
 # BUILD FOR PRODUCTION
