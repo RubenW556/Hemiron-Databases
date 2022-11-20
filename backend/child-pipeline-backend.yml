@@ -48,9 +48,13 @@ CI_ANALYSE_BACKEND:
 CI_BUILD_BACKEND:
     stage: build
     variables:
-        BASE_IMAGE: node18-alpine
+        BASE_IMAGE: docker:19.03.13
+        DOCKER_TLS_CERTDIR: "/certs"
         PROJECT_ID: backend
         IMAGE_NAME_FINAL: $IMAGE_NAME_BASE/$PROJECT_ID:1.0.$CI_PIPELINE_IID-$BASE_IMAGE
+        services:
+            - name: docker:19.03.13-dind
+              alias: docker
     inherit:
         default: false
     <<: *template
