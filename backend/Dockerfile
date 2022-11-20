@@ -17,7 +17,7 @@ WORKDIR /usr/src/app
 COPY --chown=node:node package*.json ./
 
 # Install app dependencies using the `npm ci` command instead of `npm install`
-RUN npm ci
+RUN npm i
 
 # Bundle app source
 COPY --chown=node:node . .
@@ -34,7 +34,7 @@ FROM docker:22.06-rc As analysis
 WORKDIR /usr/src/app
 
 # Install app dependencies using the `npm ci` command instead of `npm install`
-RUN npm ci
+RUN npm i
 
 # Bundle app source
 COPY --chown=node:node ./sonar-scanner .
@@ -80,7 +80,7 @@ ENV NODE_ENV production
 # Running `npm ci` removes the existing node_modules directory.
 # Passing in --only=production ensures that only the production dependencies are installed.
 # This ensures that the node_modules directory is as optimized as possible.
-RUN npm ci --only=production && npm cache clean --force
+RUN npm i --only=production && npm cache clean --force
 
 USER node
 ###################
