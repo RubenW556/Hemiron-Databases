@@ -80,7 +80,7 @@ FROM docker:20.10.21-dind-alpine3.16 As analysis
 WORKDIR /usr/src/app
 
 #workaround for known bug: "no such user: node", https://stackoverflow.com/questions/52196518/could-not-get-uid-gid-when-building-node-docker
-RUN npm_config_unsafe_perm=false
+RUN npm_config_unsafe_perm=true
 
 #Copy source files
 COPY --chown=node:node . .
