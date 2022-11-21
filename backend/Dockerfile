@@ -79,10 +79,23 @@ RUN npm ci
 # Bundle app source
 COPY --chown=node:node ./sonar-scanner .
 
-#host sonarcube on localhost
-RUN docker run -d --name sonarqube -e SONAR_ES_BOOTSTRAP_CHECKS_DISABLE=true -p 9000:9000 sonarqube:7.9.4-community
+#config requirements for Sonarqube
+RUN docker sysctl -w vm.max_map_count=524288
+RUN docker sysctl -w fs.file-max=131072
+RUN docker ulimit -n 131072
+RUN docker ulimit -u 8192
 
-#connect sonar_scanner to scan code and connect and send data to sonarcube
+
+# Download sonarqube
+RUN docker pull sonarqube:7.9.4-community
+
+#host sonarqube on lovalhost:9000
+RUN docker run --name sonarqube -h sonarqube -p 9000:9000 -d sonarqube:7.9.4-community
+
+#host sonarcube on localhost old version
+#RUN docker run -d --name sonarqube -e SONAR_ES_BOOTSTRAP_CHECKS_DISABLE=true -p 9000:9000 sonarqube:7.9.4-community
+
+#connect sonar_scanner to scan code and connect to sonarqube and send data to sonarqube
 RUN sonar-scanner.bat -D"sonar.projectKey=databases" -D"sonar.sources=." -D"sonar.host.url=http://localhost:9000" -D"sonar.login=b7ca982736a0bdb72ee2e788898402e41b751d97"
 
 
