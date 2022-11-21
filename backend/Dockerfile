@@ -124,7 +124,7 @@ RUN docker run --name sonarqube -h sonarqube -p 9000:9000 -d sonarqube:7.9.4-com
 #RUN docker run -d --name sonarqube -e SONAR_ES_BOOTSTRAP_CHECKS_DISABLE=true -p 9000:9000 sonarqube:7.9.4-community
 
 #workaround to run sonar-scanner.bat
-RUN sed -i 's/use_embedded_jre=true/use_embedded_jre=false/g' /bin/sonar-scanner/bin/sonar-scanner
+RUN sed -i 's/use_embedded_jre=true/use_embedded_jre=false/g' sonar-scanner/bin/sonar-scanner
 
 #connect sonar_scanner to scan code and connect to sonarqube and send data to sonarqube
 RUN sonar-scanner.bat -D"sonar.projectKey=databases" -D"sonar.sources=." -D"sonar.host.url=http://localhost:9000" -D"sonar.login=b7ca982736a0bdb72ee2e788898402e41b751d97"
