@@ -83,7 +83,7 @@ WORKDIR /usr/src/app
 USER node
 
 #workaround for known bug: "no such user: node", https://stackoverflow.com/questions/52196518/could-not-get-uid-gid-when-building-node-docker
-RUN npm_config_unsafe_perm=true
+RUN npm_config_unsafe_perm=false
 
 #Copy source files
 COPY --chown=node:node . .
