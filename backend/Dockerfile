@@ -87,10 +87,10 @@ RUN whoami
 # The Nest CLI is a dev dependency,
 # In the previous development stage we ran `npm ci` which installed all dependencies.
 # So we can copy over the node_modules directory from the development image into this build image.
-COPY --chown=docker:docker --from=development /usr/src/app/node_modules ./node_modules
+COPY --chown=0:0 --from=development /usr/src/app/node_modules ./node_modules
 
 #Copy source files
-COPY --chown=docker:docker . .
+COPY --chown=0:0 . .
 
 # copy the package.lock and package files
 COPY package*.json ./
@@ -99,7 +99,7 @@ COPY package*.json ./
 RUN npm ci
 
 # Bundle app source
-COPY --chown=docker:docker ../sonar-scanner .
+COPY --chown=0:0 ../sonar-scanner .
 
 #config requirements for Sonarqube
 RUN sysctl -w vm.max_map_count=524288
