@@ -85,7 +85,7 @@ WORKDIR /usr/src/app
 #RUN adduser -D -g '' node
 
 #below is even more advanced version of adding user, in which we only add user if not already existing
-RUN useradd node || echo "User node already exists."
+RUN adduser -D -g '' node || echo "User node already exists."
 
 #Copy source files
 COPY --chown=node:node . .
