@@ -76,6 +76,7 @@ FROM node:18-alpine As analysis
 # Create app directory
 WORKDIR /usr/src/app
 
+COPY package*.json ./
 
 # Install app dependencies using the `npm ci` command instead of `npm install`
 RUN npm install
