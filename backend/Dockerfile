@@ -71,33 +71,46 @@ USER node
 # BUILD FOR ANALYSIS
 ###################
 
-FROM node:18-alpine As analysis
+# docker image with specific version to prevent update changes
+# dind = docker in docker
+# alpine so it is lightweight
+FROM docker:20.10.21-dind-alpine3.16 As analysis
 
 # Create app directory
 WORKDIR /usr/src/app
 
+# In order to run `npm run build` we need access to the Nest CLI.
+# The Nest CLI is a dev dependency,
+# In the previous development stage we ran `npm ci` which installed all dependencies.
+# So we can copy over the node_modules directory from the development image into this build image.
+COPY --chown=node:node --from=development /usr/src/app/node_modules ./node_modules
+
+#Copy source files
+COPY --chown=node:node . .
+
+# copy the package.lock and package files
 COPY package*.json ./
 
 # Install app dependencies using the `npm ci` command instead of `npm install`
-RUN npm install
+RUN npm ci
 
 # Bundle app source
 COPY --chown=node:node sonar-scanner .
 
 #config requirements for Sonarqube
-RUN docker sysctl -w vm.max_map_count=524288
-RUN docker sysctl -w fs.file-max=131072
-RUN docker ulimit -n 131072
-RUN docker ulimit -u 8192
+RUN sysctl -w vm.max_map_count=524288
+RUN sysctl -w fs.file-max=131072
+RUN ulimit -n 131072
+RUN ulimit -u 8192
 
 
 # Download sonarqube
 RUN docker pull sonarqube:7.9.4-community
 
-#host sonarqube on lovalhost:9000
+#host sonarqube on localhost:9000
 RUN docker run --name sonarqube -h sonarqube -p 9000:9000 -d sonarqube:7.9.4-community
 
-#host sonarcube on localhost old version
+#host sonarcube on localhost (this is the old version that worked locally)
 #RUN docker run -d --name sonarqube -e SONAR_ES_BOOTSTRAP_CHECKS_DISABLE=true -p 9000:9000 sonarqube:7.9.4-community
 
 #connect sonar_scanner to scan code and connect to sonarqube and send data to sonarqube
