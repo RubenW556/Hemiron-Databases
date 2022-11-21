@@ -81,10 +81,6 @@ WORKDIR /usr/src/app
 
 USER node
 
-#find out what current user is
-RUN echo "$USER"
-RUN whoami
-
 # In order to run `npm run build` we need access to the Nest CLI.
 # The Nest CLI is a dev dependency,
 # In the previous development stage we ran `npm ci` which installed all dependencies.
