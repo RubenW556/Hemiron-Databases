@@ -79,9 +79,6 @@ FROM docker:20.10.21-dind-alpine3.16 As analysis
 # Create app directory
 WORKDIR /usr/src/app
 
-# "log in" as node user instead of root
-USER node
-
 #workaround for known bug: "no such user: node", https://stackoverflow.com/questions/52196518/could-not-get-uid-gid-when-building-node-docker
 RUN npm_config_unsafe_perm=false
 
