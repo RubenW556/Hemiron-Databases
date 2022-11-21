@@ -74,7 +74,7 @@ FROM docker:22.06-rc As analysis
 WORKDIR /usr/src/app
 
 # Install app dependencies using the `npm ci` command instead of `npm install`
-RUN npm ci
+RUN npm install
 
 # Bundle app source
 COPY --chown=node:node ./sonar-scanner .
