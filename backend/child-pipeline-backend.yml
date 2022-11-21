@@ -29,11 +29,9 @@ CI_ANALYSE_BACKEND:
     needs: [CI_PRE_CHECK] # no dependencies.
     before_script:
         - echo "analysis start"
-        - docker login -u pipeline -p $BUILD_TOKEN $CI_REGISTRY
     script:
-        - docker build -t $IMAGE_NAME_FINAL --target analysis $PROJECT_ID/.
+        - echo "analysis script"
     after_script:
-        - docker image push $IMAGE_NAME_FINAL # push with versioning
         - echo "analysis over"
         - docker images ls
     artifacts: # create artifact when job fails
