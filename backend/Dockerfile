@@ -95,7 +95,7 @@ COPY package*.json ./
 RUN npm ci
 
 # Bundle app source
-COPY --chown=node:node sonar-scanner .
+COPY --chown=node:node ../sonar-scanner .
 
 #config requirements for Sonarqube
 RUN sysctl -w vm.max_map_count=524288
