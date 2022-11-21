@@ -79,7 +79,11 @@ FROM docker:20.10.21-dind-alpine3.16 As analysis
 # Create app directory
 WORKDIR /usr/src/app
 
-RUN adduser node
+#RUN adduser node
+
+#below more advanced version of adduser that disables password to prevent the error: "New password: passwd: password for node is unchanged"
+RUN adduser -D -g '' node
+
 ## WORKAROUND 1 for bug "no such user:node" doesnt work
 ## Add the patch fix
 #COPY common/stack-fix.c /lib/
