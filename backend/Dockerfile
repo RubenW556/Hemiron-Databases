@@ -82,17 +82,20 @@ WORKDIR /usr/src/app
 # "log in" as node user instead of root
 USER node
 
-# In order to run `npm run build` we need access to the Nest CLI.
-# The Nest CLI is a dev dependency,
-# In the previous development stage we ran `npm ci` which installed all dependencies.
-# So we can copy over the node_modules directory from the development image into this build image.
-COPY --chown=node:node --from=development /usr/src/app/node_modules ./node_modules
+#workaround for known bug: "no such user: node", https://stackoverflow.com/questions/52196518/could-not-get-uid-gid-when-building-node-docker
+RUN npm_config_unsafe_perm=true
 
 #Copy source files
 COPY --chown=node:node . .
 
 # copy the package.lock and package files
 COPY package*.json ./
+
+# In order to run `npm run build` we need access to the Nest CLI.
+# The Nest CLI is a dev dependency,
+# In the previous development stage we ran `npm ci` which installed all dependencies.
+# So we can copy over the node_modules directory from the development image into this build image.
+COPY --chown=node:node --from=development /usr/src/app/node_modules ./node_modules
 
 # Install app dependencies using the `npm ci` command instead of `npm install`
 RUN npm ci
