@@ -79,6 +79,7 @@ FROM docker:20.10.21-dind-alpine3.16 As analysis
 # Create app directory
 WORKDIR /usr/src/app
 
+RUN useradd node
 ## WORKAROUND 1 for bug "no such user:node" doesnt work
 ## Add the patch fix
 #COPY common/stack-fix.c /lib/
