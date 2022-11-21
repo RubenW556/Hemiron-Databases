@@ -82,7 +82,10 @@ FROM node:18-alpine As analysis
 WORKDIR /usr/src/app
 
 #below more advanced version of adduser that disables password to prevent the error: "New password: passwd: password for node is unchanged"
-RUN adduser -D -g '' node
+#RUN adduser -D -g '' node
+
+#below is even more advanced version of adding user, in which we only add user if not already existing
+RUN useradd node || echo "User node already exists."
 
 #Copy source files
 COPY --chown=node:node . .
