@@ -84,33 +84,17 @@ WORKDIR /usr/src/app
 #below more advanced version of adduser that disables password to prevent the error: "New password: passwd: password for node is unchanged"
 RUN adduser -D -g '' node
 
-## WORKAROUND 1 for bug "no such user:node" doesnt work
-## Add the patch fix
-#COPY common/stack-fix.c /lib/
-#
-## Prepare the libraries packages
-#RUN set -ex \
-#    && apk add --no-cache  --virtual .build-deps build-base \
-#    && gcc  -shared -fPIC /lib/stack-fix.c -o /lib/stack-fix.so \
-#    && apk del .build-deps
-#
-## export the environment variable of LD_PRELOAD
-#ENV LD_PRELOAD /lib/stack-fix.so
-
-# WORKAROUND 2 for known bug: "no such user: node", https://stackoverflow.com/questions/52196518/could-not-get-uid-gid-when-building-node-docker
-#RUN npm_config_unsafe_perm=true
-
 #Copy source files
 COPY --chown=node:node . .
 
 # copy the package.lock and package files
 COPY package*.json ./
 
-# In order to run `npm run build` we need access to the Nest CLI.
+# In order to run `npm ci` we need access to the Nest CLI.
 # The Nest CLI is a dev dependency,
 # In the previous development stage we ran `npm ci` which installed all dependencies.
 # So we can copy over the node_modules directory from the development image into this build image.
-COPY --chown=node:node --from=development /usr/src/app/node_modules ./node_modules
+COPY --chown=node:node --from=development /usr/src/app/node_modules ./node_modules/
 
 # Install app dependencies using the `npm ci` command instead of `npm install`
 RUN npm ci
