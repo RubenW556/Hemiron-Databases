@@ -15,10 +15,7 @@ WORKDIR /usr/src/app
 # A wildcard is used to ensure copying both package.json AND package-lock.json (when available).
 # Copying this first prevents re-running npm install on every code change.
 COPY --chown=node:node package*.json ./
-# install npm
-RUN apt-get update && apt-get upgrade -y && \
-    apt-get install -y nodejs \
-    npm
+
 
 # Install app dependencies using the `npm ci` command instead of `npm install`
 RUN npm ci
@@ -47,11 +44,6 @@ COPY --chown=node:node --from=development /usr/src/app/node_modules ./node_modul
 
 COPY --chown=node:node . .
 
-# install npm
-RUN apt-get update && apt-get upgrade -y && \
-    apt-get install -y nodejs \
-    npm
-
 # Run the build command which creates the production bundle
 RUN npm run test
 RUN npm run lint
@@ -79,14 +71,11 @@ USER node
 # BUILD FOR ANALYSIS
 ###################
 
-FROM docker:22.06-rc As analysis
+FROM node:18-alpine As analysis
 
 # Create app directory
 WORKDIR /usr/src/app
-# install npm
-RUN apt-get update && apt-get upgrade -y && \
-    apt-get install -y nodejs \
-    npm
+
 
 # Install app dependencies using the `npm ci` command instead of `npm install`
 RUN npm install
