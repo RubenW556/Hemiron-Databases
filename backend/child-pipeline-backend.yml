@@ -19,7 +19,7 @@ stages:
 CI_ANALYSE_BACKEND:
     stage: analysis
     variables:
-        BASE_IMAGE: node18-alpine
+        BASE_IMAGE: docker20.10.21-dind-alpine3.16
         PROJECT_ID: backend
         IMAGE_NAME_FINAL: $IMAGE_NAME_BASE/$PROJECT_ID:1.0.$CI_PIPELINE_IID-$BASE_IMAGE
     inherit:
@@ -28,14 +28,13 @@ CI_ANALYSE_BACKEND:
     #    when: manual # only execute when approved manually
     needs: [CI_PRE_CHECK] # no dependencies.
     before_script:
-        - echo "analysis"
+        - echo "analysis start"
         - docker login -u pipeline -p $BUILD_TOKEN $CI_REGISTRY
     script:
         - docker build -t $IMAGE_NAME_FINAL --target analysis $PROJECT_ID/.
     after_script:
         - docker image push $IMAGE_NAME_FINAL # push with versioning
-        - docker image tag $IMAGE_NAME_FINAL $IMAGE_NAME_BASE/$PROJECT_ID:production # re-tag same image and push with production tag
-        - docker image push $IMAGE_NAME_BASE/$PROJECT_ID:production
+        - echo "analysis over"
         - docker images ls
     artifacts: # create artifact when job fails
         name: $IMAGE_NAME_FINAL
