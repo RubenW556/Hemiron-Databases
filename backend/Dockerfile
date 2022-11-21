@@ -74,12 +74,12 @@ USER node
 # docker image with specific version to prevent update changes
 # dind = docker in docker
 # alpine so it is lightweight
-FROM docker:20.10.21-dind-alpine3.16 As analysis
+#FROM docker:20.10.21-dind-alpine3.16 As analysis
+
+FROM node:18-alpine As analysis
 
 # Create app directory
 WORKDIR /usr/src/app
-
-#RUN adduser node
 
 #below more advanced version of adduser that disables password to prevent the error: "New password: passwd: password for node is unchanged"
 RUN adduser -D -g '' node
@@ -94,7 +94,11 @@ COPY package*.json ./
 # The Nest CLI is a dev dependency,
 # In the previous development stage we ran `npm ci` which installed all dependencies.
 # So we can copy over the node_modules directory from the development image into this build image.
-COPY --chown=node:node --from=development /usr/src/app/node_modules ./node_modules/
+COPY --chown=node:node --from=development /usr/src/app/node_modules ./node_modules
+
+
+#install docker
+RUN npm install -g docker
 
 # Install app dependencies using the `npm ci` command instead of `npm install`
 RUN npm ci
