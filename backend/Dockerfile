@@ -79,8 +79,6 @@ FROM docker:20.10.21-dind-alpine3.16 As analysis
 # Create app directory
 WORKDIR /usr/src/app
 
-USER node
-
 # In order to run `npm run build` we need access to the Nest CLI.
 # The Nest CLI is a dev dependency,
 # In the previous development stage we ran `npm ci` which installed all dependencies.
@@ -88,7 +86,7 @@ USER node
 COPY --from=development /usr/src/app/node_modules ./node_modules
 
 #Copy source files
-COPY --chown=node:node . .
+COPY . .
 
 # copy the package.lock and package files
 COPY package*.json ./
@@ -97,7 +95,7 @@ COPY package*.json ./
 RUN npm ci
 
 # Bundle app source
-COPY --chown=node:node ../sonar-scanner .
+COPY ../sonar-scanner .
 
 #config requirements for Sonarqube
 RUN sysctl -w vm.max_map_count=524288
