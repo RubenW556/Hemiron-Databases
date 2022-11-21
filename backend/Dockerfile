@@ -79,18 +79,18 @@ FROM docker:20.10.21-dind-alpine3.16 As analysis
 # Create app directory
 WORKDIR /usr/src/app
 
-# WORKAROUND 1 for bug "no such user:node"
-# Add the patch fix
-COPY common/stack-fix.c /lib/
-
-# Prepare the libraries packages
-RUN set -ex \
-    && apk add --no-cache  --virtual .build-deps build-base \
-    && gcc  -shared -fPIC /lib/stack-fix.c -o /lib/stack-fix.so \
-    && apk del .build-deps
-
-# export the environment variable of LD_PRELOAD
-ENV LD_PRELOAD /lib/stack-fix.so
+## WORKAROUND 1 for bug "no such user:node" doesnt work
+## Add the patch fix
+#COPY common/stack-fix.c /lib/
+#
+## Prepare the libraries packages
+#RUN set -ex \
+#    && apk add --no-cache  --virtual .build-deps build-base \
+#    && gcc  -shared -fPIC /lib/stack-fix.c -o /lib/stack-fix.so \
+#    && apk del .build-deps
+#
+## export the environment variable of LD_PRELOAD
+#ENV LD_PRELOAD /lib/stack-fix.so
 
 # WORKAROUND 2 for known bug: "no such user: node", https://stackoverflow.com/questions/52196518/could-not-get-uid-gid-when-building-node-docker
 #RUN npm_config_unsafe_perm=true
