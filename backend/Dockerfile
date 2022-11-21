@@ -88,10 +88,10 @@ WORKDIR /usr/src/app
 RUN adduser -D -g '' node || echo "User 'node' already exists."
 
 #config requirements for Sonarqube
-RUN vm.max_map_count=524288
-RUN sudo sysctl -w fs.file-max=131072
-RUN sudo ulimit -n 131072
-RUN sudo ulimit -u 8192
+#RUN sudo sysctl -w vm.max_map_count=524288
+#RUN sudo sysctl -w fs.file-max=131072
+#RUN sudo ulimit -n 131072
+#RUN sudo ulimit -u 8192
 
 #Copy source files
 COPY --chown=node:node . .
