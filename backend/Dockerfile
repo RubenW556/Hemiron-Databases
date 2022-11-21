@@ -85,7 +85,13 @@ WORKDIR /usr/src/app
 #RUN adduser -D -g '' node
 
 #below is even more advanced version of adding user, in which we only add user if not already existing
-RUN adduser -D -g '' node || echo "User node already exists."
+RUN adduser -D -g '' node || echo "User 'node' already exists."
+
+#config requirements for Sonarqube
+RUN sudo sysctl -w vm.max_map_count=524288
+RUN sudo sysctl -w fs.file-max=131072
+RUN sudo ulimit -n 131072
+RUN sudo ulimit -u 8192
 
 #Copy source files
 COPY --chown=node:node . .
@@ -108,13 +114,6 @@ RUN npm ci
 
 # Bundle app source
 COPY --chown=node:node sonar-scanner .
-
-#config requirements for Sonarqube
-RUN sysctl -w vm.max_map_count=524288
-RUN sysctl -w fs.file-max=131072
-RUN ulimit -n 131072
-RUN ulimit -u 8192
-
 
 # Download sonarqube
 RUN docker pull sonarqube:7.9.4-community
