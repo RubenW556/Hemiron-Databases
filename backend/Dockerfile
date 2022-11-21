@@ -79,6 +79,8 @@ FROM docker:20.10.21-dind-alpine3.16 As analysis
 # Create app directory
 WORKDIR /usr/src/app
 
+USER node
+
 #find out what current user is
 RUN echo "$USER"
 RUN whoami
