@@ -7,7 +7,7 @@ import {v4 as uuidv4} from 'uuid';
 @Controller("users")
 export class UserController {
 
-    constructor(private readonly appService: AppService, private usersService: UsersService) {
+    constructor(private usersService: UsersService) {
 
     }
 
