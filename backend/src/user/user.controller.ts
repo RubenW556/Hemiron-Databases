@@ -1,5 +1,4 @@
 import {Controller, Get, Put, Query} from '@nestjs/common';
-import {AppService} from '../app.service';
 import {UsersService} from "./users.service";
 import {User} from "./user.entity";
 import {v4 as uuidv4} from 'uuid';
