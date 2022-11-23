@@ -30,7 +30,6 @@ export class UserController {
     async createUser(@Query("username") username): Promise<string> {
         let user:User = new User();
         user.user_id = uuidv4();
-        console.log(user.user_id)
         user.username = username;
         await this.usersService.putOne(user);
         return user.user_id;
