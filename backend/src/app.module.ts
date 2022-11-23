@@ -14,7 +14,7 @@ import { DatabasesController } from './databases/databases.controller';
       useFactory: () => ({
         type: 'postgres',
         host: process.env.POSTGRES_HOST,
-        schema: "docker",
+        schema: process.env.POSTGRES_USER_SCHEMA,
         port: parseInt(process.env.POSTGRES_PORT),
         username: process.env.POSTGRES_USER_USERNAME,
         password: process.env.POSTGRES_USER_PASSWORD,
