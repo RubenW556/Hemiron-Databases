@@ -1,6 +1,6 @@
 import { Body, Controller, Delete, Get, HttpCode, HttpStatus, Param, Patch, Post, Res } from '@nestjs/common';
-import { createDatabaseDto } from "./dto/create-database.dto";
-import { updateDatabaseDto } from "./dto/update-database.dto";
+import { CreateDatabaseDto } from "./dto/create-database.dto";
+import { UpdateDatabaseDto } from "./dto/update-database.dto";
 import { Response } from 'express';
 import { Database } from "./database.entity";
 import { DatabasesService } from "./databases.service";
@@ -13,7 +13,7 @@ export class DatabasesController {
 
     @Get(':id')
     @HttpCode(HttpStatus.OK)
-    public async getOne(@Res({ passthrough: true }) res: Response, @Param() id: string): Promise<Database> {
+    public async getOne(@Res({ passthrough: true }) res: Response, @Param('id') id: string): Promise<Database> {
         try {
             return await this.databasesService.findOne(id);
         } catch (e) {
@@ -34,10 +34,10 @@ export class DatabasesController {
 
     @Post()
     @HttpCode(HttpStatus.CREATED)
-    public async create(@Res({ passthrough: true }) res: Response, @Body() database: createDatabaseDto): Promise<void> {
-        // @TODO return newly created object
+    public async create(@Res({ passthrough: true }) res: Response, @Body() createDatabaseDto: CreateDatabaseDto): Promise<Database> {
         try {
-            await this.databasesService.insert(database);
+            const insertResult = await this.databasesService.insert(createDatabaseDto);
+            return await this.databasesService.findOne(insertResult.identifiers[0].id);
         } catch (e) {
             res.status(HttpStatus.INTERNAL_SERVER_ERROR);
         }
@@ -45,10 +45,10 @@ export class DatabasesController {
 
     @Patch()
     @HttpCode(HttpStatus.OK)
-    public async update(@Res({ passthrough: true }) res: Response, @Body() database: updateDatabaseDto): Promise<void> {
-        // @TODO return newly created object
+    public async update(@Res({ passthrough: true }) res: Response, @Body() database: UpdateDatabaseDto): Promise<Database> {
         try {
             await this.databasesService.update(database);
+            return await this.databasesService.findOne(database.id);
         } catch (e) {
             res.status(HttpStatus.INTERNAL_SERVER_ERROR);
         }
@@ -56,7 +56,7 @@ export class DatabasesController {
 
     @Delete(':id')
     @HttpCode(HttpStatus.NO_CONTENT)
-    public async delete(@Res({ passthrough: true }) res: Response, @Param() id: string): Promise<void> {
+    public async delete(@Res({ passthrough: true }) res: Response, @Param('id') id: string): Promise<void> {
         try {
             await this.databasesService.delete(id);
         } catch (e) {

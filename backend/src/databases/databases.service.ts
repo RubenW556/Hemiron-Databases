@@ -2,9 +2,9 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { DeleteResult, InsertResult, Repository, UpdateResult } from 'typeorm';
 import { Database } from './database.entity';
-import { createDatabaseDto } from "./dto/create-database.dto";
+import { CreateDatabaseDto } from "./dto/create-database.dto";
 import { v4 as generateUUID } from 'uuid';
-import { updateDatabaseDto } from "./dto/update-database.dto";
+import { UpdateDatabaseDto } from "./dto/update-database.dto";
 
 @Injectable()
 export class DatabasesService {
@@ -23,12 +23,12 @@ export class DatabasesService {
         return this.databasesRepository.find();
     }
 
-    public insert(databaseDto: createDatabaseDto): Promise<InsertResult> {
+    public insert(databaseDto: CreateDatabaseDto): Promise<InsertResult> {
         const database: Database = { ...databaseDto, ...{ id: generateUUID(), creation_date: new Date() } }
         return this.databasesRepository.insert(database);
     }
 
-    public update(database: updateDatabaseDto): Promise<UpdateResult> {
+    public update(database: UpdateDatabaseDto): Promise<UpdateResult> {
         return this.databasesRepository.update({ id: database.id }, database);
     }
 
