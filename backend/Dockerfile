@@ -117,16 +117,27 @@ RUN docker run --name sonarqube -h sonarqube -p 9000:9000 -d sonarqube:7.9.4-com
 #host sonarcube on localhost (this is the old version that worked locally)
 RUN docker run -d --name sonarqube -e SONAR_ES_BOOTSTRAP_CHECKS_DISABLE=true -p 9000:9000 sonarqube:7.9.4-community
 
+RUN curl -s -L https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-3.3.0.1492-linux.zip -o sonarscanner.zip \
+  && unzip -qq sonarscanner.zip \
+  && rm -rf sonarscanner.zip \
+  && mv sonar-scanner-3.3.0.1492-linux sonar-scanner
+
+COPY sonar-scanner.properties sonar-scanner/conf/sonar-scanner.properties
+ENV SONAR_RUNNER_HOME=sonar-scanner
+ENV PATH $PATH:sonar-scanner/bin
+
+
+
 RUN echo "current directory"
 #RUN echo "$ls"
 #RUN echo "$find . "
 
 #RUN PWD
-RUN ls
-RUN find .
+#RUN ls
+#RUN find .
 
 #workaround to run sonar-scanner.bat
-RUN sed -i 's/use_embedded_jre=true/use_embedded_jre=false/g' /usr/src/app/sonar-scanner/bin/sonar-scanner
+RUN sed -i 's/use_embedded_jre=true/use_embedded_jre=false/g' /bin/sonar-scanner/bin/sonar-scanner
 
 #connect sonar_scanner to scan code and connect to sonarqube and send data to sonarqube
 RUN sonar-scanner.bat -D"sonar.projectKey=databases" -D"sonar.sources=." -D"sonar.host.url=http://localhost:9000" -D"sonar.login=b7ca982736a0bdb72ee2e788898402e41b751d97"
