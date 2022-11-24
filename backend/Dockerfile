@@ -119,7 +119,7 @@ RUN docker run -d --name sonarqube -e SONAR_ES_BOOTSTRAP_CHECKS_DISABLE=true -p 
 
 RUN echo "current directory"
 RUN echo "$PWD"
-RUN echo 'ls'
+RUN echo ls
 
 #workaround to run sonar-scanner.bat
 RUN sed -i 's/use_embedded_jre=true/use_embedded_jre=false/g' /usr/src/app/sonar-scanner/bin/sonar-scanner
