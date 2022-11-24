@@ -1,7 +1,7 @@
 CREATE TABLE "Database" (
-	"database_id" uuid NOT NULL,
-	"database_name" character varying(50) NOT NULL,
-	"database_type" character varying(15) NOT NULL,
+	"id" uuid NOT NULL,
+	"name" character varying(50) NOT NULL,
+	"type" character varying(15) NOT NULL,
 	"creation_date" DATE NOT NULL,
 	CONSTRAINT "Database_pk" PRIMARY KEY ("database_id")
 ) WITH (
@@ -35,10 +35,10 @@ CREATE TABLE "User_Owns_Database" (
 );
 
 
-ALTER TABLE "Query" ADD CONSTRAINT "Query_fk0" FOREIGN KEY ("database_id") REFERENCES "Database"("database_id");
+ALTER TABLE "Query" ADD CONSTRAINT "Query_fk0" FOREIGN KEY ("database_id") REFERENCES "Database"("id");
 
 ALTER TABLE "User_Owns_Database" ADD CONSTRAINT "User_Owns_Database_fk0" FOREIGN KEY ("user_id") REFERENCES "User"("user_id");
-ALTER TABLE "User_Owns_Database" ADD CONSTRAINT "User_Owns_Database_fk1" FOREIGN KEY ("database_id") REFERENCES "Database"("database_id");
+ALTER TABLE "User_Owns_Database" ADD CONSTRAINT "User_Owns_Database_fk1" FOREIGN KEY ("database_id") REFERENCES "Database"("id");
 
 
 
