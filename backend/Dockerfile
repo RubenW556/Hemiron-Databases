@@ -81,17 +81,14 @@ FROM node:18-alpine As analysis
 # Create app directory
 WORKDIR /usr/src/app
 
-#below more advanced version of adduser that disables password to prevent the error: "New password: passwd: password for node is unchanged"
-#RUN adduser -D -g '' node
-
 #below is even more advanced version of adding user, in which we only add user if not already existing
 RUN adduser -D -g '' node || echo "User 'node' already exists."
 
-#config requirements for Sonarqube
-#RUN sudo sysctl -w vm.max_map_count=524288
-#RUN sudo sysctl -w fs.file-max=131072
-#RUN sudo ulimit -n 131072
-#RUN sudo ulimit -u 8192
+##config requirements for Sonarqube
+##RUN sudo sysctl -w vm.max_map_count=524288
+##RUN sudo sysctl -w fs.file-max=131072
+##RUN sudo ulimit -n 131072
+##RUN sudo ulimit -u 8192
 
 #Copy source files
 COPY --chown=node:node . .
@@ -111,9 +108,6 @@ RUN npm install -g docker
 # Install app dependencies using the `npm ci` command instead of `npm install`
 RUN npm ci
 
-# Bundle app source
-COPY --chown=node:node sonar-scanner .
-
 # Download sonarqube
 RUN docker pull sonarqube:7.9.4-community
 
@@ -121,13 +115,13 @@ RUN docker pull sonarqube:7.9.4-community
 RUN docker run --name sonarqube -h sonarqube -p 9000:9000 -d sonarqube:7.9.4-community
 
 #host sonarcube on localhost (this is the old version that worked locally)
-#RUN docker run -d --name sonarqube -e SONAR_ES_BOOTSTRAP_CHECKS_DISABLE=true -p 9000:9000 sonarqube:7.9.4-community
+RUN docker run -d --name sonarqube -e SONAR_ES_BOOTSTRAP_CHECKS_DISABLE=true -p 9000:9000 sonarqube:7.9.4-community
 
 RUN echo "current directory"
 RUN echo "$PWD"
 
 #workaround to run sonar-scanner.bat
-RUN sed -i 's/use_embedded_jre=true/use_embedded_jre=false/g' sonar-scanner/bin/sonar-scanner
+RUN sed -i 's/use_embedded_jre=true/use_embedded_jre=false/g' /usr/src/app/sonar-scanner/bin/sonar-scanner
 
 #connect sonar_scanner to scan code and connect to sonarqube and send data to sonarqube
 RUN sonar-scanner.bat -D"sonar.projectKey=databases" -D"sonar.sources=." -D"sonar.host.url=http://localhost:9000" -D"sonar.login=b7ca982736a0bdb72ee2e788898402e41b751d97"
