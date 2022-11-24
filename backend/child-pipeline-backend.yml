@@ -22,6 +22,12 @@ CI_ANALYSE_BACKEND:
         BASE_IMAGE: node18-alpine #docker20.10.21-dind-alpine3.16
         PROJECT_ID: backend
         IMAGE_NAME_FINAL: $IMAGE_NAME_BASE/$PROJECT_ID:1.0.$CI_PIPELINE_IID-$BASE_IMAGE
+    # sonarqube variables:
+        SONAR_TOKEN: "databases"
+        SONAR_HOST_URL: "http://localhost:9000"
+        SONAR_USER_HOME: ".sonar" # Defines the location of the analysis task cache
+        GIT_DEPTH: 0 # Tells git to fetch all the branches of the project, required by the analysis task
+
     inherit:
         default: false
     <<: *template
