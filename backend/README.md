@@ -38,12 +38,9 @@ Debugging for prod
 
 ## Building for production
 
-Run to build the docker image for production using docker compose.
-- `docker-compose -f docker-compose.yaml -f docker-compose.prod.yaml backend`
+CLI:
 
-Or CLI
-
-- `docker build -t $IMAGE_NAME_FINAL --target production .`
+- `docker build -t registry.inf-hsleiden.nl/2223.ipsenh-p1-p2/databases/backend:1.0.0-node18-alpine --target production .`
 >  **NOTE**:
 >
 > If you plan on deploying your image to another machine, make sure to push your image to a repo.
