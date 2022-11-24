@@ -118,11 +118,11 @@ RUN docker run --name sonarqube -h sonarqube -p 9000:9000 -d sonarqube:7.9.4-com
 RUN docker run -d --name sonarqube -e SONAR_ES_BOOTSTRAP_CHECKS_DISABLE=true -p 9000:9000 sonarqube:7.9.4-community
 
 RUN echo "current directory"
-#RUN echo "$PWD"
+RUN echo "$PWD"
 #RUN echo "$ls"
 #RUN echo "$find . "
 
-RUN PWD
+#RUN PWD
 RUN ls
 RUN find .
 
