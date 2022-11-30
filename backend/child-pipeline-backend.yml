@@ -33,6 +33,13 @@ CI_ANALYSE_BACKEND:
     only:
         - develop
         - sonarqube_based_on_tutorial1
+    needs: [ CI_PRE_CHECK ] # no dependencies.
+    before_script:
+        - echo "before analysis"
+    script:
+        - echo "analysis"
+    after_script:
+        - echo "after analysis"
     artifacts: # create artifact when job fails
         name: $IMAGE_NAME_FINAL
         when: on_failure
@@ -41,13 +48,7 @@ CI_ANALYSE_BACKEND:
         expire_in: 2 days
         exclude:
             - .gitlab-ci.yml
-    needs: [CI_PRE_CHECK] # no dependencies.
-    before_script:
-        - echo "before analysis"
-    script:
-        - echo "analysis"
-    after_script:
-        - echo "after analysis"
+
 
 
 CI_BUILD_BACKEND:
