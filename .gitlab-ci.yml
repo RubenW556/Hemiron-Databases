@@ -26,6 +26,7 @@ image: docker:latest
   only:
     refs:
       - main
+      - feature/pipeline-stages
 
 CI_PRE_CHECK:
   stage: pre-check

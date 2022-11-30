@@ -11,6 +11,7 @@ stages:
     only:
         refs:
             - main
+            - feature/pipeline-stages
         changes:
             - backend/**/*
 
