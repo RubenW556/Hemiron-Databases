@@ -22,8 +22,6 @@ CI_ANALYSE_BACKEND:
         entrypoint: [""]
     stage: analysis
     variables:
-        SONAR_TOKEN: sqp_3b49c6daf0fe369599acb79f8fb640018110c7b9
-        SONAR_HOST_URL: http://localhost:9000
         SONAR_USER_HOME: "${CI_PROJECT_DIR}/.sonar"  # Defines the location of the analysis task cache
         GIT_DEPTH: "0"  # Tells git to fetch all the branches of the project, required by the analysis task
     cache:
