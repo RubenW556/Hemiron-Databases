@@ -37,6 +37,7 @@ CI_ANALYSE_BACKEND:
         - echo "before analysis"
     script:
         - echo "analysis"
+        - sonar-scanner
     after_script:
         - echo "after analysis"
     artifacts: # create artifact when job fails
