@@ -4,6 +4,10 @@
 
 FROM node:18-alpine As development
 
+# Install node, which is all we require!
+#RUN apk add --update \
+#    && apk add --no-cache nodejs-current
+
 # set ports to open
 ARG PORT=3000
 ENV PORT $PORT
@@ -26,6 +30,61 @@ COPY --chown=node:node . .
 USER node
 
 ###################
+# TEST FROM DEVELOPMENT
+###################
+
+FROM development As test
+
+WORKDIR /usr/src/app
+
+# Run the tests
+CMD [ "npm", "run", "test" ]
+
+###################
+# TEST:COV FROM DEVELOPMENT
+###################
+
+FROM development As test-cov
+
+WORKDIR /usr/src/app
+
+# Run the tests
+CMD [ "npm", "run", "test:cov" ]
+
+###################
+# TEST:E2E FROM DEVELOPMENT
+###################
+
+FROM development As test-e2e
+
+WORKDIR /usr/src/app
+
+# Run the tests
+CMD [ "npm", "run", "test:e2e" ]
+
+###################
+# LINT FROM DEVELOPMENT
+###################
+
+FROM development As lint
+
+WORKDIR /usr/src/app
+
+# Run the lint
+CMD [ "npm", "run", "lint" ]
+
+###################
+# AUDIT FROM DEVELOPMENT
+###################
+
+FROM development As audit
+
+WORKDIR /usr/src/app
+
+# Run the audit
+CMD [ "npm", "audit" ]
+
+###################
 # BUILD FOR PRODUCTION
 ###################
 
@@ -43,12 +102,12 @@ COPY --chown=node:node --from=development /usr/src/app/node_modules ./node_modul
 
 COPY --chown=node:node . .
 
-# Run the tests
-RUN npm run test
-RUN npm run lint
-RUN npm run test:e2e
-RUN npm run test:cov
-RUN npm audit
+## Run the tests
+#RUN npm run test
+#RUN npm run lint
+#RUN npm run test:e2e
+#RUN npm run test:cov
+#RUN npm audit
 
 # Run the build command which creates the production bundle
 RUN npm run build
@@ -66,21 +125,15 @@ USER node
 # PRODUCTION
 ###################
 
-# Use apline package to keep it small
 FROM node:18-alpine As production
 
 # set our node environment, either development or production
 # defaults to production, compose overrides this to development on build and run
 ARG NODE_ENV=production
 ENV NODE_ENV $NODE_ENV
-
 # set ports to open
 ARG PORT=3000
 ENV PORT $PORT
-
-# Install node, which is all we require!
-#RUN apk add --update \
-#    && apk add --no-cache nodejs-current
 
 # Copy the bundled code from the build stage to the production image
 COPY --chown=node:node --from=build /usr/src/app/node_modules ./node_modules
@@ -90,7 +143,7 @@ COPY --chown=node:node --from=build /usr/src/app/dist ./dist
 EXPOSE ${PORT}
 
 # check every 30s to ensure this service returns HTTP 200
-#HEALTHCHECK --interval=30s CMD wget --no-verbose --tries=1 --spider http://0.0.0.0:$PORT/v1/healthz #todo
+#HEALTHCHECK --interval=30s CMD wget --no-verbose --tries=1 --spider http://0.0.0.0:$PORT/v1/healthz #todo aanmaken endpoints
 
 USER node
 
