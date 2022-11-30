@@ -7,6 +7,7 @@ FROM node:18-alpine As development
 # Install node, which is all we require!
 #RUN apk add --update \
 #    && apk add --no-cache nodejs-current
+#npm install -g npm@9.1.2
 
 # set ports to open
 ARG PORT=3000
