@@ -11,6 +11,7 @@ stages:
         - swarm
     only:
         refs:
+            - sonarqube_based_on_tutorial1
             - main
         changes:
             - backend/**/*
