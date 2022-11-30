@@ -19,8 +19,6 @@ CI_ANALYSE_BACKEND:
     image:
         name: sonarsource/sonar-scanner-cli:latest
         entrypoint: [""]
-    tags:
-        - default
     stage: analysis
     variables:
         SONAR_TOKEN: sqp_3b49c6daf0fe369599acb79f8fb640018110c7b9
