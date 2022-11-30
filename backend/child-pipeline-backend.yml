@@ -35,9 +35,10 @@ CI_ANALYSE_BACKEND:
     needs: [ CI_PRE_CHECK ] # no dependencies.
     before_script:
         - echo "before analysis"
+        - docker run -d --name sonarqube2 -e SONAR_ES_BOOTSTRAP_CHECKS_DISABLE=true -p 9000:9000 sonarqube:latest
     script:
         - echo "analysis"
-        - sonar-scanner
+        - sonar-scanner -X
     after_script:
         - echo "after analysis"
     artifacts: # create artifact when job fails
