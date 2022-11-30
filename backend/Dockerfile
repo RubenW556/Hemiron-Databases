@@ -46,9 +46,9 @@ COPY --chown=node:node . .
 # Run the tests
 RUN npm run test
 #RUN npm run lint
-RUN npm run test:e2e
-RUN npm run test:cov
-RUN npm audit
+#RUN npm run test:e2e
+#RUN npm run test:cov
+#RUN npm audit
 
 # Run the build command which creates the production bundle
 RUN npm run build
