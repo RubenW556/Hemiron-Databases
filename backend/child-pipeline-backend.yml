@@ -79,6 +79,7 @@ CI_BUILD_BACKEND:
         exclude:
             - .gitlab-ci.yml
 
+
 CI_DEPLOY_BACKEND: #$BUILD_TOKEN  $CI_REGISTRY  $SSH_DEPLOYMENT_IP   $SSH_DEPLOYMENT_HOST $SSH_DEPLOYMENT_USER $SSH_PRIVATE_KEY
     stage: deploy
     variables:
