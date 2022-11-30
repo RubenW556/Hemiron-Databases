@@ -12,6 +12,7 @@ default:
 
 stages:
   - pre-check
+  - set-up
   - analysis
   - build
   - test
@@ -38,6 +39,17 @@ CI_PRE_CHECK:
     - echo "pre checking"
     - ls -l
     - docker version
+#    - userdump #test failure. All jobs after this one, not ran (with allow_failure false).
+
+CI_SET_UP:
+  stage: set-up
+  <<: *template
+  allow_failure: true #On failure All jobs after this one, will not halt.
+  script:
+    - echo "setting up sonarcube"
+    - ls -l
+    - docker version
+    - docker run -d --name sonarqube2 -e SONAR_ES_BOOTSTRAP_CHECKS_DISABLE=true -p 9000:9000 sonarqube:latest
 #    - userdump #test failure. All jobs after this one, not ran (with allow_failure false).
 
 #CI_BUILD:
