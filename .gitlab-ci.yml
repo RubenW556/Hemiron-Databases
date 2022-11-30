@@ -50,8 +50,8 @@ CI_SET_UP:
     - ls -l
     - docker version
     - docker container ls --all
-    - docker run -d --name sonarqube0002 -e SONAR_ES_BOOTSTRAP_CHECKS_DISABLE=true -p 5555:9000 sonarqube:latest
-    - docker inspect sonarqube0002 | grep IPAddress
+    - docker run -d --name sonarqube111 -e SONAR_ES_BOOTSTRAP_CHECKS_DISABLE=true -p 5555:9000 sonarqube:latest
+    - docker inspect sonarqube111 | grep IPAddress
 #    - userdump #test failure. All jobs after this one, not ran (with allow_failure false).
 
 #CI_BUILD:
