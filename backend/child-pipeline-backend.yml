@@ -6,7 +6,7 @@ stages:
     - verify
 
 .job_docker_template: &template
-    retry: 2
+    retry: 1
     tags:
         - swarm
     only:
