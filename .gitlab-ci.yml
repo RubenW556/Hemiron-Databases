@@ -42,7 +42,6 @@ CI_PRE_CHECK:
 #    - userdump #test failure. All jobs after this one, not ran (with allow_failure false).
 
 CI_SET_UP:
-  needs: [ CI_PRE_CHECK ] # no dependencies.
   stage: set-up
   <<: *template
   allow_failure: true #On failure All jobs after this one, will not halt.
