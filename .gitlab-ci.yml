@@ -49,8 +49,8 @@ CI_SET_UP:
     - echo "setting up sonarcube"
     - ls -l
     - docker version
-    - docker ps
-    - docker run -d --name sonarqube4098089798697687687567485457646345365483465680 -e SONAR_ES_BOOTSTRAP_CHECKS_DISABLE=true -p 5555:9000 sonarqube:latest
+    - docker container ls
+    - docker run -d --name sonarqube4098089798697687687567485457646345365483465681 -e SONAR_ES_BOOTSTRAP_CHECKS_DISABLE=true -p 5555:9000 sonarqube:latest
 #    - userdump #test failure. All jobs after this one, not ran (with allow_failure false).
 
 #CI_BUILD:
