@@ -42,6 +42,7 @@ CI_PRE_CHECK:
 #    - userdump #test failure. All jobs after this one, not ran (with allow_failure false).
 
 CI_SET_UP:
+  needs: [ CI_PRE_CHECK ] # no dependencies.
   stage: set-up
   <<: *template
   allow_failure: true #On failure All jobs after this one, will not halt.
@@ -49,7 +50,7 @@ CI_SET_UP:
     - echo "setting up sonarcube"
     - ls -l
     - docker version
-    - docker run -d --name sonarqube3 -e SONAR_ES_BOOTSTRAP_CHECKS_DISABLE=true -p 9000:9000 sonarqube:latest
+    - docker run -d --name sonarqube4 -e SONAR_ES_BOOTSTRAP_CHECKS_DISABLE=true -p 9000:9000 sonarqube:latest
 #    - userdump #test failure. All jobs after this one, not ran (with allow_failure false).
 
 #CI_BUILD:
