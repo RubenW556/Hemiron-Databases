@@ -26,8 +26,8 @@ image: docker:latest
     - swarm
   only:
     refs:
-      - main
       - sonarqube_based_on_tutorial1
+      - main
 
 
 CI_PRE_CHECK:
