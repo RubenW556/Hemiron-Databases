@@ -27,6 +27,8 @@ image: docker:latest
   only:
     refs:
       - main
+      - sonarqube_based_on_tutorial1
+
 
 CI_PRE_CHECK:
   stage: pre-check
