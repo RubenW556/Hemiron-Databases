@@ -50,9 +50,9 @@ CI_SET_UP:
     - ls -l
     - docker version
     - docker container ls --all
-    - docker run docker rm afe7356325b1 || echo "Container 'afe7356325b1' already doesnt exists."
-    - docker run docker stop sonarqube1 || echo "Container sonarqube1 is already stopped"
-    - docker run docker rm sonarqube1 || echo "Container 'sonarqube1' already doesnt exists."
+    - docker rm afe7356325b1 || echo "Container 'afe7356325b1' already doesnt exists."
+    - docker stop sonarqube1 || echo "Container sonarqube1 is already stopped"
+    - docker rm sonarqube1 || echo "Container 'sonarqube1' already doesnt exists."
     - docker run -d --name sonarqube1 -e SONAR_ES_BOOTSTRAP_CHECKS_DISABLE=true -p 5562:9000 sonarqube:latest
     - docker inspect sonarqube1 | grep IPAddress
 
