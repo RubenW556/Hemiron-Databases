@@ -28,12 +28,12 @@ export class UsersController {
 
     /**
      * Api endpoint for getting user by id
-     * @param {string} userId user id of requested user
+     * @param {string} id user id of requested user
      */
     @Get("/:id")
     @HttpCode(HttpStatus.OK)
-    async getUserById(@Param("id", new ParseUUIDPipe({version:"4"}) ) userId): Promise<User> {
-        return await this.usersService.findOne(userId);
+    async getUserById(@Param("id", new ParseUUIDPipe({version:"4"}) ) id): Promise<User> {
+        return await this.usersService.findOne(id);
     }
 
     /**
@@ -44,17 +44,17 @@ export class UsersController {
     @HttpCode(HttpStatus.CREATED)
     async createUser(@Body("user", new ValidationPipe()) user: createUserDto): Promise<string> {
         await this.usersService.putOne(user);
-        return user.user_id;
+        return user.id;
     }
 
     /**
      * Api endpoint for deleting user by id
-     * @param {String} user_id id of user to be deleted
+     * @param {String} id id of user to be deleted
      */
     @Delete("/:id")
     @HttpCode(HttpStatus.NO_CONTENT)
-    async deleteUser(@Param("id", new ParseUUIDPipe({version:"4"}))user_id: string): Promise<void>{
-        await this.usersService.remove(user_id);
+    async deleteUser(@Param("id", new ParseUUIDPipe({version:"4"}))id: string): Promise<void>{
+        await this.usersService.remove(id);
     }
 
 }

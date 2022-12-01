@@ -19,10 +19,10 @@ export class UsersService {
 
     /**
      * Gets user by id
-     * @param {string} user_id UUID of requested user as string
+     * @param {string} id UUID of requested user as string
      */
-    async findOne(user_id: string): Promise<User> {
-        let user:User = await this.usersRepository.findOneBy({ user_id });
+    async findOne(id: string): Promise<User> {
+        let user:User = await this.usersRepository.findOneBy({ id:id });
         if((user== null)){
             throw new BadRequestException("can't find user by uuid")
         }
@@ -32,7 +32,7 @@ export class UsersService {
 
     /**
      * creates user
-     * @param {string} user_id UUID of requested user as string
+     * @param {string} id UUID of requested user as string
      */
     putOne(user: User): Promise<InsertResult>{
         return this.usersRepository.insert(user);

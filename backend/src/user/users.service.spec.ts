@@ -13,11 +13,11 @@ describe("user service", ()=>{
 
     const mockRepository = {
         find: jest.fn(function(){
-            let user:User[] = [{user_id:validUuid1,username:"123"},{user_id:validUuid2,username:"123"}]
+            let user:User[] = [{id:validUuid1,username:"123"},{id:validUuid2,username:"123"}]
             return user;
         }),
         findOneBy: jest.fn(function(id){
-            return {user_id: id.user_id, username: "123" };
+            return {id: id.id, username: "123" };
         }),
         insert: jest.fn(function(){
             return new InsertResult;
@@ -62,15 +62,15 @@ describe("user service", ()=>{
 
         expect(typeof user).toBe(typeof new User);
 
-        expect(user.user_id).toBe(validUuid1)
+        expect(user.id).toBe(validUuid1)
     })
 
     it("should put user into database", async ()=>{
         let spy = jest.spyOn(mockRepository,"insert")
 
-        await service.putOne({user_id:validUuid1,username:"123"});
+        await service.putOne({id:validUuid1,username:"123"});
 
-        expect(spy).toHaveBeenCalledWith({user_id:validUuid1,username:"123"})
+        expect(spy).toHaveBeenCalledWith({id:validUuid1,username:"123"})
     })
 
     it("should delete user from database", async ()=>{
