@@ -33,9 +33,10 @@ CI_ANALYSE_BACKEND:
     only:
         - develop
         - sonarqube_based_on_tutorial1
-    needs: [ CI_SET_UP ] # no dependencies.
+    #needs: [ CI_SET_UP ] # no dependencies.
     before_script:
         - echo "before analysis"
+        -
     script:
         - echo "analysis"
         - sonar-scanner -X

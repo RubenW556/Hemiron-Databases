@@ -52,7 +52,7 @@ CI_SET_UP:
     - docker container ls --all
     - docker run docker rm afe7356325b1 || echo "Container 'afe7356325b1' already doesnt exists."
     - docker run docker rm sonarqube1 || echo "Container 'sonarqube1' already doesnt exists."
-    - docker run -d --name sonarqube1 -e SONAR_ES_BOOTSTRAP_CHECKS_DISABLE=true -p 5559:9000 sonarqube:latest
+    - docker run -d --name sonarqube1 -e SONAR_ES_BOOTSTRAP_CHECKS_DISABLE=true -p 5561:9000 sonarqube:latest
     - docker inspect sonarqube1 | grep IPAddress
 
 #    - userdump #test failure. All jobs after this one, not ran (with allow_failure false).
