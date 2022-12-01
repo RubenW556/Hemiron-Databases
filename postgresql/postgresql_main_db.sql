@@ -8,15 +8,11 @@ CREATE TABLE "Database" (
     CONSTRAINT "Database_pk" PRIMARY KEY ("id")
 );
 
-
-
 CREATE TABLE "User" (
-    "username" character varying(50) NOT NULL,
     "id" uuid NOT NULL,
+    "username" character varying(50) NOT NULL,
     CONSTRAINT "User_pk" PRIMARY KEY ("id")
 );
-
-
 
 CREATE TABLE "Query" (
     "resource_used" int NOT NULL,
@@ -27,8 +23,6 @@ CREATE TABLE "Query" (
     CONSTRAINT "Query_fk0" FOREIGN KEY ("database_id") REFERENCES "Database"("id")
 );
 
-
-
 CREATE TABLE "User_Owns_Database" (
     "user_id" uuid NOT NULL,
     "database_id" uuid NOT NULL,
@@ -36,10 +30,3 @@ CREATE TABLE "User_Owns_Database" (
     CONSTRAINT "User_Owns_Database_fk0" FOREIGN KEY ("database_id") REFERENCES "Database"("id"),
     CONSTRAINT "User_Owns_Database_fk1" FOREIGN KEY ("user_id") REFERENCES "User"("id")
 );
-
-
-
-
-
-
-
