@@ -1,4 +1,3 @@
-#!/bin/bash
 set -e
 
 psql -v ON_ERROR_STOP=1 --username "$PG_ADMIN_USERNAME" --dbname "$PG_ADMIN_DATABASE" <<-EOSQL
