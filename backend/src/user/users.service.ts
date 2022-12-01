@@ -21,16 +21,16 @@ export class UsersService {
 
     /**
      * Gets user by id
-     * @param {string} user_id UUID of requisted user as string
+     * @param {string} id UUID of requisted user as string
      */
 
-    findOne(user_id: string): Promise<User> {
-        return this.usersRepository.findOneBy({ user_id });
+    findOne(id: string): Promise<User> {
+        return this.usersRepository.findOneBy({ id: id });
     }
 
     /**
      * creates user
-     * @param {string} user_id UUID of requisted user as string
+     * @param {string} user.id UUID of requisted user as string
      */
 
     putOne(user: User): Promise<InsertResult>{
@@ -39,7 +39,7 @@ export class UsersService {
 
     /**
      * deletes user
-     * @param {string} user_id UUID of to be deleted user as string
+     * @param {string} id UUID of to be deleted user as string
      */
     async remove(id: string): Promise<void> {
         await this.usersRepository.delete(id);
