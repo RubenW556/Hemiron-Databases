@@ -24,7 +24,7 @@ CI_ANALYSE_BACKEND:
     variables:
         SONAR_USER_HOME: "${CI_PROJECT_DIR}/.sonar"  # Defines the location of the analysis task cache
         GIT_DEPTH: "0"  # Tells git to fetch all the branches of the project, required by the analysis task
-        sonar.login: sqp_860635016da99f8e58565f08130bf3a6e01fb5b7
+        SONAR_LOGIN: sqp_860635016da99f8e58565f08130bf3a6e01fb5b7
     <<: *template
     cache:
         key: "${CI_JOB_NAME}"
@@ -34,7 +34,7 @@ CI_ANALYSE_BACKEND:
     only:
         - develop
         - sonarqube_based_on_tutorial1
-    #needs: [ CI_SET_UP ] # no dependencies.
+    needs: [ CI_SET_UP ] # no dependencies.
     before_script:
         - echo "before analysis"
     script:
