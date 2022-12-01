@@ -2,3 +2,4 @@
 .DS_Store
 .npm/
 postgresql/.env
+postgresql/.env.dev
