@@ -24,7 +24,7 @@ export class DatabasesService {
     }
 
     public insert(databaseDto: CreateDatabaseDto): Promise<InsertResult> {
-        const database: Database = { ...databaseDto, ...{ id: generateUUID(), creation_date: new Date() } }
+        const database: Database = { ...databaseDto, ...{ id: generateUUID(), creation_date_time: new Date() } }
         return this.databasesRepository.insert(database);
     }
 

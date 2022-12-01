@@ -12,6 +12,6 @@ export class Database {
     type: string;
 
     @Column()
-    creation_date: Date;
+    creation_date_time: Date;
 }
 
