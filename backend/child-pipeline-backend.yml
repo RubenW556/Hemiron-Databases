@@ -36,7 +36,6 @@ CI_ANALYSE_BACKEND:
     #needs: [ CI_SET_UP ] # no dependencies.
     before_script:
         - echo "before analysis"
-        -
     script:
         - echo "analysis"
         - sonar-scanner -X
