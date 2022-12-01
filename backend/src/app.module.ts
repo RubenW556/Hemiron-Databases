@@ -1,12 +1,10 @@
-import {Module, Post} from '@nestjs/common';
+import { Module, Post } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import {User} from "./user/user.entity";
-import {UsersModule} from "./user/users.module";
+import { User } from './user/user.entity';
+import { UsersModule } from './user/users.module';
 import { DatabasesController } from './databases/databases.controller';
-
-
 
 @Module({
   imports: [
@@ -21,20 +19,13 @@ import { DatabasesController } from './databases/databases.controller';
         database: process.env.POSTGRES_DATABASE,
         entities: [User],
         logging: true,
-      })
+      }),
     }),
-    UsersModule
+    UsersModule,
   ],
   controllers: [AppController, DatabasesController],
-  providers: [AppService]}
-)
-
-
+  providers: [AppService],
+})
 export class AppModule {
   constructor() {}
-
 }
-
-
-
-
