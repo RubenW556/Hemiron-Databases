@@ -26,7 +26,6 @@ CI_TEST_BACKEND:
     inherit:
         default: false
     <<: *template
-    #    when: manual # only execute when approved manually
     needs: [CI_PRE_CHECK] # no dependencies.
     before_script:
         - echo "Running CI_TEST_BACKEND"
@@ -74,7 +73,6 @@ CI_TEST_E2E_BACKEND:
     inherit:
         default: false
     <<: *template
-    #    when: manual # only execute when approved manually
     needs: [CI_PRE_CHECK]
     before_script:
         - echo "Running E2E_BACKEND"
@@ -98,7 +96,6 @@ CI_LINT_BACKEND:
     inherit:
         default: false
     <<: *template
-    #    when: manual # only execute when approved manually
     needs: [CI_PRE_CHECK]
     before_script:
         - echo "Running LINT"
@@ -127,7 +124,6 @@ CI_BUILD_BACKEND:
     inherit:
         default: false
     <<: *template
-#    when: manual # only execute when approved manually
     needs: [CI_TEST_BACKEND] # no dependencies.
     before_script:
         - echo "building for production"
