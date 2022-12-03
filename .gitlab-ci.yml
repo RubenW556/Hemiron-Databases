@@ -27,6 +27,7 @@ image: docker:latest
   only:
     refs:
       - main
+      - merge_requests
 
 CI_PRE_CHECK:
   stage: pre-check

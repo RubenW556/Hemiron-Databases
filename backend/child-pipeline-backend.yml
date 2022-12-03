@@ -5,6 +5,7 @@ stages:
     - deploy
     - verify
 
+#trigger tests and analyse on all merge requests
 .job_docker_template_merge: &template_merge
     retry: 1
     tags:
@@ -14,6 +15,8 @@ stages:
             - merge_requests
         changes:
             - backend/**/*
+
+# trigger build, deploy and verify only on main
 .job_docker_template_main: &template_main
     retry: 1
     tags:
