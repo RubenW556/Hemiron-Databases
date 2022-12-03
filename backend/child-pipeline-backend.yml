@@ -26,7 +26,7 @@ CI_TEST_BACKEND:
     inherit:
         default: false
     <<: *template
-    needs: [CI_PRE_CHECK] # no dependencies.
+    needs: [CI_PRE_CHECK]
     before_script:
         - echo "Running CI_TEST_BACKEND"
         - docker login -u pipeline -p $BUILD_TOKEN $CI_REGISTRY
@@ -124,7 +124,7 @@ CI_BUILD_BACKEND:
     inherit:
         default: false
     <<: *template
-    needs: [CI_TEST_BACKEND] # no dependencies.
+    needs: [CI_TEST_BACKEND]
     before_script:
         - echo "building for production"
         - docker login -u pipeline -p $BUILD_TOKEN $CI_REGISTRY
@@ -144,7 +144,7 @@ CI_BUILD_BACKEND:
         exclude:
             - .gitlab-ci.yml
 
-CI_DEPLOY_BACKEND: #$BUILD_TOKEN  $CI_REGISTRY  $SSH_DEPLOYMENT_IP   $SSH_DEPLOYMENT_HOST $SSH_DEPLOYMENT_USER $SSH_PRIVATE_KEY
+CI_DEPLOY_BACKEND:
     stage: deploy
     variables:
         STACK_FILE_NAME: backend-stack.yml
