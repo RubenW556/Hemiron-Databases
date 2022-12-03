@@ -163,8 +163,6 @@ CI_DEPLOY_BACKEND:
         - echo $SSH_DEPLOYMENT_USER@$SSH_DEPLOYMENT_HOST
         - docker login -u pipeline -p $BUILD_TOKEN $CI_REGISTRY
         # - ssh -o StrictHostKeyChecking=no -t $SSH_DEPLOYMENT_USER@$SSH_DEPLOYMENT_HOST 'bash -s' < prepare.sh #create project dir
-        - ssh -o StrictHostKeyChecking=no $SSH_DEPLOYMENT_USER@$SSH_DEPLOYMENT_HOST bash -c 'ls -l'
-        - ssh -o StrictHostKeyChecking=no $SSH_DEPLOYMENT_USER@$SSH_DEPLOYMENT_HOST bash -c 'docker network ls'
     script:
         - scp -o StrictHostKeyChecking=no ./$PROJECT_ID/$STACK_FILE_NAME $SSH_DEPLOYMENT_USER@$SSH_DEPLOYMENT_HOST:/home/student/databases/$STACK_FILE_NAME #copy over stack files
         - ssh -o StrictHostKeyChecking=no -t $SSH_DEPLOYMENT_USER@$SSH_DEPLOYMENT_HOST 'bash -s' < ./$PROJECT_ID/$DEPLOY_FILE_NAME #execute file
