@@ -54,7 +54,7 @@ CI_SET_UP:
     paths:
       - .sonar/cache
   script:
-    - sonar-scanner
+    - sonar-scanner -X
   allow_failure: true
   only:
     - sonarqube_based_on_tutorial2
