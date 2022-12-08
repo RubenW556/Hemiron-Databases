@@ -98,7 +98,7 @@ CI_TEST_E2E_BACKEND:
         - docker images ls
 
 CI_LINT_BACKEND:
-    stage: test
+    stage: analyse
     variables:
         BASE_IMAGE: node18-alpine
         PROJECT_ID: backend
