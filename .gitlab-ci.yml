@@ -54,6 +54,7 @@ CI_SET_UP:
     paths:
       - .sonar/cache
   script:
+    - ./sonar.sh stop && rm -rf $SONARQUBE_HOME/data/cache/* && ./sonar.sh start #clearing cache
     - sonar-scanner -X
   allow_failure: true
   only:
