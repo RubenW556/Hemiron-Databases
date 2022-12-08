@@ -123,7 +123,7 @@ CI_LINT_BACKEND:
 CI_SONAR_BACKEND:
     stage: analyse
     <<: *template_merge
-    needs: [CI_TEST_BACKEND]
+    needs: [CI_PRE_CHECK]
     script:
         - echo "Running SONAR"
 
