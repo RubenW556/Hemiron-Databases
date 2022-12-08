@@ -42,7 +42,7 @@ CI_PRE_CHECK:
 #    - userdump #test failure. All jobs after this one, not ran (with allow_failure false).
 
 CI_SET_UP:
-  stage: set_up
+  stage: set-up
   image:
     name: sonarsource/sonar-scanner-cli:latest
     entrypoint: [""]
