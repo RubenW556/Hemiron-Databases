@@ -14,7 +14,7 @@ import { UserOwnsDatabase } from "../user-owns-database/user-owns-database.entit
         TypeOrmModule.forFeature([UserOwnsDatabase]),
     ],
     controllers: [DatabasesController],
-    providers: [DatabasesService, ClientDatabaseDao, DatabaseClientDao],
+    providers: [DatabasesService, ClientDatabaseDao, DatabaseClientDao, UserOwnsDatabaseService],
 })
 export class DatabasesModule {
 
