@@ -3,5 +3,5 @@
 # navigate to folder
 cd /home/student/
 
-mkdir "databases"
-rm dashboard
+# make directory
+mkdir -p "databases"
