@@ -1,6 +1,6 @@
 stages:
-    - test
     - analyse
+    - test
     - build
     - deploy
     - verify
