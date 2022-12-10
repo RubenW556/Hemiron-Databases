@@ -7,6 +7,6 @@ export class TasksService {
 
   @Cron(CronExpression.EVERY_30_SECONDS)
   handleCron() {
-    this.logger.debug('Called when the current second is 45');
+    this.logger.debug('Called every 30 seconds');
   }
 }
