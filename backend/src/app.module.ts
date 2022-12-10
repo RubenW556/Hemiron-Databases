@@ -8,6 +8,7 @@ import { Database } from "./databases/database.entity";
 import { DatabasesModule } from "./databases/databases.module";
 import { UserOwnsDatabaseModule } from "./user-owns-database/user-owns-database.module";
 import { UserOwnsDatabase } from "./user-owns-database/user-owns-database.entity";
+import { ScheduleModule } from '@nestjs/schedule';
 
 @Module({
     imports: [
@@ -26,10 +27,11 @@ import { UserOwnsDatabase } from "./user-owns-database/user-owns-database.entity
         }),
         UsersModule,
         DatabasesModule,
-        UserOwnsDatabaseModule
+        UserOwnsDatabaseModule,
+        ScheduleModule.forRoot(),
     ],
-        controllers: [AppController],
-        providers: [AppService]
+    controllers: [AppController],
+    providers: [AppService]
     }
 )
 export class AppModule {
