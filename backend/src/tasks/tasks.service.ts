@@ -7,7 +7,6 @@ export class TasksService {
 
   @Cron(CronExpression.EVERY_30_SECONDS)
   handleCron() {
-    console.log(123);
     this.logger.debug('Called when the current second is 45');
   }
 }
