@@ -28,7 +28,7 @@ import { ScheduleModule } from '@nestjs/schedule';
         UsersModule,
         DatabasesModule,
         UserOwnsDatabaseModule,
-        ScheduleModule.forRoot(),
+        TasksModule,
     ],
     controllers: [AppController],
     providers: [AppService]
