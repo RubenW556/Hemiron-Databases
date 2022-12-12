@@ -1,10 +1,11 @@
-import { Body, Controller, Delete, Get, HttpCode, HttpStatus, Param, Patch, Post, Res } from '@nestjs/common';
+import { Body, Controller, Delete, Get, HttpCode, HttpStatus, Param, Patch, Post, Request, Res } from '@nestjs/common';
 import { CreateDatabaseDto } from "./dto/create-database.dto";
 import { UpdateDatabaseDto } from "./dto/update-database.dto";
 import { Response } from 'express';
 import { Database } from "./database.entity";
 import { DatabasesService } from "./databases.service";
 import { UserOwnsDatabaseService } from "../user-owns-database/user-owns-database.service";
+import { AuthenticationService } from "hemiron-auth/dist/services/authentication.service";
 
 @Controller('databases')
 export class DatabasesController {
@@ -12,6 +13,7 @@ export class DatabasesController {
     constructor(
         private databasesService: DatabasesService,
         private userOwnsDatabaseService: UserOwnsDatabaseService,
+        private authenticationService: AuthenticationService
     ) {
     }
 
@@ -27,10 +29,11 @@ export class DatabasesController {
 
     @Get()
     @HttpCode(HttpStatus.OK)
-    public async getAll(@Res({ passthrough: true }) res: Response): Promise<Database[]> {
+    public async getAll(@Request() httpRequest: Request, @Res({ passthrough: true }) res: Response): Promise<Database[]> {
         try {
-            const userId = 'f0daf321-ff96-4ff7-9822-7f848473ac45'; // @TODO get user_id from login token
-            return await this.databasesService.findAllForUser(userId);
+            const userMakingRequest = await this.authenticationService.getUserFromRequest(httpRequest);
+
+            return await this.databasesService.findAllForUser(userMakingRequest.id);
         } catch (e) {
             res.status(HttpStatus.INTERNAL_SERVER_ERROR);
         }
@@ -38,14 +41,14 @@ export class DatabasesController {
 
     @Post()
     @HttpCode(HttpStatus.CREATED)
-    public async create(@Res({ passthrough: true }) res: Response, @Body() createDatabaseDto: CreateDatabaseDto): Promise<Database> {
+    public async create(@Request() httpRequest: Request, @Res({ passthrough: true }) res: Response, @Body() createDatabaseDto: CreateDatabaseDto): Promise<Database> {
         try {
-            const userId = 'f0daf321-ff96-4ff7-9822-7f848473ac45'; // @TODO get user_id from login token
+            const userMakingRequest = await this.authenticationService.getUserFromRequest(httpRequest);
 
             const insertResult = await this.databasesService.insert(createDatabaseDto);
             const newDatabaseId = insertResult.identifiers[0].id;
 
-            await this.userOwnsDatabaseService.insert(newDatabaseId, userId)
+            await this.userOwnsDatabaseService.insert(newDatabaseId, userMakingRequest.id)
             return await this.databasesService.findOne(newDatabaseId);
         } catch (e) {
             res.status(HttpStatus.INTERNAL_SERVER_ERROR);

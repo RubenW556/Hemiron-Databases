@@ -5,6 +5,7 @@ import { DatabasesController } from "./databases.controller";
 import { DatabasesService } from "./databases.service";
 import { UserOwnsDatabaseService } from "../user-owns-database/user-owns-database.service";
 import { UserOwnsDatabase } from "../user-owns-database/user-owns-database.entity";
+import { AuthenticationService } from "hemiron-auth/dist/services/authentication.service";
 
 @Module({
     imports: [
@@ -12,7 +13,7 @@ import { UserOwnsDatabase } from "../user-owns-database/user-owns-database.entit
         TypeOrmModule.forFeature([UserOwnsDatabase]),
     ],
     controllers: [DatabasesController],
-    providers: [DatabasesService, UserOwnsDatabaseService],
+    providers: [DatabasesService, UserOwnsDatabaseService, AuthenticationService],
 })
 export class DatabasesModule {
 
