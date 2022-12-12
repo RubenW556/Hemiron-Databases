@@ -4,6 +4,9 @@ volumes:
 networks:
   databases-db-dev:
     name: databases-db-dev
+  hemiron-ntw-compose:
+    external: true
+    name: hemiron-ntw-compose
 
 services: # docker compose up --build
   db: # docker compose up --build db
@@ -20,5 +23,15 @@ services: # docker compose up --build
     networks:
       - databases-db-dev
   adminer:
+    environment:
+      - ADMINER_DEFAULT_SERVER=db
     networks:
       - databases-db-dev
+      - hemiron-ntw-compose
+    labels:
+      - "traefik.docker.network=hemiron-ntw-compose"
+      # For Url adminer.${PRIMARY_DOMAIN}
+      - "traefik.http.routers.adminer.rule=Host(`adminer.${PRIMARY_DOMAIN?Variable not set!}`)"
+      - "traefik.http.routers.adminer.entrypoints=web"
+      - "traefik.http.routers.adminer.tls=false"
+      - "traefik.http.services.adminer.loadbalancer.server.port=8080"
