@@ -10,6 +10,7 @@ import {ClientDatabaseDao} from "./dao/clientDatabase.dao";
 import {DatabaseClientDao} from "./dao/databaseClient.dao";
 import { UserOwnsDatabaseModule } from "./user-owns-database/user-owns-database.module";
 import { UserOwnsDatabase } from "./user-owns-database/user-owns-database.entity";
+import { TasksModule } from "./tasks/tasks.module";
 
 @Module({
     imports: [
@@ -28,10 +29,11 @@ import { UserOwnsDatabase } from "./user-owns-database/user-owns-database.entity
         }),
         UsersModule,
         DatabasesModule,
-        UserOwnsDatabaseModule
+        UserOwnsDatabaseModule,
+        TasksModule,
     ],
-        controllers: [AppController],
-        providers: [AppService]
+    controllers: [AppController],
+    providers: [AppService]
     }
 )
 export class AppModule {
