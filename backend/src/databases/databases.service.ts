@@ -5,16 +5,14 @@ import { Database } from './database.entity';
 import { CreateDatabaseDto } from "./dto/create-database.dto";
 import { v4 as generateUUID } from 'uuid';
 import { UpdateDatabaseDto } from "./dto/update-database.dto";
-import {ClientDatabaseDao} from "../dao/clientDatabase.dao";
-import {DatabaseClientDao} from "../dao/databaseClient.dao";
+import {DatabaseManagementDao} from "../dao/databaseManagement.dao";
 
 @Injectable()
 export class DatabasesService {
     constructor(
         @InjectRepository(Database)
         private databasesRepository: Repository<Database>,
-        private clientDatabaseDao: ClientDatabaseDao,
-        private databaseClientDao: DatabaseClientDao
+        private databaseManagementDao: DatabaseManagementDao,
 
     ) {
     }
@@ -28,10 +26,10 @@ export class DatabasesService {
         return this.databasesRepository.find();
     }
 
-    public insert(databaseDto: CreateDatabaseDto): Promise<InsertResult> {
+    public async insert(databaseDto: CreateDatabaseDto): Promise<InsertResult> {
         const database: Database = { ...databaseDto, ...{ id: generateUUID(), creation_date_time: new Date() } }
-        let result = this.databasesRepository.insert(database)
-        this.createDatabaseWithUser(databaseDto.name);
+        const result = this.databasesRepository.insert(database)
+        await this.createDatabaseWithUser(databaseDto.name);
         return result;
     }
 
@@ -45,14 +43,16 @@ export class DatabasesService {
 
     //database management context
     public async createDatabaseWithUser(databaseName:string){
-        if((await this.clientDatabaseDao.lookUpDatabase(databaseName))[0]==undefined){
-            await this.clientDatabaseDao.createDatabase(databaseName);
+        //todo create databasename based on username
+        if((await this.databaseManagementDao.lookUpDatabase(databaseName))[0]==undefined){
+            await this.databaseManagementDao.createDatabase(databaseName);
         }
-        if((await this.databaseClientDao.lookUpUser("test1"))[0]==undefined){
-            await this.databaseClientDao.createUser("test1","test1");
+        //todo get user from tokens
+        //todo use password from request or generate password and return it to the requester
+        if((await this.databaseManagementDao.lookUpUser("test1"))[0]==undefined){
+            await this.databaseManagementDao.createUser("test1","test1");
         }
-        if((await this.clientDatabaseDao.lookUpDatabase(databaseName))[0]!=undefined){
-        await this.databaseClientDao.grantUserAccessToDatabase("test1", databaseName)
-        }
+        await this.databaseManagementDao.grantUserAccessToDatabase("test1", databaseName)
+
     }
 }

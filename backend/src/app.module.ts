@@ -6,8 +6,6 @@ import { User } from "./user/user.entity";
 import { UsersModule } from "./user/users.module";
 import { Database } from "./databases/database.entity";
 import { DatabasesModule } from "./databases/databases.module";
-import {ClientDatabaseDao} from "./dao/clientDatabase.dao";
-import {DatabaseClientDao} from "./dao/databaseClient.dao";
 import { UserOwnsDatabaseModule } from "./user-owns-database/user-owns-database.module";
 import { UserOwnsDatabase } from "./user-owns-database/user-owns-database.entity";
 import { TasksModule } from "./tasks/tasks.module";
