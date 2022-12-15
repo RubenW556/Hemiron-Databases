@@ -122,7 +122,6 @@ CI_LINT_BACKEND:
 
 CI_SONAR_BACKEND:
     stage: analyse
-    needs: [CI_PRE_CHECK]
     image:
         name: sonarsource/sonar-scanner-cli:latest
         entrypoint: [""]
