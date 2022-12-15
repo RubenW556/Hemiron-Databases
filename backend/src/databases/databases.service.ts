@@ -15,7 +15,7 @@ export class DatabasesService {
     }
 
     public findOne(database_id: string): Promise<Database> {
-        return this.databasesRepository.findOneBy({ id: database_id });
+        return this.databasesRepository.findOneByOrFail({ id: database_id });
     }
 
     public findAllForUser(userId: string): Promise<Database[]> {
