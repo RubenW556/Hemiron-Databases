@@ -27,6 +27,6 @@ CREATE TABLE "user_owns_database" (
     "user_id" uuid NOT NULL,
     "database_id" uuid NOT NULL,
     CONSTRAINT "User_Owns_Database_pk" PRIMARY KEY ("user_id","database_id"),
-    CONSTRAINT "User_Owns_Database_fk0" FOREIGN KEY ("database_id") REFERENCES "database"("id"),
-    CONSTRAINT "User_Owns_Database_fk1" FOREIGN KEY ("user_id") REFERENCES "user"("id")
+    CONSTRAINT "User_Owns_Database_fk0" FOREIGN KEY ("database_id") REFERENCES "database"("id") ON DELETE CASCADE,
+    CONSTRAINT "User_Owns_Database_fk1" FOREIGN KEY ("user_id") REFERENCES "user"("id") ON DELETE CASCADE
 );

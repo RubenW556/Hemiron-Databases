@@ -9,6 +9,7 @@ import { UserOwnsDatabase } from "./user-owns-database/user-owns-database.entity
 import { AuthenticationValidatorModule } from "hemiron-auth/dist/authentication-validator.module";
 import { APP_GUARD } from "@nestjs/core";
 import { AuthenticationValidationGuard } from "hemiron-auth/dist/guards/authentication-validation.guard";
+import { TasksModule } from "./tasks/tasks.module";
 
 @Module({
         imports: [
@@ -30,9 +31,10 @@ import { AuthenticationValidationGuard } from "hemiron-auth/dist/guards/authenti
             }),
             UsersModule,
             DatabasesModule,
-            UserOwnsDatabaseModule
-        ],
-        providers: [{
+            UserOwnsDatabaseModule,
+        TasksModule,
+    ],
+    providers: [{
             provide: APP_GUARD,
             useClass: AuthenticationValidationGuard,
         }]
