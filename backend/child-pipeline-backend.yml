@@ -121,6 +121,7 @@ CI_LINT_BACKEND:
         - docker images ls
 
 CI_SONAR_BACKEND:
+    <<: *template_merge
     stage: analyse
     image:
         name: sonarsource/sonar-scanner-cli:latest
