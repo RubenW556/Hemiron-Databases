@@ -3,18 +3,16 @@ import {UsersService} from "./users.service";
 import {getRepositoryToken} from "@nestjs/typeorm";
 import {User} from "./user.entity";
 import {DeleteResult, InsertResult} from "typeorm";
-import {BadRequestException} from "@nestjs/common";
 import {dataCollectionDao} from "../dao/dataCollection.dao";
 
 describe("user service", ()=>{
     let service:  UsersService;
     let validUuid1: string= "7e43dcec-a5b9-4598-9712-b898ba352195";
     let validUuid2: string= "vb5b66927-f1f1-47ac-9207-d4e842d9a022";
-    let invalidUuid: string= "d9428888-122b-11e1-b85c-61cd3cbb3210";
 
     const mockDataCollectionDao = {};
 
-    const mockRepository = {
+    const mockUserRepository = {
         find: jest.fn(function(){
             let user:User[] = [{id:validUuid1,username:"123"},{id:validUuid2,username:"123"}]
             return user;
@@ -35,23 +33,15 @@ describe("user service", ()=>{
             providers: [
                 UsersService,
                 {provide: getRepositoryToken(User),
-                useValue: mockRepository,
+                useValue: mockUserRepository,
                 },
                 {provide: dataCollectionDao,
-                useValue: mockDataCollectionDao}
+                    useValue: mockDataCollectionDao}
+
             ]
         }).compile();
 
         service = moduleFixture.get<UsersService>(UsersService);
-    });
-
-    it("should throw error over bad uuid", async ()=>{
-        try{
-            await service.findOne(invalidUuid)
-        }
-        catch(error){
-            expect(error).toStrictEqual(new BadRequestException("invalid uuid"));
-        }
     });
 
     it("should return an array of all users", async ()=>{
@@ -62,24 +52,24 @@ describe("user service", ()=>{
         expect(typeof user).toBe(typeof new User);
     })
 
-    it("should return singular user by id", async ()=>{
-        let user:User = await service.findOne(validUuid1);
+    it("should ask repository with id", async ()=>{
+        let spy = jest.spyOn(mockUserRepository,"findOneBy")
 
-        expect(typeof user).toBe(typeof new User);
+        await service.findOne(validUuid1);
 
-        expect(user.id).toBe(validUuid1)
+        expect(spy).toHaveBeenCalledWith({id:validUuid1})
     })
 
     it("should put user into database", async ()=>{
-        let spy = jest.spyOn(mockRepository,"insert")
+        let spy = jest.spyOn(mockUserRepository,"insert")
 
         await service.putOne({id:validUuid1,username:"123"});
 
         expect(spy).toHaveBeenCalledWith({id:validUuid1,username:"123"})
     })
 
-    it("should delete user from database", async ()=>{
-        let spy = jest.spyOn(mockRepository,"delete")
+    it("should delete user by uuid", async ()=>{
+        let spy = jest.spyOn(mockUserRepository,"delete")
 
         await service.remove(validUuid1);
 
