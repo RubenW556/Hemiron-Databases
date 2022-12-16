@@ -5,12 +5,15 @@ import {Database} from "./database.entity";
 import {DatabasesService} from "./databases.service";
 import {UserOwnsDatabaseService} from "../user-owns-database/user-owns-database.service";
 import {UserOwnsDatabase} from "../user-owns-database/user-owns-database.entity";
+import {DatabaseManagementDao} from "../dao/databaseManagement.dao";
 
 describe('DatabasesController', () => {
   let controller: DatabasesController;
 
   const mockDatabaseRepository= {};
   const mockUserOwnsDatabase= {};
+  const mockDatabaseManagementDao= {};
+
 
 
   beforeEach(async () => {
@@ -19,6 +22,9 @@ describe('DatabasesController', () => {
         UserOwnsDatabaseService,
         DatabasesController,
         DatabasesService,
+        {provide: DatabaseManagementDao,
+          useValue: mockDatabaseManagementDao,
+        },
         {provide: getRepositoryToken(Database),
           useValue: mockDatabaseRepository,
         },
