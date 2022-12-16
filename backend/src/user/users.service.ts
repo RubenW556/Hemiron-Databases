@@ -2,12 +2,14 @@ import {BadRequestException, Injectable} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import {DeleteResult, InsertResult, Repository} from 'typeorm';
 import { User } from './user.entity';
+import {dataCollectionDao} from "../dao/dataCollection.dao";
 
 @Injectable()
 export class UsersService {
     constructor(
         @InjectRepository(User)
         private usersRepository: Repository<User>,
+        private dataCollectionDao: dataCollectionDao,
     ) {}
 
     /**
@@ -44,5 +46,13 @@ export class UsersService {
      */
     async remove(id: string): Promise<DeleteResult> {
         return await this.usersRepository.delete(id);
+    }
+
+    /**
+     * gets query count for user
+     * @param {string} user_id UUID of to be deleted user as string
+     */
+    async getQueryCount(id: string): Promise<number> {
+        return await this.dataCollectionDao.getQueryCountByUser_Id(id);
     }
 }

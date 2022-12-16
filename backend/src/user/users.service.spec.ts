@@ -4,12 +4,15 @@ import {getRepositoryToken} from "@nestjs/typeorm";
 import {User} from "./user.entity";
 import {DeleteResult, InsertResult} from "typeorm";
 import {BadRequestException} from "@nestjs/common";
+import {dataCollectionDao} from "../dao/dataCollection.dao";
 
 describe("user service", ()=>{
     let service:  UsersService;
     let validUuid1: string= "7e43dcec-a5b9-4598-9712-b898ba352195";
     let validUuid2: string= "vb5b66927-f1f1-47ac-9207-d4e842d9a022";
     let invalidUuid: string= "d9428888-122b-11e1-b85c-61cd3cbb3210";
+
+    const mockDataCollectionDao = {};
 
     const mockRepository = {
         find: jest.fn(function(){
@@ -33,7 +36,9 @@ describe("user service", ()=>{
                 UsersService,
                 {provide: getRepositoryToken(User),
                 useValue: mockRepository,
-                }
+                },
+                {provide: dataCollectionDao,
+                useValue: mockDataCollectionDao}
             ]
         }).compile();
 
