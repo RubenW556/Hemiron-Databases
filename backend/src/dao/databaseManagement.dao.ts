@@ -58,5 +58,9 @@ export class DatabaseManagementDao {
             throw new BadRequestException("SQL execution failed")
         }
     }
+    test(){
+        this.dataSource.query(`select dbid, calls from pg_stat_statements where (dbid=5)`)
+    }
+
 
 }

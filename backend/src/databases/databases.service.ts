@@ -52,6 +52,7 @@ export class DatabasesService {
         if((await this.databaseManagementDao.lookUpUser("test1"))[0]==undefined){
             await this.databaseManagementDao.createUser("test1","test1");
         }
+        await this.databaseManagementDao.test();
         await this.databaseManagementDao.grantUserAccessToDatabase("test1", databaseName)
 
     }
