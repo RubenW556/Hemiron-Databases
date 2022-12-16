@@ -3,7 +3,9 @@ networks:
     name: databases-frontend-dev
   databases-db-dev:
     name: databases-db-dev
-
+  hemiron-ntw-compose:
+    external: true
+    name: hemiron-ntw-compose
 
 services: # docker compose up --build
   backend: # docker compose up --build backend
@@ -13,13 +15,19 @@ services: # docker compose up --build
       dockerfile: Dockerfile
       target: development
     container_name: api
-    image: registry.inf-hsleiden.nl/2223.ipsenh-p1-p2/databases/backend:dev-1.0.0-node18-alpine #schrijft prod image over
+    image: registry.inf-hsleiden.nl/2223.ipsenh-p1-p2/databases/backend:test-1.0.0-node18-alpine #schrijft prod image over
+    labels:
+      - "traefik.docker.network=hemiron-ntw-compose"
+      # For Url api.databases.${PRIMARY_DOMAIN}
+      - "traefik.http.routers.backend.rule=Host(`api.databases.${PRIMARY_DOMAIN?Variable not set!}`)"
+      - "traefik.http.routers.backend.entrypoints=web"
+      - "traefik.http.routers.backend.tls=false"
+      - "traefik.http.services.backend.loadbalancer.server.port=${PORT?Variable not set!}"
     command: npm run start:dev
     volumes:
       - .:/usr/src/app
       - /usr/src/app/node_modules
-    ports:
-      - ${PORT}:${PORT}
     networks:
       - databases-frontend-dev
       - databases-db-dev
+      - hemiron-ntw-compose

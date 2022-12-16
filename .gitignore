@@ -1,4 +1,5 @@
 .idea/
 .DS_Store
 .npm/
-.scannerwork/
+postgresql/.env
+postgresql/.env.dev

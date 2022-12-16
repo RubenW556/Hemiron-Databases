@@ -130,6 +130,11 @@ Quickly run your stack file for testing.
 
 ### Create Swarm stack file
 
+>  **NOTE**:
+>
+> Docker Compose V2 made breaking changes to config.
+> Make sure to disable it for the old syntax by disabling `Use Docker Compose V2` in settings > General in Docker Desktop.
+
 Run `docker-compose -f docker-compose.yaml -f docker-compose.prod.yaml config` to combine base and production compose file.
 
 Suffix with ` > backend-stack.yml` to output it in a file.
