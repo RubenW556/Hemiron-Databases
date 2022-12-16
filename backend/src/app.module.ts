@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { User } from "./user/user.entity";
 import { UsersModule } from "./user/users.module";
@@ -10,6 +10,7 @@ import { AuthenticationValidatorModule } from "hemiron-auth/dist/authentication-
 import { APP_GUARD } from "@nestjs/core";
 import { AuthenticationValidationGuard } from "hemiron-auth/dist/guards/authentication-validation.guard";
 import { TasksModule } from "./tasks/tasks.module";
+import { AuthMiddleware } from "./auth.middleware";
 
 @Module({
         imports: [
@@ -32,17 +33,23 @@ import { TasksModule } from "./tasks/tasks.module";
             UsersModule,
             DatabasesModule,
             UserOwnsDatabaseModule,
-        TasksModule,
-    ],
-    providers: [{
+            TasksModule,
+        ],
+        providers: [{
             provide: APP_GUARD,
             useClass: AuthenticationValidationGuard,
         }]
     }
 )
-export class AppModule {
+export class AppModule implements NestModule {
     constructor() {
     }
+
+    // noinspection JSUnusedGlobalSymbols
+    public configure(consumer: MiddlewareConsumer) {
+        consumer.apply(AuthMiddleware).forRoutes('*');
+    }
+
 }
 
 
