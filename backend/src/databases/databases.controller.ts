@@ -37,7 +37,7 @@ export class DatabasesController {
     }
 
     @Post()
-    @HttpCode(HttpStatus.CREATED)
+    @HttpCode(HttpStatus.CREATED) //todo validatioon
     public async create(@Res({ passthrough: true }) res: Response, @Body() createDatabaseDto: CreateDatabaseDto): Promise<Database> {
         try {
             const userId = 'f0daf321-ff96-4ff7-9822-7f848473ac45'; // @TODO get user_id from login token
