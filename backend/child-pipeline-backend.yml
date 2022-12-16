@@ -139,9 +139,8 @@ CI_SONAR_BACKEND:
     only:
         - develop
         - sonarcube_install_fast
+        - sonarqube_final
         - main
-
-
 
 CI_BUILD_BACKEND:
     stage: build
