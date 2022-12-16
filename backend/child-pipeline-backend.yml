@@ -1,6 +1,6 @@
 stages:
-    - build
     - analysis
+    - build
     - test
     - deploy
     - verify
@@ -11,34 +11,30 @@ stages:
         - swarm
     only:
         refs:
-            - main
-            - sonarcube_installation_from_main
+            - sonarcube_installation_on_docker
         changes:
             - backend/**/*
 
 CI_ANALYSE_BACKEND:
     stage: analysis
     variables:
-        BASE_IMAGE: node18-alpine #docker20.10.21-dind-alpine3.16
+        BASE_IMAGE: node18-alpine
         PROJECT_ID: backend
         IMAGE_NAME_FINAL: $IMAGE_NAME_BASE/$PROJECT_ID:1.0.$CI_PIPELINE_IID-$BASE_IMAGE
-    # sonarqube variables:
-        SONAR_TOKEN: "databases"
-        SONAR_HOST_URL: "http://localhost:9000"
-        SONAR_USER_HOME: ".sonar" # Defines the location of the analysis task cache
-        GIT_DEPTH: 0 # Tells git to fetch all the branches of the project, required by the analysis task
-
     inherit:
         default: false
     <<: *template
     #    when: manual # only execute when approved manually
     needs: [CI_PRE_CHECK] # no dependencies.
     before_script:
-        - echo "analysis start"
+        - echo "analysis"
+        - docker login -u pipeline -p $BUILD_TOKEN $CI_REGISTRY
     script:
-        - echo "analysis script"
+        - docker build -t $IMAGE_NAME_FINAL --target analysis $PROJECT_ID/.
     after_script:
-        - echo "analysis over"
+        - docker image push $IMAGE_NAME_FINAL # push with versioning
+        - docker image tag $IMAGE_NAME_FINAL $IMAGE_NAME_BASE/$PROJECT_ID:production # re-tag same image and push with production tag
+        - docker image push $IMAGE_NAME_BASE/$PROJECT_ID:production
         - docker images ls
     artifacts: # create artifact when job fails
         name: $IMAGE_NAME_FINAL
@@ -52,9 +48,13 @@ CI_ANALYSE_BACKEND:
 CI_BUILD_BACKEND:
     stage: build
     variables:
-        BASE_IMAGE: node18-alpine
+        BASE_IMAGE: docker:19.03.13
+        DOCKER_TLS_CERTDIR: "/certs"
         PROJECT_ID: backend
         IMAGE_NAME_FINAL: $IMAGE_NAME_BASE/$PROJECT_ID:1.0.$CI_PIPELINE_IID-$BASE_IMAGE
+    services:
+        - name: docker:19.03.13-dind
+          alias: docker
     inherit:
         default: false
     <<: *template
@@ -78,7 +78,6 @@ CI_BUILD_BACKEND:
         expire_in: 2 days
         exclude:
             - .gitlab-ci.yml
-
 
 CI_DEPLOY_BACKEND: #$BUILD_TOKEN  $CI_REGISTRY  $SSH_DEPLOYMENT_IP   $SSH_DEPLOYMENT_HOST $SSH_DEPLOYMENT_USER $SSH_PRIVATE_KEY
     stage: deploy
