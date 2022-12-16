@@ -6,7 +6,7 @@ stages:
     tags:
         - swarm
     only:
-        - sonarqube_based_on_tutorial1
+        - sonarcube_installation_from_main
 CI_Cleanup:
     stage: test
     parallel: 5 # we have 5 runners

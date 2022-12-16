@@ -16,6 +16,7 @@ WORKDIR /usr/src/app
 # Copying this first prevents re-running npm install on every code change.
 COPY --chown=node:node package*.json ./
 
+
 # Install app dependencies using the `npm ci` command instead of `npm install`
 RUN npm ci
 
@@ -43,12 +44,13 @@ COPY --chown=node:node --from=development /usr/src/app/node_modules ./node_modul
 
 COPY --chown=node:node . .
 
-# Run the tests
+# Run the build command which creates the production bundle
 RUN npm run test
-#RUN npm run lint
-#RUN npm run test:e2e
-#RUN npm run test:cov
-#RUN npm audit
+RUN npm run lint
+RUN npm run test:e2e
+RUN npm run test:cov
+RUN npm audit
+
 
 # Run the build command which creates the production bundle
 RUN npm run build
@@ -59,9 +61,88 @@ ENV NODE_ENV production
 # Running `npm ci` removes the existing node_modules directory.
 # Passing in --only=production ensures that only the production dependencies are installed.
 # This ensures that the node_modules directory is as optimized as possible.
+#removed: RUN apk add --update nodejs nodejs-npm
+
 RUN npm ci --only=production && npm cache clean --force
 
 USER node
+
+###################
+# BUILD FOR ANALYSIS
+###################
+
+# docker image with specific version to prevent update changes
+# dind = docker in docker
+# alpine so it is lightweight
+#FROM docker:20.10.21-dind-alpine3.16 As analysis
+
+FROM node:18-alpine As analysis
+
+# Create app directory
+WORKDIR /usr/src/app
+
+#below is even more advanced version of adding user, in which we only add user if not already existing
+RUN adduser -D -g '' node || echo "User 'node' already exists."
+
+##config requirements for Sonarqube
+##RUN sudo sysctl -w vm.max_map_count=524288
+##RUN sudo sysctl -w fs.file-max=131072
+##RUN sudo ulimit -n 131072
+##RUN sudo ulimit -u 8192
+
+#Copy source files
+COPY --chown=node:node . .
+
+# copy the package.lock and package files
+COPY package*.json ./
+
+# In order to run `npm ci` we need access to the Nest CLI.
+# The Nest CLI is a dev dependency,
+# In the previous development stage we ran `npm ci` which installed all dependencies.
+# So we can copy over the node_modules directory from the development image into this build image.
+COPY --chown=node:node --from=development /usr/src/app/node_modules ./node_modules
+
+#install docker
+RUN npm install -g docker
+
+# Install app dependencies using the `npm ci` command instead of `npm install`
+RUN npm ci
+
+# Download sonarqube
+RUN docker pull sonarqube:7.9.4-community
+
+#host sonarqube on localhost:9000
+RUN docker run --name sonarqube -h sonarqube -p 9000:9000 -d sonarqube:7.9.4-community
+
+#host sonarcube on localhost (this is the old version that worked locally)
+RUN docker run -d --name sonarqube -e SONAR_ES_BOOTSTRAP_CHECKS_DISABLE=true -p 9000:9000 sonarqube:7.9.4-community
+
+RUN curl -s -L https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-3.3.0.1492-linux.zip -o sonarscanner.zip \
+  && unzip -qq sonarscanner.zip \
+  && rm -rf sonarscanner.zip \
+  && mv sonar-scanner-3.3.0.1492-linux sonar-scanner
+
+COPY sonar-scanner.properties sonar-scanner/conf/sonar-scanner.properties
+ENV SONAR_RUNNER_HOME=sonar-scanner
+ENV PATH $PATH:sonar-scanner/bin
+
+
+
+RUN echo "current directory"
+#RUN echo "$ls"
+#RUN echo "$find . "
+
+#RUN PWD
+#RUN ls
+#RUN find .
+
+#workaround to run sonar-scanner.bat
+RUN sed -i 's/use_embedded_jre=true/use_embedded_jre=false/g' /bin/sonar-scanner/bin/sonar-scanner
+
+#connect sonar_scanner to scan code and connect to sonarqube and send data to sonarqube
+RUN sonar-scanner.bat -D"sonar.projectKey=databases" -D"sonar.sources=." -D"sonar.host.url=http://localhost:9000" -D"sonar.login=b7ca982736a0bdb72ee2e788898402e41b751d97"
+RUN echo "end of script - success"
+
 ###################
 # PRODUCTION
 ###################

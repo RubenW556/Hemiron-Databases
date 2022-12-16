@@ -1,6 +1,6 @@
 stages:
-    - analysis
     - build
+    - analysis
     - test
     - deploy
     - verify
@@ -11,65 +11,44 @@ stages:
         - swarm
     only:
         refs:
-            - sonarqube_based_on_tutorial1
             - main
+            - sonarcube_installation_from_main
         changes:
             - backend/**/*
-            -
-sonarqube-check:
-    image:
-        name: sonarsource/sonar-scanner-cli:latest
-        entrypoint: [""]
-    variables:
-        SONAR_USER_HOME: "${CI_PROJECT_DIR}/.sonar"  # Defines the location of the analysis task cache
-        GIT_DEPTH: "0"  # Tells git to fetch all the branches of the project, required by the analysis task
-    cache:
-        key: "${CI_JOB_NAME}"
-        paths:
-            - .sonar/cache
-    script:
-        - sonar-scanner
-    allow_failure: true
-    only:
-        - sonarqube_final # or the name of your main branch
 
-#
-#CI_ANALYSE_BACKEND:
-#    image:
-#        name: sonarsource/sonar-scanner-cli:latest
-#        entrypoint: [""]
-#    stage: analysis
-#    variables:
-#        SONAR_USER_HOME: "${CI_PROJECT_DIR}/.sonar"  # Defines the location of the analysis task cache
-#        GIT_DEPTH: "0"  # Tells git to fetch all the branches of the project, required by the analysis task
-#        SONAR_LOGIN: sqp_860635016da99f8e58565f08130bf3a6e01fb5b7
-#    <<: *template
-#    cache:
-#        key: "${CI_JOB_NAME}"
-#        paths:
-#            - .sonar/cache
-#    allow_failure: true
-#    only:
-#        - develop
-#        - sonarqube_based_on_tutorial1
-#    needs: [ CI_SET_UP ] # no dependencies.
-#    before_script:
-#        - echo "before analysis"
-#    script:
-#        - echo "analysis"
-#        #- sonar-scanner -X -Dsonar.login=sqp_860635016da99f8e58565f08130bf3a6e01fb5b7 -Dsonar.password=""
-#        - sonar-scanner -X -Dsonar.login=$SONAR_TOKEN -Dsonar.password=""
-#    after_script:
-#        - echo "after analysis"
-#    artifacts: # create artifact when job fails
-#        name: $IMAGE_NAME_FINAL
-#        when: on_failure
-#        paths:
-#            - ./
-#        expire_in: 2 days
-#        exclude:
-#            - .gitlab-ci.yml
-#
+CI_ANALYSE_BACKEND:
+    stage: analysis
+    variables:
+        BASE_IMAGE: node18-alpine #docker20.10.21-dind-alpine3.16
+        PROJECT_ID: backend
+        IMAGE_NAME_FINAL: $IMAGE_NAME_BASE/$PROJECT_ID:1.0.$CI_PIPELINE_IID-$BASE_IMAGE
+    # sonarqube variables:
+        SONAR_TOKEN: "databases"
+        SONAR_HOST_URL: "http://localhost:9000"
+        SONAR_USER_HOME: ".sonar" # Defines the location of the analysis task cache
+        GIT_DEPTH: 0 # Tells git to fetch all the branches of the project, required by the analysis task
+
+    inherit:
+        default: false
+    <<: *template
+    #    when: manual # only execute when approved manually
+    needs: [CI_PRE_CHECK] # no dependencies.
+    before_script:
+        - echo "analysis start"
+    script:
+        - echo "analysis script"
+    after_script:
+        - echo "analysis over"
+        - docker images ls
+    artifacts: # create artifact when job fails
+        name: $IMAGE_NAME_FINAL
+        when: on_failure
+        paths:
+            - ./
+        expire_in: 2 days
+        exclude:
+            - .gitlab-ci.yml
+
 CI_BUILD_BACKEND:
     stage: build
     variables:
@@ -99,6 +78,7 @@ CI_BUILD_BACKEND:
         expire_in: 2 days
         exclude:
             - .gitlab-ci.yml
+
 
 CI_DEPLOY_BACKEND: #$BUILD_TOKEN  $CI_REGISTRY  $SSH_DEPLOYMENT_IP   $SSH_DEPLOYMENT_HOST $SSH_DEPLOYMENT_USER $SSH_PRIVATE_KEY
     stage: deploy

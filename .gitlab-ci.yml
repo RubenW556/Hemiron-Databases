@@ -12,9 +12,8 @@ default:
 
 stages:
   - pre-check
-  - set-up
-  - analysis
   - build
+  - analysis
   - test
   - deploy
   - verify
@@ -27,9 +26,8 @@ image: docker:latest
     - swarm
   only:
     refs:
-      - sonarqube_based_on_tutorial1
+      - sonarcube_installation_from_main
       - main
-
 
 CI_PRE_CHECK:
   stage: pre-check
@@ -39,29 +37,6 @@ CI_PRE_CHECK:
     - echo "pre checking"
     - ls -l
     - docker version
-#    - userdump #test failure. All jobs after this one, not ran (with allow_failure false).
-
-CI_SET_UP:
-  stage: set-up
-  image:
-    name: sonarsource/sonar-scanner-cli:latest
-    entrypoint: [""]
-  variables:
-    SONAR_USER_HOME: "${CI_PROJECT_DIR}/.sonar"  # Defines the location of the analysis task cache
-    GIT_DEPTH: "0"  # Tells git to fetch all the branches of the project, required by the analysis task
-  cache:
-    key: "${CI_JOB_NAME}"
-    paths:
-      - .sonar/cache
-  script:
-    - ./sonar.sh stop && rm -rf $SONARQUBE_HOME/data/cache/* && ./sonar.sh start #clearing cache
-    - sonar-scanner -X
-  allow_failure: true
-  only:
-    - sonarqube_based_on_tutorial2
-    - develop
-
-
 #    - userdump #test failure. All jobs after this one, not ran (with allow_failure false).
 
 #CI_BUILD:
