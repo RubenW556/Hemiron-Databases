@@ -14,7 +14,7 @@ export class dataCollectionDao {
      */
     async getQueryCountByUser_Id(user_id:string){
         try {
-            return this.dataSource.query(`SELECT SUM(calls) FROM docker.pg_stat_statements
+             return await this.dataSource.query(`SELECT SUM(calls) FROM docker.pg_stat_statements
             WHERE DBID in
                 (SELECT oid FROM PG_DATABASE WHERE datname
                     in ( SELECT DB.name

@@ -3,6 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import {DeleteResult, InsertResult, Repository} from 'typeorm';
 import { User } from './user.entity';
 import {dataCollectionDao} from "../dao/dataCollection.dao";
+import {DatabaseManagementDao} from "../dao/databaseManagement.dao";
 
 @Injectable()
 export class UsersService {
@@ -10,6 +11,7 @@ export class UsersService {
         @InjectRepository(User)
         private usersRepository: Repository<User>,
         private dataCollectionDao: dataCollectionDao,
+        private databaseManagementDao: DatabaseManagementDao
     ) {}
 
     /**
@@ -53,6 +55,15 @@ export class UsersService {
      * @param {string} user_id UUID of to be deleted user as string
      */
     async getQueryCount(id: string): Promise<number> {
-        return await this.dataCollectionDao.getQueryCountByUser_Id(id);
+
+        if((await this.databaseManagementDao.lookUpUser(id))[0]==undefined){
+            new BadRequestException("user does not exist")
+        }
+        let result = (await this.dataCollectionDao.getQueryCountByUser_Id(id))[0].sum;
+
+        if(result===null){
+            throw new BadRequestException("User has no queries")
+        }
+        return result;
     }
 }
