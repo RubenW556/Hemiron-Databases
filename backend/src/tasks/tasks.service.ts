@@ -4,6 +4,8 @@ import { MetricsService } from '../metrics/metrics.service';
 
 @Injectable()
 export class TasksService {
+  private readonly logger = new Logger(TasksService.name);
+
   constructor(private metricsService: MetricsService) {
     this.fetchAllDatabaseSizes().then((sizes) => {
       this.logger.debug(sizes);
@@ -14,11 +16,8 @@ export class TasksService {
     return this.metricsService.getAllDatabaseSizes();
   }
 
-  private readonly logger = new Logger(TasksService.name);
-
   @Cron(CronExpression.EVERY_30_SECONDS)
   handleCron() {
     this.logger.debug('Called every 30 seconds');
-
   }
 }
