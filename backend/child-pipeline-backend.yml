@@ -138,11 +138,6 @@ CI_SONAR_BACKEND:
     script:
         - sonar-scanner
     allow_failure: true
-    only:
-        - develop
-        - sonarcube_install_fast
-        - sonarqube_final
-        - main
 
 CI_BUILD_BACKEND:
     stage: build
