@@ -104,5 +104,5 @@ This table schema has been normalized to second normal form, because normalizing
 
 
 # TODO
--[ ] #TODO: update to most recent model after remodelling changes
+-[ ] #TODO: update to most recent model after remodelling changes of 22-12-2022
 
