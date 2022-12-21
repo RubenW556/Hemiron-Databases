@@ -1,207 +1,108 @@
-# Databases Backend Api
-This is an application that supports
-- Local development with Docker Compose
-- Local production with Docker Swarm
-- GitLab CI/CD Testing, Building and Deployment
+# Hemiron User Registration Database
 
-This project provides a microservice that provides a NestJS API.
+This document describes the structure of the Hemiron user registration database. Hemiron is a data warehouse that provides consumers with the service of creating and managing databases. The data of each of these users is stored in a Postgres database.
 
-This project uses [Docker](https://docs.docker.com/) and [Nest](https://github.com/nestjs/nest).
+## Design Process
 
-### Features
+The design of the database will be divided into three phases: inventory, conceptual model, and normalization.
 
-- Feature 1
+In the inventory phase, we will look at all the possible data that needs to be stored. For each piece of data, we will analyze the form in which it needs to be stored and its use case. Based on this, a list of related and relevant attributes will be forwarded to phase two; The Conceptual Model Phase.
 
-# Setup
+In the conceptual model phase, we will examine the relationships between the entities. The frameworks of each entity will be established along with the corresponding attributes. Major changes are still possible at this point.
 
-> **NOTE**:
->
-> Make sure you're in the [`frontend`/`backend`] child project folder of the main databases repo.
+In the final phase, normalization, we will look at efficiently storing the above data. This will involve examining the concrete storage process. Coupling tables can be set up at this point and the most optimal indexing of the data will be determined.
 
-## Building for development
+## Inventory
 
-Run to build the dev image.
-- `docker compose build backend`
+The primary goal for Team Databases, also known as the Minimum Viable Product, consists of the following points:
 
-> **NOTE**:
->
-> You can skip build if you plan on using `docker compose up --build` to run it.
+- Each user pays on a usage basis
+- Usage is measured in disk space (HDD/SSD) * time and resource usage per query (CPU/RAM) * time
+- All information must be stored (this is critical)
+- The database can be a Redis or Postgres database
 
+The following point has also been included as optional:
 
-### Debug images
+- The same database name can occur multiple times for different users
 
-Debugging for dev
-- `docker image build -o docker_build/dev --target development .`
+From this, we can determine the following minimum requirements:
 
-Debugging for prod
-- `docker image build -o docker_build/prod --target production .`
+- User name
+- User queries (list)
+- Query date and time (timestamp)
+- Query resource usage (CPU) * time
+- Total disk space in use after query (gigabytes)
+- Monthly cost for queries (euros)
+- Monthly cost for storage (euros)
+- Database name
+- Database creation date and time
+- Database type (Redis vs. Postgres)
 
-## Building for production
+## Conceptual Model
+In the conceptual model phase, the different attributes from the inventory phase can be modeled as entities and relationships. This has led to the following Conceptual model.
 
-Run to build the docker image for production using docker compose.
-- `docker-compose -f docker-compose.yaml -f docker-compose.prod.yaml backend`
+![Conceptual Model can be found in 'postgresql/Conceptual_Model.png' ](Conceptual_Model.png)
 
-Or CLI
+### Costs
+The Conceptual Model does not include a Costs entity, because these can be calculated based on the values in the Query table.
 
-- `docker build -t $IMAGE_NAME_FINAL --target production .`
->  **NOTE**:
->
-> If you plan on deploying your image to another machine, make sure to push your image to a repo.
-> Check out the Docker docs [here](https://docs.docker.com/docker-hub/repos/#pushing-a-docker-container-image-to-docker-hub)
-> if you want to use Docker Hub. (recommended)
+The costs are divided into two types:
 
->  **NOTE**:
->
-> **Composer is _not_ meant to run in production.**
-> It is only meant for development or building images.
-> Make sure to read [Getting started with swarm mode](https://docs.docker.com/engine/swarm/swarm-tutorial/) and check [this](https://github.com/BretFisher/ama/issues/8)
-> if you want to use run your build image on a proper environment. (recommended)
+CPU usage costs
+Storage usage costs
+Calculating CPU costs
+The CPU usage costs can be simply calculated by adding up the Resource_used for all queries within a certain period (month) and multiplying it by the price set by Hemiron per unit of CPU consumption.
 
-# Deploy
 
-## Development
+| id    | Date       | Storage_after_Query | Resource_used |
+|-------|------------|---------------------|---------------|
+| #23445| 1-1-2022  | 10GB                | 40ms          |
+| #23446| 21-1-2022 | 20GB                | 270ms         |
+| #23447| 31-1-2022 | 0GB                 | 380ms         |
 
-### Environment variables
 
-Create file `.env` from template `.env.example` and fill in the required environment variable(s).
+The total CPU costs will be 40+270+380=690ms * X, where X = cost per ms.
 
-- `PORT`
-- `PINO_LOG_LEVEL`
+Calculating storage costs
+The storage usage costs can be calculated by comparing each query with a time period and a 'storage_after_query' value. These can be multiplied together to create a total picture of costs per query, which can then be added together for the total costs for all queries.
 
-### Deploy
+An example query list for a database in January might be:
 
-Deploy the dev image using Docker Compose. This will automatically sync changes you make to the container in real time.
+| id    | Date       | Storage_after_Query | Resource_used |
+|-------|------------|---------------------|---------------|
+| #23445| 1-1-2022  | 10GB                | 40ms          |
+| #23446| 21-1-2022 | 20GB                | 270ms         |
+| #23447| 31-1-2022 | 0GB                 | 380ms         |
 
-- `docker compose up -d backend`
+And this would produce the following: 
 
-Monitor the logs
+| id    | Datum(ID+1) – Datum(ID)   | Datum(ID+1) – Datum(ID) | Storage_after_Query | Costs |
+|-------|---------------------------|-------------------------|---------------------|-------|
+| #23445| "21-1-2022" - "1-1-2022"  | 20                      | 10GB               | 200   |
+| #23446| "31-1-2022" - "21-1-2022" | 10                      | 20GB               | 200   |
+| #23447| "1-2-2022" - "31-1-2022"  | 1                       | 0GB                | 0     |
 
-- `docker container logs -f $(docker ps -qf name=api)`
+Despite the fact that the first query used 10GB and the second query only used 20GB, we see that Queries 1 and 2 have the same costs in terms of storage. This is because after the second query, only 20GB was used for 10 days, while after the first query, 10GB was used for 20 days.
 
-## Production
+## Normalization
 
-Running the app with Docker Swarm.
+Since there is no guarantee that the username is unique, an ID is required. The student number UUID is used here, which is provided by the authentication.
+Each user has the ability to manage 0, 1, or multiple databases. Each database can be managed by 1 or more users. The database_id is a unique UUID with auto increment.
+The database no longer has a 'storage_used' attribute because this can always be found in the most recent query. (Each database must have at least 1 query at the time of creation of the database).
+For programming convenience, a View can be added here to retrieve the db_storage_used from the database, as well as a list of users who have access to that database.
 
-### Network
+This table schema has been normalized to second normal form, because normalizing to third normal form leads to impractical code. This is because, according to third normal form, the Query table should not contain a 'storage_after_query' attribute because it is an attribute of the database, not an attribute of the Query. However, in this case it is more efficient to keep the 'storage_after_query' attribute with each query because the timestamp of this change always corresponds to the timestamp of a query. In this way, you save fewer total data because you avoid redundant double-saved timestamps.
+![EXCEPTION: Adhering to the third normal form, while theoretically desirable, is not always practical.](normalisationquote.png)
+<sub>src: Database Normalization Description - Office, 2022</sub>
 
-create swarm network
 
-- `docker network create -d overlay --attachable databases-backend`
+### Entity Relationship Diagram
+![picture of the final Entity Relationship Diagram ](Entity Relationship Diagram.png)
 
-### Creating secrets
+## References:
+[Database normalization description - Office](https://learn.microsoft.com/en-us/office/troubleshoot/access/database-normalization-description) (2022, May 5). Microsoft Learn.
 
-Create all secrets on the machine you're planning to run your Swarm stack on.
 
-The following environment variables are already assigned in the stack file.
+# TODO
+-[ ] #TODO: update to most recent model after remodelling changes
 
-- `TEST_FILE=/run/secrets/TEST_FILE`
-
-Make sure to create a secret on the host machine for each one.
-
-- `echo -n 'admin' |  docker secret create TEST_FILE -`
-
-Make sure to change the variable `admin` to your personal secret value for each secret.
-
->  **NOTE**:
->
-> Creating secrets can be done in multiple ways and may differ depending on your OS.
-> Make sure to read the [Docker Documentation](https://docs.docker.com/engine/swarm/secrets/)
-> to find the best way on creating a secret in your situation.
-
-### Environment variables
-
-Create file `.env` from template `.env.example` and fill in the required environment variable(s).
-
-#### Required
-
-The following Environment variables are required:
-
-- `PORT` Specify port to expose - default 3000
-
-#### Optional
-
-The following Environment variables can be set, additionally:
-
-- `PINO_LOG_LEVEL`
-  Specify logging level. - default log
-
-### Deploy stack
-
-Quickly run your stack file for testing.
-
-- `docker stack deploy --compose-file docker-compose.yaml -c docker-compose.prod.yaml backend --with-registry-auth --prune`
-
-### Create Swarm stack file
-
-Run `docker-compose -f docker-compose.yaml -f docker-compose.prod.yaml config` to combine base and production compose file.
-
-Suffix with ` > backend-stack.yml` to output it in a file.
-
-- `docker-compose -f docker-compose.yaml -f docker-compose.prod.yaml config > backend-stack.yml`
-
-Copy this `backend-stack.yml` file to the machine where you plan on running the stack.
-
-### Run Swarm stack file
-
-Run  to run the stack.
-
-- `docker stack up -c backend-stack.yml backend --with-registry-auth --prune`
-
-
-# Sources
-
-Few resources used:
-
-- https://docs.npmjs.com/cli/v8/commands/npm-install
-- https://docs.npmjs.com/specifying-dependencies-and-devdependencies-in-a-package-json-file
-- https://docs.docker.com/compose/compose-file/compose-file-v3/#deploy
-- https://docs.docker.com/compose/environment-variables/
-- https://docs.docker.com/compose/production/
-- https://docs.docker.com/compose/extends/#multiple-compose-files
-- https://docs.docker.com/engine/reference/commandline/build/
-- https://docs.docker.com/engine/reference/commandline/secret_create/
-- https://docs.docker.com/engine/reference/builder/#dockerignore-file
-- https://docs.docker.com/compose/compose-file/compose-file-v3/#resources
-- https://docs.docker.com/engine/swarm/secrets/
-- https://docs.docker.com/docker-hub/repos/
-- https://redis.io/docs/data-types/tutorial/#hashes
-- https://betterstack.com/community/guides/logging/how-to-install-setup-and-use-pino-to-log-node-js-applications/#log-levels-in-pino
-- https://www.digitalocean.com/community/tutorials/how-to-build-a-rate-limiter-with-node-js-on-app-platform
-- https://docs.docker.com/language/nodejs/run-tests/
-
-
-# GitLab CI/CD
-
-## Stages
-- build
-- test
-- deploy
-- verify
-
-## Triggers:
-
-Only triggers with changes on `main` branch in folder `backend`
-
-## Jobs
-
-- `CI_BUILD_BACKEND`
-- `CI_TEST_BACKEND`
-- `CI_DEPLOY_BACKEND`
-- `CI_VERIFY_BACKEND`
-
-# Test
-
-```bash
-# unit tests
-$ npm run test
-
-# e2e tests
-$ npm run test:e2e
-
-# test coverage
-$ npm run test:cov
-```
-
-# License
-
-Nest is [MIT licensed](LICENSE).
