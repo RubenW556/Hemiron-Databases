@@ -6,10 +6,9 @@ import { User } from './user.entity';
 @Injectable()
 export class UsersService {
   constructor(
-      @InjectRepository(User)
-      private usersRepository: Repository<User>,
-  ) {
-  }
+    @InjectRepository(User)
+    private usersRepository: Repository<User>,
+  ) {}
 
   /**
    * Gets all users and returns them as a array

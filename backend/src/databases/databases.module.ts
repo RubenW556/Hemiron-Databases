@@ -9,17 +9,16 @@ import { AuthenticationService } from 'hemiron-auth/dist/services/authentication
 import { DatabaseManagementDao } from '../dao/databaseManagement.dao';
 
 @Module({
-    imports: [
-        TypeOrmModule.forFeature([Database]),
-        TypeOrmModule.forFeature([UserOwnsDatabase]),
-    ],
-    controllers: [DatabasesController],
-    providers: [
-        DatabasesService,
-        DatabaseManagementDao,
-        UserOwnsDatabaseService,
-        AuthenticationService,
-    ],
+  imports: [
+    TypeOrmModule.forFeature([Database]),
+    TypeOrmModule.forFeature([UserOwnsDatabase]),
+  ],
+  controllers: [DatabasesController],
+  providers: [
+    DatabasesService,
+    DatabaseManagementDao,
+    UserOwnsDatabaseService,
+    AuthenticationService,
+  ],
 })
-export class DatabasesModule {
-}
+export class DatabasesModule {}

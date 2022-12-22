@@ -5,22 +5,21 @@ import { Response } from 'express';
 import { Database } from './database.entity';
 import { DatabasesService } from './databases.service';
 import { UserOwnsDatabaseService } from '../user-owns-database/user-owns-database.service';
-import { UsersService } from "../user/users.service";
+import { UsersService } from '../user/users.service';
 
 @Controller('databases')
 export class DatabasesController {
   constructor(
-      private databasesService: DatabasesService,
-      private userOwnsDatabaseService: UserOwnsDatabaseService,
-      private usersService: UsersService,
-  ) {
-  }
+    private databasesService: DatabasesService,
+    private userOwnsDatabaseService: UserOwnsDatabaseService,
+    private usersService: UsersService,
+  ) {}
 
   @Get(':id')
   @HttpCode(HttpStatus.OK)
   public async getOne(
-      @Res({ passthrough: true }) res: Response,
-      @Param('id') id: string,
+    @Res({ passthrough: true }) res: Response,
+    @Param('id') id: string,
   ): Promise<Database> {
     try {
       return await this.databasesService.findOne(id);
@@ -32,7 +31,7 @@ export class DatabasesController {
   @Get()
   @HttpCode(HttpStatus.OK)
   public async getAll(
-      @Res({ passthrough: true }) res: Response,
+    @Res({ passthrough: true }) res: Response,
   ): Promise<Database[]> {
     try {
       const userMakingRequest = res.locals.userMakingRequest;
@@ -46,8 +45,8 @@ export class DatabasesController {
   @Post()
   @HttpCode(HttpStatus.CREATED) //todo validatioon
   public async create(
-      @Res({ passthrough: true }) res: Response,
-      @Body() createDatabaseDto: CreateDatabaseDto,
+    @Res({ passthrough: true }) res: Response,
+    @Body() createDatabaseDto: CreateDatabaseDto,
   ): Promise<Database> {
     try {
       const userMakingRequest = res.locals.userMakingRequest;
@@ -55,13 +54,13 @@ export class DatabasesController {
       await this.usersService.findOne(userMakingRequest.id);
 
       const insertResult = await this.databasesService.insert(
-          createDatabaseDto,
+        createDatabaseDto,
       );
       const newDatabaseId = insertResult.identifiers[0].id;
 
       await this.userOwnsDatabaseService.insert(
-          newDatabaseId,
-          userMakingRequest.id,
+        newDatabaseId,
+        userMakingRequest.id,
       );
       return await this.databasesService.findOne(newDatabaseId);
     } catch (e) {
@@ -72,8 +71,8 @@ export class DatabasesController {
   @Patch()
   @HttpCode(HttpStatus.OK)
   public async update(
-      @Res({ passthrough: true }) res: Response,
-      @Body() database: UpdateDatabaseDto,
+    @Res({ passthrough: true }) res: Response,
+    @Body() database: UpdateDatabaseDto,
   ): Promise<Database> {
     try {
       await this.databasesService.update(database);
@@ -86,8 +85,8 @@ export class DatabasesController {
   @Delete(':id')
   @HttpCode(HttpStatus.NO_CONTENT)
   public async delete(
-      @Res({ passthrough: true }) res: Response,
-      @Param('id') id: string,
+    @Res({ passthrough: true }) res: Response,
+    @Param('id') id: string,
   ): Promise<void> {
     try {
       await this.databasesService.delete(id);

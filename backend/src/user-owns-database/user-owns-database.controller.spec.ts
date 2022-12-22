@@ -22,7 +22,7 @@ describe('UserOwnsDatabaseController', () => {
     }).compile();
 
     controller = module.get<UserOwnsDatabaseController>(
-        UserOwnsDatabaseController,
+      UserOwnsDatabaseController,
     );
   });
 
