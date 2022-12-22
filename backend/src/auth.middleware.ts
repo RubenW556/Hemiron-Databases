@@ -1,4 +1,10 @@
-import { HttpStatus, Injectable, NestMiddleware, Request, Res, } from '@nestjs/common';
+import {
+  HttpStatus,
+  Injectable,
+  NestMiddleware,
+  Request,
+  Res,
+} from '@nestjs/common';
 import { NextFunction, Response } from 'express';
 import { AuthenticationService } from 'hemiron-auth/dist/services/authentication.service';
 
