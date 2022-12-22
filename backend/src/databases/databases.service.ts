@@ -10,11 +10,10 @@ import { DatabaseManagementDao } from '../dao/databaseManagement.dao';
 @Injectable()
 export class DatabasesService {
   constructor(
-      @InjectRepository(Database)
-      private databasesRepository: Repository<Database>,
-      private databaseManagementDao: DatabaseManagementDao,
-  ) {
-  }
+    @InjectRepository(Database)
+    private databasesRepository: Repository<Database>,
+    private databaseManagementDao: DatabaseManagementDao,
+  ) {}
 
   public findOne(database_id: string): Promise<Database> {
     return this.databasesRepository.findOneByOrFail({ id: database_id });
@@ -22,12 +21,12 @@ export class DatabasesService {
 
   public findAllForUser(userId: string): Promise<Database[]> {
     return this.databasesRepository.query(
-        `
+      `
         SELECT database.* FROM docker.database
         INNER JOIN docker.user_owns_database
         ON database.id = user_owns_database.database_id AND user_owns_database.user_id = $1
     `,
-        [userId],
+      [userId],
     );
   }
 
@@ -53,21 +52,21 @@ export class DatabasesService {
   public async createDatabaseWithUser(databaseName: string) {
     //todo create databasename based on username
     if (
-        (await this.databaseManagementDao.lookUpDatabase(databaseName))[0] ==
-        undefined
+      (await this.databaseManagementDao.lookUpDatabase(databaseName))[0] ==
+      undefined
     ) {
       await this.databaseManagementDao.createDatabase(databaseName);
     }
     //todo get user from tokens
     //todo use password from request or generate password and return it to the requester
     if (
-        (await this.databaseManagementDao.lookUpUser('test1'))[0] == undefined
+      (await this.databaseManagementDao.lookUpUser('test1'))[0] == undefined
     ) {
       await this.databaseManagementDao.createUser('test1', 'test1');
     }
     await this.databaseManagementDao.grantUserAccessToDatabase(
-        'test1',
-        databaseName,
+      'test1',
+      databaseName,
     );
   }
 }
