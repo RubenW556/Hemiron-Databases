@@ -121,8 +121,13 @@ CI_LINT_BACKEND:
         - docker images ls
 
 CI_SONAR_BACKEND:
+    # Not using "<<: *template_main" or "<<: *template_merge" because this is doesnt follow their rules.
+    # Not using any template at all because this build isnt repeated anywhere else
     stage: analyse
     image:
+        # Get the latest sonar-scanner image. It is generally a good idea to use the latest version of the SonarQube scanner when possible,
+        # as this can help to ensure that you are taking advantage of the latest features and bug fixes.
+        # Entrypoint refers to the default script that should be run immediately after image has been pulled
         name: sonarsource/sonar-scanner-cli:latest
         entrypoint: [""]
     variables:
