@@ -6,14 +6,13 @@ import { UserOwnsDatabase } from './user-owns-database.entity';
 @Injectable()
 export class UserOwnsDatabaseService {
   constructor(
-      @InjectRepository(UserOwnsDatabase)
-      private userOwnsDatabaseRepository: Repository<UserOwnsDatabase>,
-  ) {
-  }
+    @InjectRepository(UserOwnsDatabase)
+    private userOwnsDatabaseRepository: Repository<UserOwnsDatabase>,
+  ) {}
 
   public findOne(
-      databaseId: string,
-      userId: string,
+    databaseId: string,
+    userId: string,
   ): Promise<UserOwnsDatabase> {
     return this.userOwnsDatabaseRepository.findOneByOrFail({
       database_id: databaseId,
@@ -30,8 +29,8 @@ export class UserOwnsDatabaseService {
   }
 
   public async delete(
-      databaseId: string,
-      userId: string,
+    databaseId: string,
+    userId: string,
   ): Promise<DeleteResult> {
     return this.userOwnsDatabaseRepository.delete({
       database_id: databaseId,

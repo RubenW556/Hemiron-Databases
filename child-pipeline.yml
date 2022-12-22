@@ -6,7 +6,9 @@ stages:
     tags:
         - swarm
     only:
-        - sonarcube_installation_on_docker
+        - main
+        - develop
+
 CI_Cleanup:
     stage: test
     parallel: 5 # we have 5 runners
