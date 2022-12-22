@@ -38,7 +38,7 @@ export class DatabasesController {
     }
 
     @Post()
-    @HttpCode(HttpStatus.CREATED)
+    @HttpCode(HttpStatus.CREATED) //todo validatioon
     public async create(@Res({ passthrough: true }) res: Response, @Body() createDatabaseDto: CreateDatabaseDto): Promise<Database> {
         try {
             const userMakingRequest = res.locals.userMakingRequest;
