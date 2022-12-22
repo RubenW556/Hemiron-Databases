@@ -1,6 +1,6 @@
-import {BadRequestException, Injectable} from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import {DeleteResult, InsertResult, Repository} from 'typeorm';
+import { DeleteResult, InsertResult, Repository } from 'typeorm';
 import { User } from './user.entity';
 import {DatabaseManagementDao} from "../dao/databaseManagement.dao";
 import {MetricsService} from "../metrics/metrics.service";
@@ -12,35 +12,36 @@ export class UsersService {
         private usersRepository: Repository<User>,
         private databaseManagementDao: DatabaseManagementDao,
         private metricsService: MetricsService
-    ) {}
-
-    /**
-     * Gets all users and returns them as a array
-     */
-    findAll(): Promise<User[]> {
-        return this.usersRepository.find();
+    ) {
     }
 
-    /**
-     * Gets user by id
-     * @param {string} id UUID of requested user as string
-     */
-    async findOne(id: string): Promise<User> {
-        let user:User = await this.usersRepository.findOneBy({ id:id });
-        if((user== null)){
-            throw new BadRequestException("can't find user by uuid")
-        }
+  /**
+   * Gets all users and returns them as a array
+   */
+  findAll(): Promise<User[]> {
+    return this.usersRepository.find();
+  }
 
-        return user;
+  /**
+   * Gets user by id
+   * @param {string} id UUID of requested user as string
+   */
+  async findOne(id: string): Promise<User> {
+    const user: User = await this.usersRepository.findOneBy({ id: id });
+    if (user == null) {
+      throw new BadRequestException("can't find user by uuid");
     }
 
-    /**
-     * creates user
-     * @param {string} id UUID of requested user as string
-     */
-    putOne(user: User): Promise<InsertResult>{
-        return this.usersRepository.insert(user);
-    }
+    return user;
+  }
+
+  /**
+   * creates user
+   * @param {string} id UUID of requested user as string
+   */
+  putOne(user: User): Promise<InsertResult> {
+    return this.usersRepository.insert(user);
+  }
 
     /**
      * deletes user
