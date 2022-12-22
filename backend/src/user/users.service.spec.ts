@@ -3,7 +3,7 @@ import {UsersService} from "./users.service";
 import {getRepositoryToken} from "@nestjs/typeorm";
 import {User} from "./user.entity";
 import {DeleteResult, InsertResult} from "typeorm";
-import {dataCollectionDao} from "../dao/dataCollection.dao";
+import {MetricsService} from "../metrics/metrics.service";
 
 describe("user service", ()=>{
     let service:  UsersService;
@@ -14,7 +14,7 @@ describe("user service", ()=>{
 
     const mockUserRepository = {
         find: jest.fn(function(){
-            let user:User[] = [{id:validUuid1,username:"123"},{id:validUuid2,username:"123"}]
+            let user:User[] = [{id:validUuid1,username:"123123"},{id:validUuid2,username:"123"}]
             return user;
         }),
         findOneBy: jest.fn(function(id){
@@ -35,7 +35,7 @@ describe("user service", ()=>{
                 {provide: getRepositoryToken(User),
                 useValue: mockUserRepository,
                 },
-                {provide: dataCollectionDao,
+                {provide: MetricsService,
                     useValue: mockDataCollectionDao}
 
             ]
@@ -75,4 +75,4 @@ describe("user service", ()=>{
 
         expect(spy).toHaveBeenCalledWith(validUuid1)
     })
-})
+});

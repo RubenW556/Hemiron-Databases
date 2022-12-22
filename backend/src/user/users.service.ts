@@ -2,16 +2,16 @@ import {BadRequestException, Injectable} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import {DeleteResult, InsertResult, Repository} from 'typeorm';
 import { User } from './user.entity';
-import {dataCollectionDao} from "../dao/dataCollection.dao";
 import {DatabaseManagementDao} from "../dao/databaseManagement.dao";
+import {MetricsService} from "../metrics/metrics.service";
 
 @Injectable()
 export class UsersService {
     constructor(
         @InjectRepository(User)
         private usersRepository: Repository<User>,
-        private dataCollectionDao: dataCollectionDao,
-        private databaseManagementDao: DatabaseManagementDao
+        private databaseManagementDao: DatabaseManagementDao,
+        private metricsService: MetricsService
     ) {}
 
     /**
@@ -59,7 +59,7 @@ export class UsersService {
         if((await this.databaseManagementDao.lookUpUser(id))[0]==undefined){
             new BadRequestException("user does not exist")
         }
-        let result = (await this.dataCollectionDao.getQueryCountByUser_Id(id))[0].sum;
+        let result = (await this.metricsService.getQueryCountByUser_Id(id))[0];
 
         if(result===null){
             throw new BadRequestException("User has no queries")
