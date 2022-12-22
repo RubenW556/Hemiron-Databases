@@ -5,7 +5,7 @@ import { Database } from './database.entity';
 import { CreateDatabaseDto } from "./dto/create-database.dto";
 import { v4 as generateUUID } from 'uuid';
 import { UpdateDatabaseDto } from "./dto/update-database.dto";
-import {DatabaseManagementDao} from "../dao/databaseManagement.dao";
+import { DatabaseManagementDao } from "../dao/databaseManagement.dao";
 
 @Injectable()
 export class DatabasesService {
@@ -13,7 +13,6 @@ export class DatabasesService {
         @InjectRepository(Database)
         private databasesRepository: Repository<Database>,
         private databaseManagementDao: DatabaseManagementDao,
-
     ) {
     }
 
@@ -22,8 +21,11 @@ export class DatabasesService {
     }
 
     public findAllForUser(userId: string): Promise<Database[]> {
-        // @TODO Add user filter
-        return this.databasesRepository.find();
+        return this.databasesRepository.query(`
+        SELECT database.* FROM docker.database
+        INNER JOIN docker.user_owns_database
+        ON database.id = user_owns_database.database_id AND user_owns_database.user_id = $1
+    `, [userId]);
     }
 
     public async insert(databaseDto: CreateDatabaseDto): Promise<InsertResult> {
@@ -42,15 +44,15 @@ export class DatabasesService {
     }
 
     //database management context
-    public async createDatabaseWithUser(databaseName:string){
+    public async createDatabaseWithUser(databaseName: string) {
         //todo create databasename based on username
-        if((await this.databaseManagementDao.lookUpDatabase(databaseName))[0]==undefined){
+        if ((await this.databaseManagementDao.lookUpDatabase(databaseName))[0] == undefined) {
             await this.databaseManagementDao.createDatabase(databaseName);
         }
         //todo get user from tokens
         //todo use password from request or generate password and return it to the requester
-        if((await this.databaseManagementDao.lookUpUser("test1"))[0]==undefined){
-            await this.databaseManagementDao.createUser("test1","test1");
+        if ((await this.databaseManagementDao.lookUpUser("test1"))[0] == undefined) {
+            await this.databaseManagementDao.createUser("test1", "test1");
         }
         await this.databaseManagementDao.grantUserAccessToDatabase("test1", databaseName)
 
