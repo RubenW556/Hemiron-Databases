@@ -4,6 +4,14 @@ stages:
     - build
     - deploy
     - verify
+.job_docker_template: &template
+    retry: 2
+    tags:
+        - swarm
+    only:
+        refs:
+            - main
+            - merge_requests
 
 #trigger tests and analyse on all merge requests
 .job_docker_template_merge: &template_merge
@@ -120,11 +128,13 @@ CI_LINT_BACKEND:
         - docker image push $IMAGE_NAME_BASE/$PROJECT_ID:$TARGET_ID #push re-tag
         - docker images ls
 
+
 CI_SONAR_BACKEND:
     # Not using "<<: *template_main" or "<<: *template_merge" because this is doesnt follow their rules.
     # Not using any template at all because this build isnt repeated anywhere else
     stage: analyse
     needs: [CI_PRE_CHECK]
+    <<: *template
     image:
         # Get the latest sonar-scanner image. It is generally a good idea to use the latest version of the SonarQube scanner when possible,
         # as this can help to ensure that you are taking advantage of the latest features and bug fixes.
