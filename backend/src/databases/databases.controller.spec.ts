@@ -6,6 +6,8 @@ import { DatabasesService } from './databases.service';
 import { UserOwnsDatabaseService } from '../user-owns-database/user-owns-database.service';
 import { UserOwnsDatabase } from '../user-owns-database/user-owns-database.entity';
 import { DatabaseManagementDao } from '../dao/databaseManagement.dao';
+import {UsersService} from "../user/users.service";
+import {User} from "../user/user.entity";
 
 describe('DatabasesController', () => {
   let controller: DatabasesController;
@@ -13,6 +15,8 @@ describe('DatabasesController', () => {
   const mockDatabaseRepository = {};
   const mockUserOwnsDatabase = {};
   const mockDatabaseManagementDao = {};
+  const mockUserDatabase = {};
+
 
   beforeEach(async () => {
     const moduleFixture: TestingModule = await Test.createTestingModule({
@@ -20,6 +24,7 @@ describe('DatabasesController', () => {
         UserOwnsDatabaseService,
         DatabasesController,
         DatabasesService,
+        UsersService,
         { provide: DatabaseManagementDao, useValue: mockDatabaseManagementDao },
         {
           provide: getRepositoryToken(Database),
@@ -29,6 +34,10 @@ describe('DatabasesController', () => {
           provide: getRepositoryToken(UserOwnsDatabase),
           useValue: mockUserOwnsDatabase,
         },
+        {
+          provide: getRepositoryToken(User),
+          useValue: mockUserDatabase,
+        }
       ],
     }).compile();
 
