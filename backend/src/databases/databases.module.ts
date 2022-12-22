@@ -9,6 +9,7 @@ import { AuthenticationService } from 'hemiron-auth/dist/services/authentication
 import { DatabaseManagementDao } from '../dao/databaseManagement.dao';
 import { UsersService } from '../user/users.service';
 import { User } from '../user/user.entity';
+import { MetricsService } from '../metrics/metrics.service';
 
 @Module({
   imports: [
@@ -23,6 +24,7 @@ import { User } from '../user/user.entity';
     UserOwnsDatabaseService,
     UsersService,
     AuthenticationService,
+    MetricsService,
   ],
 })
 export class DatabasesModule {}
