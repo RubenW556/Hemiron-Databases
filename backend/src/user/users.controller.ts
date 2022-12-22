@@ -1,12 +1,22 @@
-import { Body, Controller, Delete, Get, HttpCode, HttpStatus, Param, ParseUUIDPipe, Patch, ValidationPipe, } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  HttpCode,
+  HttpStatus,
+  Param,
+  ParseUUIDPipe,
+  Patch,
+  ValidationPipe,
+} from '@nestjs/common';
 import { UsersService } from './users.service';
 import { User } from './user.entity';
 import { createUserDto } from './dto/create-user.dto';
 
 @Controller('users')
 export class UsersController {
-  constructor(private usersService: UsersService) {
-  }
+  constructor(private usersService: UsersService) {}
 
   /**
    * Api endpoint for getting all users
@@ -24,32 +34,35 @@ export class UsersController {
   @Get('/:id')
   @HttpCode(HttpStatus.OK)
   async getUserById(
-      @Param('id', new ParseUUIDPipe({ version: '4' })) id,
+    @Param('id', new ParseUUIDPipe({ version: '4' })) id,
   ): Promise<User> {
     return await this.usersService.findOne(id);
   }
 
-    /**
-     * Api endpoint for getting query count by id
-     * @param {string} id user id of user whose query count is requested
-     */
-    @Get("queryCount/:id")
-    @HttpCode(HttpStatus.OK)
-    async getQueryCountById(@Param("id", new ParseUUIDPipe({version:"4"}  )) id): Promise<number>{
-        return this.usersService.getQueryCount(id);
-    }
+  /**
+   * Api endpoint for getting query count by id
+   * @param {string} id user id of user whose query count is requested
+   */
+  @Get('queryCount/:id')
+  @HttpCode(HttpStatus.OK)
+  async getQueryCountById(
+    @Param('id', new ParseUUIDPipe({ version: '4' })) id,
+  ): Promise<number> {
+    return this.usersService.getQueryCount(id);
+  }
 
-
-    /**
-     * Api endpoint for creating user returns the id of made user
-     * @param {User} user user to be made
-     */
-    @Patch()
-    @HttpCode(HttpStatus.CREATED)
-    async createUser(@Body("user", new ValidationPipe()) user: createUserDto): Promise<string> {
-        await this.usersService.putOne(user);
-        return user.id;
-    }
+  /**
+   * Api endpoint for creating user returns the id of made user
+   * @param {User} user user to be made
+   */
+  @Patch()
+  @HttpCode(HttpStatus.CREATED)
+  async createUser(
+    @Body('user', new ValidationPipe()) user: createUserDto,
+  ): Promise<string> {
+    await this.usersService.putOne(user);
+    return user.id;
+  }
 
   /**
    * Api endpoint for deleting user by id
@@ -58,7 +71,7 @@ export class UsersController {
   @Delete('/:id')
   @HttpCode(HttpStatus.NO_CONTENT)
   async deleteUser(
-      @Param('id', new ParseUUIDPipe({ version: '4' })) id: string,
+    @Param('id', new ParseUUIDPipe({ version: '4' })) id: string,
   ): Promise<void> {
     await this.usersService.remove(id);
   }

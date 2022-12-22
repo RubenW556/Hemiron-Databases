@@ -19,8 +19,10 @@ export class TasksService {
     return this.metricsService.getAllDatabaseSizes();
   }
 
-  fetchQueries(){
-    return this.metricsService.getQueryCountByUser_Id("f0daf321-ff96-4ff7-9822-7f848473ac45");
+  fetchQueries() {
+    return this.metricsService.getQueryCountByUser_Id(
+      'f0daf321-ff96-4ff7-9822-7f848473ac45',
+    );
   }
 
   @Cron(CronExpression.EVERY_30_SECONDS)
