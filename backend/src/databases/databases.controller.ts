@@ -11,7 +11,7 @@ export class DatabasesController {
 
     constructor(
         private databasesService: DatabasesService,
-        private userOwnsDatabaseService: UserOwnsDatabaseService,
+        private userOwnsDatabaseService: UserOwnsDatabaseService
     ) {
     }
 
@@ -29,8 +29,9 @@ export class DatabasesController {
     @HttpCode(HttpStatus.OK)
     public async getAll(@Res({ passthrough: true }) res: Response): Promise<Database[]> {
         try {
-            const userId = 'f0daf321-ff96-4ff7-9822-7f848473ac45'; // @TODO get user_id from login token
-            return await this.databasesService.findAllForUser(userId);
+            const userMakingRequest = res.locals.userMakingRequest;
+
+            return await this.databasesService.findAllForUser(userMakingRequest.id);
         } catch (e) {
             res.status(HttpStatus.INTERNAL_SERVER_ERROR);
         }
@@ -40,12 +41,12 @@ export class DatabasesController {
     @HttpCode(HttpStatus.CREATED) //todo validatioon
     public async create(@Res({ passthrough: true }) res: Response, @Body() createDatabaseDto: CreateDatabaseDto): Promise<Database> {
         try {
-            const userId = 'f0daf321-ff96-4ff7-9822-7f848473ac45'; // @TODO get user_id from login token
+            const userMakingRequest = res.locals.userMakingRequest;
 
             const insertResult = await this.databasesService.insert(createDatabaseDto);
             const newDatabaseId = insertResult.identifiers[0].id;
 
-            await this.userOwnsDatabaseService.insert(newDatabaseId, userId)
+            await this.userOwnsDatabaseService.insert(newDatabaseId, userMakingRequest.id)
             return await this.databasesService.findOne(newDatabaseId);
         } catch (e) {
             res.status(HttpStatus.INTERNAL_SERVER_ERROR);
