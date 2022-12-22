@@ -16,12 +16,14 @@ import { Response } from 'express';
 import { Database } from './database.entity';
 import { DatabasesService } from './databases.service';
 import { UserOwnsDatabaseService } from '../user-owns-database/user-owns-database.service';
+import { UsersService } from '../user/users.service';
 
 @Controller('databases')
 export class DatabasesController {
   constructor(
     private databasesService: DatabasesService,
     private userOwnsDatabaseService: UserOwnsDatabaseService,
+    private usersService: UsersService,
   ) {}
 
   @Get(':id')
@@ -59,6 +61,8 @@ export class DatabasesController {
   ): Promise<Database> {
     try {
       const userMakingRequest = res.locals.userMakingRequest;
+
+      await this.usersService.findOne(userMakingRequest.id);
 
       const insertResult = await this.databasesService.insert(
         createDatabaseDto,
