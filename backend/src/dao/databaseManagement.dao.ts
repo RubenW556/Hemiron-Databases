@@ -20,9 +20,9 @@ export class DatabaseManagementDao {
 
   async lookUpUser(userName: string) {
     try {
-      return await this.dataSource.query(`
-                SELECT 1 FROM pg_user WHERE usename='${userName}'
-            `);
+      return await this.dataSource.query(
+        `SELECT 1 FROM pg_user WHERE usename='${userName}'`,
+      );
     } catch (e) {
       throw new BadRequestException('SQL execution failed');
     }
@@ -43,8 +43,7 @@ export class DatabaseManagementDao {
   async lookUpDatabase(databaseName: string) {
     try {
       return await this.dataSource.query(
-        `SELECT FROM pg_database WHERE datname = '${databaseName}'
-            `,
+        `SELECT FROM pg_database WHERE datname = '${databaseName}'`,
       );
     } catch (e) {
       throw new BadRequestException('SQL execution failed');
