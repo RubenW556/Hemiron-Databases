@@ -1,7 +1,7 @@
-import {IsUUID} from 'class-validator';
+import { IsUUID } from 'class-validator';
 
-export class createUserDto{
-    @IsUUID(4)
-    readonly id:string
-    readonly username:string;
+export class createUserDto {
+  @IsUUID(4)
+  readonly id: string;
+  readonly username: string;
 }
