@@ -1,5 +1,5 @@
 import { Module } from '@nestjs/common';
-import { BillingService } from './billing.service';
+import { BillingIntegrationService } from './billing-integration.service';
 import { HttpModule } from '@nestjs/axios';
 
 @Module({
@@ -8,7 +8,7 @@ import { HttpModule } from '@nestjs/axios';
       timeout: 5000,
     }),
   ],
-  providers: [BillingService],
-  exports: [BillingService],
+  providers: [BillingIntegrationService],
+  exports: [BillingIntegrationService],
 })
 export class BillingIntegrationModule {}
