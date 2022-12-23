@@ -1,6 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { INestApplication } from '@nestjs/common';
-import * as request from 'supertest';
 import { AppService } from '../src/app.service';
 import { AppController } from '../src/app.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
@@ -12,7 +11,7 @@ import { MetricsService } from '../src/metrics/metrics.service';
 
 describe('TaskController (e2e)', () => {
   let app: INestApplication;
-  let service: MetricsService;
+  // let service: MetricsService;
   beforeEach(async () => {
     const moduleFixture: TestingModule = await Test.createTestingModule({
       imports: [

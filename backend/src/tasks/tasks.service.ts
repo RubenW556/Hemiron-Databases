@@ -3,8 +3,6 @@ import { Cron, CronExpression } from '@nestjs/schedule';
 import { MetricsService } from '../metrics/metrics.service';
 import { BillingIntegrationService } from '../billing-integration/billing-integration.service';
 import { PatchUserDatabaseMetricsDto } from '../billing-integration/patchUserDatabaseMetrics.dto';
-import { UsersService } from '../user/users.service';
-import { User } from '../user/user.entity';
 
 @Injectable()
 export class TasksService {
@@ -13,7 +11,6 @@ export class TasksService {
   constructor(
     private metricsService: MetricsService,
     private billingService: BillingIntegrationService,
-    private usersService: UsersService,
   ) {
     //test //todo move into cron
     this.initiateUserPostgresMetrics();
