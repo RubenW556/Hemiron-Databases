@@ -1,17 +1,17 @@
 import { Module } from '@nestjs/common';
 import { TasksService } from './tasks.service';
 import { ScheduleModule } from '@nestjs/schedule';
-import { MetricsService } from '../metrics/metrics.service';
-import { BillingService } from '../metrics/billing.service';
-import { HttpModule } from '@nestjs/axios';
+import { MetricsModule } from '../metrics/metrics.module';
+import { BillingIntegrationModule } from '../billing-integration/billing-integration.module';
+import { UsersModule } from '../user/users.module';
 
 @Module({
   imports: [
     ScheduleModule.forRoot(),
-    HttpModule.register({
-      timeout: 5000,
-    }),
+    MetricsModule,
+    BillingIntegrationModule,
+    UsersModule,
   ],
-  providers: [TasksService, MetricsService, BillingService],
+  providers: [TasksService],
 })
 export class TasksModule {}
