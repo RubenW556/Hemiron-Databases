@@ -35,7 +35,7 @@ describe('TaskController (e2e)', () => {
       controllers: [AppController],
     }).compile();
 
-      // service = Test.moduleRef.get<ObjectService>(ObjectService);
+    // service = Test.moduleRef.get<ObjectService>(ObjectService);
 
     app = moduleFixture.createNestApplication();
     await app.init();
