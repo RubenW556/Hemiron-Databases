@@ -6,11 +6,11 @@ import {
   Res,
 } from '@nestjs/common';
 import { NextFunction, Response } from 'express';
-// import { AuthenticationService } from 'hemiron-auth/dist/services/authentication.service';
+// import { AuthenticationService } from 'hemiron-auth/dist/services/authentication.service';//todo enable auth when fixed
 
 @Injectable()
 export class AuthMiddleware implements NestMiddleware {
-  // constructor(private authenticationService: AuthenticationService) {}
+  // constructor(private authenticationService: AuthenticationService) {}//todo enable auth when fixed
 
   // noinspection JSUnusedGlobalSymbols
   public async use(
@@ -18,7 +18,7 @@ export class AuthMiddleware implements NestMiddleware {
     @Res({ passthrough: true }) res: Response,
     next: NextFunction,
   ) {
-    // try {
+    // try {//todo enable auth when fixed
     //   res.locals.userMakingRequest =
     //     await this.authenticationService.getUserFromRequest(req);
     // } catch (e) {

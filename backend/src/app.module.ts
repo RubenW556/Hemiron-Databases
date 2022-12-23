@@ -6,9 +6,9 @@ import { Database } from './databases/database.entity';
 import { DatabasesModule } from './databases/databases.module';
 import { UserOwnsDatabaseModule } from './user-owns-database/user-owns-database.module';
 import { UserOwnsDatabase } from './user-owns-database/user-owns-database.entity';
-// import { AuthenticationValidatorModule } from 'hemiron-auth/dist/authentication-validator.module';
-// import { AuthenticationValidationGuard } from 'hemiron-auth/dist/guards/authentication-validation.guard';
-import { APP_GUARD } from '@nestjs/core';
+// import { AuthenticationValidatorModule } from 'hemiron-auth/dist/authentication-validator.module'; //todo enable auth when fixed
+// import { AuthenticationValidationGuard } from 'hemiron-auth/dist/guards/authentication-validation.guard'; //todo enable auth when fixed
+// import { APP_GUARD } from '@nestjs/core';//todo enable auth when fixed
 import { TasksModule } from './tasks/tasks.module';
 import { AuthMiddleware } from './auth.middleware';
 
@@ -27,7 +27,7 @@ import { AuthMiddleware } from './auth.middleware';
         logging: true,
       }),
     }),
-    // AuthenticationValidatorModule.setup({
+    // AuthenticationValidatorModule.setup({//todo enable auth when fixed
     //   authenticationServerURL: 'http://manager-3.inf-hsleiden:3000',
     // }),
     UsersModule,
@@ -35,7 +35,7 @@ import { AuthMiddleware } from './auth.middleware';
     UserOwnsDatabaseModule,
     TasksModule,
   ],
-  // providers: [
+  // providers: [//todo enable auth when fixed
   //   {
   //     provide: APP_GUARD,
   //     useClass: AuthenticationValidationGuard,
