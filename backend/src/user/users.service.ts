@@ -32,7 +32,7 @@ export class UsersService {
 
   /**
    * creates user
-   * @param {string} id UUID of requested user as string
+   * @param {string} user UUID of requested user as string
    */
   putOne(user: User): Promise<InsertResult> {
     return this.usersRepository.insert(user);
@@ -40,7 +40,7 @@ export class UsersService {
 
   /**
    * deletes user
-   * @param {string} user_id UUID of to be deleted user as string
+   * @param {string} id UUID of to be deleted user as string
    */
   async remove(id: string): Promise<DeleteResult> {
     return await this.usersRepository.delete(id);
