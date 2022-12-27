@@ -23,14 +23,13 @@ image: docker:latest
 .job_docker_template: &template
   retry: 2
   tags:
-    - docker
+    - swarm
   only:
     refs:
       - main
       - merge_requests
 
 CI_PRE_CHECK:
-  image: docker:latest
   stage: pre-check
   <<: *template
   allow_failure: true #On failure All jobs after this one, will not halt.
