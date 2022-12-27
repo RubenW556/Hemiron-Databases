@@ -3,7 +3,7 @@ import { DataSource } from 'typeorm';
 import { InjectDataSource } from '@nestjs/typeorm';
 
 @Injectable()
-export class DatabaseManagementDao {
+export class DatabaseManagementService {
   constructor(@InjectDataSource() private dataSource: DataSource) {}
 
   //User
@@ -18,11 +18,11 @@ export class DatabaseManagementDao {
     }
   }
 
-  lookUpUser(userName: string) {
+  async lookUpUser(userName: string) {
     try {
-      return this.dataSource.query(
+      return (await this.dataSource.query(
         `SELECT 1 FROM pg_user WHERE usename='${userName}'`,
-      );
+      ))[0];
     } catch (e) {
       throw new BadRequestException('SQL execution failed');
     }
@@ -37,11 +37,11 @@ export class DatabaseManagementDao {
     }
   }
 
-  lookUpDatabase(databaseName: string) {
+  async lookUpDatabase(databaseName: string) {
     try {
       return this.dataSource.query(
         `SELECT FROM pg_database WHERE datname = '${databaseName}'`,
-      );
+      )[0];
     } catch (e) {
       throw new BadRequestException('SQL execution failed');
     }

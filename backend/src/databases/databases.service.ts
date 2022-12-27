@@ -1,18 +1,21 @@
-import { Injectable } from '@nestjs/common';
+import {BadRequestException, Injectable} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { DeleteResult, InsertResult, Repository, UpdateResult } from 'typeorm';
 import { Database } from './database.entity';
 import { CreateDatabaseDto } from './dto/create-database.dto';
 import { v4 as generateUUID } from 'uuid';
 import { UpdateDatabaseDto } from './dto/update-database.dto';
-import { DatabaseManagementDao } from '../dao/databaseManagement.dao';
+import { DatabaseManagementService } from '../metaDatabaseManagement/databaseManagement.Service';
+import {UsersService} from "../user/users.service";
+import {ReturnDatabase} from "./dto/database-create-return.dto";
 
 @Injectable()
 export class DatabasesService {
   constructor(
     @InjectRepository(Database)
     private databasesRepository: Repository<Database>,
-    private databaseManagementDao: DatabaseManagementDao,
+    private databaseManagementDao: DatabaseManagementService,
+    private UsersService: UsersService
   ) {}
 
   public findOne(database_id: string): Promise<Database> {
@@ -30,14 +33,14 @@ export class DatabasesService {
     );
   }
 
-  public async insert(databaseDto: CreateDatabaseDto): Promise<InsertResult> {
+  public async insert(databaseDto: CreateDatabaseDto, userMakingRequest: string): Promise<ReturnDatabase> {
     const database: Database = {
       ...databaseDto,
       ...{ id: generateUUID(), creation_date_time: new Date() },
     };
-    const result = this.databasesRepository.insert(database);
-    await this.createDatabaseWithUser(databaseDto.name);
-    return result;
+    const result = await this.databasesRepository.insert(database);
+    return await this.createDatabaseWithUser(databaseDto.name, userMakingRequest);
+
   }
 
   public update(database: UpdateDatabaseDto): Promise<UpdateResult> {
@@ -49,24 +52,33 @@ export class DatabasesService {
   }
 
   //database management context
-  public async createDatabaseWithUser(databaseName: string) {
-    //todo create databasename based on username
+  public async createDatabaseWithUser(databaseName: string, userMakingRequest: string): Promise<ReturnDatabase>  {
     if (
-      (await this.databaseManagementDao.lookUpDatabase(databaseName))[0] ==
+      (await this.databaseManagementDao.lookUpDatabase(databaseName)) ==
       undefined
     ) {
-      await this.databaseManagementDao.createDatabase(databaseName);
+      databaseName = userMakingRequest+"."+databaseName
+      await this.databaseManagementDao.createDatabase(databaseName)
     }
-    //todo get user from tokens
-    //todo use password from request or generate password and return it to the requester
-    if (
-      (await this.databaseManagementDao.lookUpUser('test1'))[0] == undefined
-    ) {
-      await this.databaseManagementDao.createUser('test1', 'test1');
-    }
+
+    const password = Math.random().toString(36).slice(-8);
+    const username = userMakingRequest+"."+databaseName
+
+    await this.databaseManagementDao.createUser(username, password);
+
+
+
     await this.databaseManagementDao.grantUserAccessToDatabase(
-      'test1',
+        username,
+        databaseName,
+    );
+
+
+    await this.databaseManagementDao.grantUserAccessToDatabase(
+        username,
       databaseName,
     );
+
+    return {id:userMakingRequest,username:username,password:password,databaseName:databaseName}
   }
 }

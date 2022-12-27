@@ -57,7 +57,7 @@ describe('user service', () => {
   it('should put user into database', async () => {
     const spy = jest.spyOn(mockUserRepository, 'insert');
 
-    await service.putOne({ id: validUuid1, username: '123' });
+    await service.putOne({ username: '123' },  'test');
 
     expect(spy).toHaveBeenCalledWith({ id: validUuid1, username: '123' });
   });

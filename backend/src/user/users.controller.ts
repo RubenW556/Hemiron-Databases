@@ -7,12 +7,13 @@ import {
   HttpStatus,
   Param,
   ParseUUIDPipe,
-  Patch,
+  Patch, Res,
   ValidationPipe,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { User } from './user.entity';
 import { createUserDto } from './dto/create-user.dto';
+import {Response} from "express";
 
 @Controller('users')
 export class UsersController {
@@ -47,9 +48,10 @@ export class UsersController {
   @HttpCode(HttpStatus.CREATED)
   async createUser(
     @Body('user', new ValidationPipe()) user: createUserDto,
+    @Res({ passthrough: true }) res: Response,
   ): Promise<string> {
-    await this.usersService.putOne(user);
-    return user.id;
+    await this.usersService.putOne(user, res.locals.userMakingRequest);
+    return user.username;
   }
 
   /**

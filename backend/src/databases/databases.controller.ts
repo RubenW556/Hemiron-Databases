@@ -17,6 +17,7 @@ import { Database } from './database.entity';
 import { DatabasesService } from './databases.service';
 import { UserOwnsDatabaseService } from '../user-owns-database/user-owns-database.service';
 import { UsersService } from '../user/users.service';
+import {ReturnDatabase} from "./dto/database-create-return.dto";
 
 @Controller('databases')
 export class DatabasesController {
@@ -58,22 +59,22 @@ export class DatabasesController {
   public async create(
     @Res({ passthrough: true }) res: Response,
     @Body() createDatabaseDto: CreateDatabaseDto,
-  ): Promise<Database> {
+  ): Promise<ReturnDatabase> {
     try {
       const userMakingRequest = res.locals.userMakingRequest;
 
       await this.usersService.findOne(userMakingRequest.id);
 
-      const insertResult = await this.databasesService.insert(
-        createDatabaseDto,
+      const databaseReturn:ReturnDatabase = await this.databasesService.insert(
+        createDatabaseDto, userMakingRequest
       );
-      const newDatabaseId = insertResult.identifiers[0].id;
+      const newDatabaseId = databaseReturn.id;
 
       await this.userOwnsDatabaseService.insert(
         newDatabaseId,
         userMakingRequest.id,
       );
-      return await this.databasesService.findOne(newDatabaseId);
+      return databaseReturn;
     } catch (e) {
       res.status(HttpStatus.INTERNAL_SERVER_ERROR);
     }
