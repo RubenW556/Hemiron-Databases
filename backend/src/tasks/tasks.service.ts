@@ -18,7 +18,7 @@ export class TasksService {
 
   async initiateUserPostgresMetrics() {
     // const users = await this.usersService.findAll();
-    const users = [{ id: '123456' }]; //todo change back to line above
+    const users = [{ id: 'b45fc742-be1c-4c22-957c-3dd352743074' }]; //todo change back to line above
     for (const user of users) {
       const uuid = user.id;
       let size;
