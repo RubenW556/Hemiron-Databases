@@ -126,6 +126,7 @@ curl -X POST \
 https://gitlab.inf-hsleiden.nl/api/v4/projects/537/trigger/pipeline
 ```
 
+[link to sonarqube readme](sonarqube/README.md) \
 [link to backend readme](backend/README.md) \
 [link to postgresql readme](postgresql/README.md)
 ## Sources

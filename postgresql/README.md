@@ -54,11 +54,11 @@ Calculating CPU costs
 The CPU usage costs can be simply calculated by adding up the Resource_used for all queries within a certain period (month) and multiplying it by the price set by Hemiron per unit of CPU consumption.
 
 
-| id    | Date       | Storage_after_Query | Resource_used |
-|-------|------------|---------------------|---------------|
-| #23445| 1-1-2022  | 10GB                | 40ms          |
-| #23446| 21-1-2022 | 20GB                | 270ms         |
-| #23447| 31-1-2022 | 0GB                 | 380ms         |
+| id      | Date        | Storage_after_Query | Resource_used |
+|---------|-------------|---------------------|---------------|
+| #23445  | 1-1-2022    | 10GB                | 40ms          |
+| #23446  | 21-1-2022   | 20GB                | 270ms         |
+| #23447  | 31-1-2022   | 0GB                 | 380ms         |
 
 
 The total CPU costs will be 40+270+380=690ms * X, where X = cost per ms.
@@ -68,19 +68,19 @@ The storage usage costs can be calculated by comparing each query with a time pe
 
 An example query list for a database in January might be:
 
-| id    | Date       | Storage_after_Query | Resource_used |
-|-------|------------|---------------------|---------------|
-| #23445| 1-1-2022  | 10GB                | 40ms          |
-| #23446| 21-1-2022 | 20GB                | 270ms         |
-| #23447| 31-1-2022 | 0GB                 | 380ms         |
+| id      | Date        | Storage_after_Query | Resource_used |
+|---------|-------------|---------------------|---------------|
+| #23445  | 1-1-2022    | 10GB                | 40ms          |
+| #23446  | 21-1-2022   | 20GB                | 270ms         |
+| #23447  | 31-1-2022   | 0GB                 | 380ms         |
 
 And this would produce the following: 
 
-| id    | Datum(ID+1) – Datum(ID)   | Datum(ID+1) – Datum(ID) | Storage_after_Query | Costs |
-|-------|---------------------------|-------------------------|---------------------|-------|
-| #23445| "21-1-2022" - "1-1-2022"  | 20                      | 10GB               | 200   |
-| #23446| "31-1-2022" - "21-1-2022" | 10                      | 20GB               | 200   |
-| #23447| "1-2-2022" - "31-1-2022"  | 1                       | 0GB                | 0     |
+| id      | Datum(ID+1) – Datum(ID)     | Datum(ID+1) – Datum(ID) | Storage_after_Query  | Costs |
+|---------|-----------------------------|-------------------------|----------------------|-------|
+| #23445  | "21-1-2022" - "1-1-2022"    | 20                      | 10GB                 | 200   |
+| #23446  | "31-1-2022" - "21-1-2022"   | 10                      | 20GB                 | 200   |
+| #23447  | "1-2-2022" - "31-1-2022"    | 1                       | 0GB                  | 0     |
 
 Despite the fact that the first query used 10GB and the second query only used 20GB, we see that Queries 1 and 2 have the same costs in terms of storage. This is because after the second query, only 20GB was used for 10 days, while after the first query, 10GB was used for 20 days.
 

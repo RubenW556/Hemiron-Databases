@@ -7,6 +7,8 @@ stages:
         - swarm
     only:
         - main
+        - develop
+
 CI_Cleanup:
     stage: test
     parallel: 5 # we have 5 runners
