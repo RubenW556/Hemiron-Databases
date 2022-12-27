@@ -7,7 +7,7 @@ stages:
 .job_docker_template: &template
     retry: 2
     tags:
-        - swarm
+        - docker
     only:
         refs:
             - main
