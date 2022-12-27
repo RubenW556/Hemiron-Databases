@@ -30,6 +30,7 @@ image: docker:latest
       - merge_requests
 
 CI_PRE_CHECK:
+  image: docker:dind
   stage: pre-check
   <<: *template
   allow_failure: true #On failure All jobs after this one, will not halt.
