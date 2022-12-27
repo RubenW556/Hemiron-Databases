@@ -78,7 +78,8 @@ export class DatabasesService {
         username,
       databaseName,
     );
-
-    return {id:userMakingRequest,username:username,password:password,databaseName:databaseName}
+    const returnDatabase:ReturnDatabase = {id:userMakingRequest,username:username,password:password,databaseName:databaseName}
+    console.log(returnDatabase)
+    return returnDatabase
   }
 }
