@@ -17,7 +17,7 @@ stages:
 .job_docker_template_merge: &template_merge
     retry: 1
     tags:
-        - swarm
+        - docker
     only:
         refs:
             - merge_requests
@@ -28,7 +28,7 @@ stages:
 .job_docker_template_main: &template_main
     retry: 1
     tags:
-        - swarm
+        - docker
     only:
         refs:
             - main
