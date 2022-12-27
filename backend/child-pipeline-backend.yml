@@ -15,7 +15,7 @@ stages:
 
 #trigger tests and analyse on all merge requests
 .job_docker_template_merge: &template_merge
-    image: docker:dind
+    image: docker:latest
     retry: 1
     tags:
         - docker
@@ -27,7 +27,7 @@ stages:
 
 # trigger build, deploy and verify only on main
 .job_docker_template_main: &template_main
-    image: docker:dind
+    image: docker:latest
     retry: 1
     tags:
         - docker
