@@ -6,11 +6,11 @@ import { Database } from './databases/database.entity';
 import { DatabasesModule } from './databases/databases.module';
 import { UserOwnsDatabaseModule } from './user-owns-database/user-owns-database.module';
 import { UserOwnsDatabase } from './user-owns-database/user-owns-database.entity';
-import { AuthenticationValidatorModule } from 'hemiron-auth/dist/authentication-validator.module';
-import { AuthenticationValidationGuard } from 'hemiron-auth/dist/guards/authentication-validation.guard';
 import { APP_GUARD } from '@nestjs/core';
 import { TasksModule } from './tasks/tasks.module';
 import { AuthMiddleware } from './auth.middleware';
+import { AuthenticationValidationGuard } from 'hemiron-auth/dist/guards/authentication-validation.guard';
+import { AuthenticationValidatorModule } from 'hemiron-auth/dist/authentication-validator.module';
 
 @Module({
   imports: [
