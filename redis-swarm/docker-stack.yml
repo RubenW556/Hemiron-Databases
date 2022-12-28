@@ -1,0 +1,33 @@
+# Define the version of the Docker Compose file format
+version: '3.7'
+
+services:
+  redis:
+    image: redis:7-alpine
+    deploy:
+      # Set the number of replicas to 1
+      replicas: 1
+      # Constrain the service to run on a specific node
+      placement:
+        constraints: [ node.hostname == manager-1.inf-hsleiden.nl ]
+      # Use DNS Round-Robin (DNSRR) for service discovery
+      endpoint_mode: dnsrr
+    ports:
+      - "6379:6379"
+    # Connect the service to the 'redis' network
+    networks:
+      - redis
+
+  # Define the Redis UI service
+  redis-ui:
+    image: marian/rebrow
+    ports:
+      - '5001:5001'
+    networks:
+      - redis
+
+networks:
+  redis:
+    external: true
+    # Set the network's name
+    name: redis-swarm
