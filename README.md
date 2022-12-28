@@ -6,7 +6,7 @@ Create config volume
 
 Start the GitLab Runner container using the volume we just created:
 ```shell
-docker run -d --name gitlab-runner --restart always \
+docker run -d --name gitlab-runner-1 --restart always \
   -v /var/run/docker.sock:/var/run/docker.sock \
   -v gitlab-runner-config:/etc/gitlab-runner \
   gitlab/gitlab-runner:latest
@@ -126,6 +126,7 @@ curl -X POST \
 https://gitlab.inf-hsleiden.nl/api/v4/projects/537/trigger/pipeline
 ```
 
+[link to sonarqube readme](sonarqube/README.md) \
 [link to backend readme](backend/README.md) \
 [link to postgresql readme](postgresql/README.md)
 ## Sources

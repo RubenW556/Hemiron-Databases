@@ -8,6 +8,7 @@ import { MetricsService } from '../metrics/metrics.service';
 
 @Module({
   imports: [TypeOrmModule.forFeature([User])],
+  exports: [UsersService],
   controllers: [UsersController],
   providers: [UsersService, MetricsService, DatabaseManagementDao],
 })
