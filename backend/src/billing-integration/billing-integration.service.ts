@@ -1,4 +1,5 @@
 import { HttpService } from '@nestjs/axios';
+import { AxiosError } from 'axios';
 import { catchError, firstValueFrom } from 'rxjs';
 import { Injectable, Logger } from '@nestjs/common';
 import { PatchUserDatabaseMetricsDto } from './patchUserDatabaseMetrics.dto';
@@ -30,9 +31,8 @@ export class BillingIntegrationService {
   async patchDataToBillingEndpoint(payload, endpointURL) {
     const { data } = await firstValueFrom(
       this.httpService.patch(endpointURL, payload).pipe(
-        catchError((error: any) => {
-          this.logger.error(error);
-          throw 'An error happened!';
+        catchError((error: AxiosError) => {
+          throw new Error(error.message);
         }),
       ),
     );
