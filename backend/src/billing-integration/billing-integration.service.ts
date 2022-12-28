@@ -14,7 +14,7 @@ export class BillingIntegrationService {
    * @param {PatchUserDatabaseMetricsDto} payload
    */
   async patchPostgresUserDataToBilling(payload: PatchUserDatabaseMetricsDto) {
-    const endpointURL = 'localhost/billingPostgresEndpoint/'; //todo wait for billing to provide new endpoint
+    const endpointURL = process.env.METRICS_ENDPOINT_POSTGRES;
 
     return this.patchDataToBillingEndpoint(payload, endpointURL);
   }
@@ -23,7 +23,7 @@ export class BillingIntegrationService {
    * Send user Redis metrics to billing api endpoint
    * @param {PatchUserDatabaseMetricsDto} payload   */
   async patchRedisUserDataToBilling(payload: PatchUserDatabaseMetricsDto) {
-    const endpointURL = 'localhost/billingRedisEndpoint/'; //todo wait for billing to provide new endpoint
+    const endpointURL = process.env.METRICS_ENDPOINT_REDIS;
 
     return this.patchDataToBillingEndpoint(payload, endpointURL);
   }
