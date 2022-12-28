@@ -5,7 +5,7 @@ import { DatabasesController } from './databases.controller';
 import { DatabasesService } from './databases.service';
 import { UserOwnsDatabaseService } from '../user-owns-database/user-owns-database.service';
 import { UserOwnsDatabase } from '../user-owns-database/user-owns-database.entity';
-import { AuthenticationService } from 'hemiron-auth/dist/services/authentication.service';
+// import { AuthenticationService } from 'hemiron-auth/dist/services/authentication.service';//todo enable auth when fixed
 import { DatabaseManagementDao } from '../dao/databaseManagement.dao';
 import { UsersService } from '../user/users.service';
 import { User } from '../user/user.entity';
@@ -22,7 +22,7 @@ import { User } from '../user/user.entity';
     DatabaseManagementDao,
     UserOwnsDatabaseService,
     UsersService,
-    AuthenticationService,
+    // AuthenticationService,//todo enable auth when fixed
   ],
 })
 export class DatabasesModule {}
