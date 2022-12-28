@@ -22,7 +22,7 @@ import { AuthenticationValidatorModule } from 'hemiron-auth/dist/authentication-
         port: parseInt(process.env.POSTGRES_PORT),
         username: process.env.POSTGRES_USER_USERNAME,
         password: process.env.POSTGRES_USER_PASSWORD,
-        database: process.env.AUTH_SERVER_URL,
+        database: process.env.POSTGRES_DATABASE,
         entities: [User, Database, UserOwnsDatabase],
         logging: true,
       }),
