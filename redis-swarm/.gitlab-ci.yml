@@ -9,4 +9,5 @@ before_script:
 deploy_to_swarm:
   stage: deploy
   script:
+    - docker network ls
     - docker stack deploy --with-registry-auth -c docker-stack.yml redis
