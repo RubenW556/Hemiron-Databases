@@ -41,6 +41,18 @@ export class UsersController {
   }
 
   /**
+   * Api endpoint for getting query count by id
+   * @param {string} id user id of user whose query count is requested
+   */
+  @Get('queryCount/:id')
+  @HttpCode(HttpStatus.OK)
+  async getQueryCountById(
+    @Param('id', new ParseUUIDPipe({ version: '4' })) id,
+  ): Promise<number> {
+    return this.usersService.getQueryCount(id);
+  }
+
+  /**
    * Api endpoint for creating user returns the id of made user
    * @param {User} user user to be made
    */

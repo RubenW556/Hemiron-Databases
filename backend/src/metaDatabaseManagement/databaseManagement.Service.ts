@@ -31,7 +31,10 @@ export class DatabaseManagementService {
   //databases
   async createDatabase(databaseName: string) {
     try {
-      await this.dataSource.query(`CREATE DATABASE ${databaseName}`);
+      await this.dataSource.query(
+        `CREATE DATABASE ${databaseName}
+          `,
+      );
     } catch (e) {
       throw new BadRequestException('SQL execution failed');
     }
@@ -39,7 +42,7 @@ export class DatabaseManagementService {
 
   async lookUpDatabase(databaseName: string) {
     try {
-      return this.dataSource.query(
+      return await this.dataSource.query(
         `SELECT FROM pg_database WHERE datname = '${databaseName}'`,
       )[0];
     } catch (e) {
@@ -48,9 +51,9 @@ export class DatabaseManagementService {
   }
 
   //privileges
-  grantUserAccessToDatabase(userName: string, databaseName: string) {
+  async grantUserAccessToDatabase(userName: string, databaseName: string) {
     try {
-      return this.dataSource.query(
+      return await this.dataSource.query(
         `ALTER DATABASE ${databaseName} OWNER TO ${userName}`,
       );
     } catch (e) {

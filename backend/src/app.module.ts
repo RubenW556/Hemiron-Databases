@@ -6,11 +6,11 @@ import { Database } from './databases/database.entity';
 import { DatabasesModule } from './databases/databases.module';
 import { UserOwnsDatabaseModule } from './user-owns-database/user-owns-database.module';
 import { UserOwnsDatabase } from './user-owns-database/user-owns-database.entity';
-import { AuthenticationValidatorModule } from 'hemiron-auth/dist/authentication-validator.module';
 import { APP_GUARD } from '@nestjs/core';
-import { AuthenticationValidationGuard } from 'hemiron-auth/dist/guards/authentication-validation.guard';
 import { TasksModule } from './tasks/tasks.module';
 import { AuthMiddleware } from './auth.middleware';
+import { AuthenticationValidationGuard } from 'hemiron-auth/dist/guards/authentication-validation.guard';
+import { AuthenticationValidatorModule } from 'hemiron-auth/dist/authentication-validator.module';
 
 @Module({
   imports: [
@@ -28,7 +28,7 @@ import { AuthMiddleware } from './auth.middleware';
       }),
     }),
     AuthenticationValidatorModule.setup({
-      authenticationServerURL: 'http://manager-3.inf-hsleiden:3000',
+      authenticationServerURL: process.env.AUTH_SERVER_URL,
     }),
     UsersModule,
     DatabasesModule,

@@ -9,12 +9,15 @@ import { AuthenticationService } from 'hemiron-auth/dist/services/authentication
 import { DatabaseManagementService } from '../metaDatabaseManagement/databaseManagement.Service';
 import { UsersService } from '../user/users.service';
 import { User } from '../user/user.entity';
+import { MetricsService } from '../metrics/metrics.service';
+import {MetricsModule} from "../metrics/metrics.module";
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([Database]),
     TypeOrmModule.forFeature([UserOwnsDatabase]),
     TypeOrmModule.forFeature([User]),
+    MetricsModule
   ],
   controllers: [DatabasesController],
   providers: [

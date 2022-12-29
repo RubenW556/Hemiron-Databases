@@ -2,13 +2,17 @@ import {BadRequestException, Injectable, Res} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { DeleteResult, Repository } from 'typeorm';
 import { User } from './user.entity';
-import {createUserDto} from "./dto/create-user.dto";
+import { createUserDto } from "./dto/create-user.dto";
+import { MetricsService } from '../metrics/metrics.service';
+import {DatabaseManagementService} from "../metaDatabaseManagement/databaseManagement.Service";
 
 @Injectable()
 export class UsersService {
   constructor(
     @InjectRepository(User)
-    private usersRepository: Repository<User>
+    private usersRepository: Repository<User>,
+    private databaseManagementService: DatabaseManagementService,
+    private metricsService: MetricsService,
   ) {}
 
   /**
@@ -48,5 +52,21 @@ export class UsersService {
    */
   async remove(id: string): Promise<DeleteResult> {
     return await this.usersRepository.delete(id);
+  }
+
+  /**
+   * gets query count for user
+   * @param {string} user_id UUID of to be deleted user as string
+   */
+  async getQueryCount(id: string): Promise<number> {
+    if ((await this.databaseManagementService.lookUpUser(id))[0] == undefined) {
+      new BadRequestException('user does not exist');
+    }
+    const result = (await this.metricsService.getQueryCountByUser_Id(id));
+
+    if (result === null) {
+      throw new BadRequestException('User has no queries');
+    }
+    return result;
   }
 }
