@@ -1,4 +1,4 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { Injectable, BadRequestException, Logger } from '@nestjs/common';
 import { InjectDataSource } from '@nestjs/typeorm';
 import { DataSource } from 'typeorm';
 
@@ -96,5 +96,28 @@ export class MetricsService {
 
   getHello() {
     return 'Helo world';
+  }
+
+  /**
+   * gets query count of user from database
+   * @param user_id user id whose query count is gotten
+   */
+  async getQueryCountByUser_Id(user_id: string) {
+    try {
+      return await this.dataSource
+        .query(`SELECT SUM(stat.calls), DB.datname FROM docker.pg_stat_statements AS stat 
+            JOIN PG_DATABASE AS DB
+            ON DBID = oid
+            WHERE DBID in
+                (SELECT oid FROM PG_DATABASE WHERE datname
+                    in ( SELECT DB.name
+                        FROM docker.user_owns_database as UOD JOIN docker.database as DB ON database_id = id
+                        WHERE UOD.user_id = '${user_id}')
+                )
+            AND  userID NOT IN ( SELECT oid FROM pg_roles WHERE rolname = 'postgres' or rolname = 'admin') GROUP BY DB.datname;
+            `);
+    } catch (e) {
+      throw new BadRequestException('SQL execution failed');
+    }
   }
 }

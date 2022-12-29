@@ -18,11 +18,11 @@ export class DatabaseManagementDao {
     }
   }
 
-  lookUpUser(userName: string) {
+  async lookUpUser(userName: string) {
     try {
-      return this.dataSource.query(
+      return (await this.dataSource.query(
         `SELECT 1 FROM pg_user WHERE usename='${userName}'`,
-      );
+      ))[0];
     } catch (e) {
       throw new BadRequestException('SQL execution failed');
     }
@@ -31,15 +31,18 @@ export class DatabaseManagementDao {
   //databases
   async createDatabase(databaseName: string) {
     try {
-      await this.dataSource.query(`CREATE DATABASE ${databaseName}`);
+      await this.dataSource.query(
+        `CREATE DATABASE ${databaseName}
+          `,
+      );
     } catch (e) {
       throw new BadRequestException('SQL execution failed');
     }
   }
 
-  lookUpDatabase(databaseName: string) {
+  async lookUpDatabase(databaseName: string) {
     try {
-      return this.dataSource.query(
+      return await this.dataSource.query(
         `SELECT FROM pg_database WHERE datname = '${databaseName}'`,
       );
     } catch (e) {
@@ -48,9 +51,9 @@ export class DatabaseManagementDao {
   }
 
   //privileges
-  grantUserAccessToDatabase(userName: string, databaseName: string) {
+  async grantUserAccessToDatabase(userName: string, databaseName: string) {
     try {
-      return this.dataSource.query(
+      return await this.dataSource.query(
         `ALTER DATABASE ${databaseName} OWNER TO ${userName}`,
       );
     } catch (e) {

@@ -2,6 +2,7 @@ set -e
 
 psql -v ON_ERROR_STOP=1 --username "$PG_ADMIN_USERNAME" --dbname "$PG_ADMIN_DATABASE" <<-EOSQL
 
+
 CREATE SCHEMA $PG_DB_SCHEMA;
 
 CREATE TYPE $PG_DB_SCHEMA.type_enum AS ENUM ('redis', 'postgres');
@@ -36,4 +37,10 @@ CREATE TABLE $PG_DB_SCHEMA.user_owns_database (
     CONSTRAINT "User_Owns_Database_fk0" FOREIGN KEY ("database_id") REFERENCES $PG_DB_SCHEMA.database("id") ON DELETE CASCADE,
     CONSTRAINT "User_Owns_Database_fk1" FOREIGN KEY ("user_id") REFERENCES $PG_DB_SCHEMA.user("id") ON DELETE CASCADE
 );
+EOSQL
+
+psql -v ON_ERROR_STOP=1 --username "$POSTGRES_USER" --dbname "$PG_ADMIN_DATABASE" <<-EOSQL
+
+  CREATE EXTENSION pg_stat_statements SCHEMA $PG_DB_SCHEMA
+
 EOSQL

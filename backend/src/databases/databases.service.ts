@@ -59,8 +59,9 @@ export class DatabasesService {
     }
     //todo get user from tokens
     //todo use password from request or generate password and return it to the requester
+    // todo move this to the user creation endpoint
     if (
-      (await this.databaseManagementDao.lookUpUser('test1'))[0] == undefined
+      (await this.databaseManagementDao.lookUpUser('test1')) == undefined
     ) {
       await this.databaseManagementDao.createUser('test1', 'test1');
     }

@@ -3,11 +3,15 @@ import { UsersService } from './users.service';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { User } from './user.entity';
 import { DeleteResult, InsertResult } from 'typeorm';
+import { MetricsService } from '../metrics/metrics.service';
 
 describe('user service', () => {
   let service: UsersService;
   const validUuid1 = '7e43dcec-a5b9-4598-9712-b898ba352195';
   const validUuid2 = 'vb5b66927-f1f1-47ac-9207-d4e842d9a022';
+
+  const mockDataCollectionDao = {};
+
   const mockUserRepository = {
     find: jest.fn(function () {
       const user: User[] = [
@@ -32,6 +36,7 @@ describe('user service', () => {
       providers: [
         UsersService,
         { provide: getRepositoryToken(User), useValue: mockUserRepository },
+        { provide: MetricsService, useValue: mockDataCollectionDao },
       ],
     }).compile();
 
