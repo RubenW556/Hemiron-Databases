@@ -24,7 +24,10 @@ describe('DatabasesController', () => {
         DatabasesController,
         DatabasesService,
         UsersService,
-        { provide: DatabaseManagementService, useValue: mockDatabaseManagementDao },
+        {
+          provide: DatabaseManagementService,
+          useValue: mockDatabaseManagementDao,
+        },
         {
           provide: getRepositoryToken(Database),
           useValue: mockDatabaseRepository,

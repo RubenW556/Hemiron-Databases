@@ -7,13 +7,14 @@ import {
   HttpStatus,
   Param,
   ParseUUIDPipe,
-  Patch, Res,
+  Patch,
+  Res,
   ValidationPipe,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { User } from './user.entity';
 import { createUserDto } from './dto/create-user.dto';
-import {Response} from "express";
+import { Response } from 'express';
 
 @Controller('users')
 export class UsersController {

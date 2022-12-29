@@ -10,14 +10,14 @@ import { DatabaseManagementService } from '../metaDatabaseManagement/databaseMan
 import { UsersService } from '../user/users.service';
 import { User } from '../user/user.entity';
 import { MetricsService } from '../metrics/metrics.service';
-import {MetricsModule} from "../metrics/metrics.module";
+import { MetricsModule } from '../metrics/metrics.module';
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([Database]),
     TypeOrmModule.forFeature([UserOwnsDatabase]),
     TypeOrmModule.forFeature([User]),
-    MetricsModule
+    MetricsModule,
   ],
   controllers: [DatabasesController],
   providers: [

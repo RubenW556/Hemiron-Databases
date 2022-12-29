@@ -17,7 +17,7 @@ import { Database } from './database.entity';
 import { DatabasesService } from './databases.service';
 import { UserOwnsDatabaseService } from '../user-owns-database/user-owns-database.service';
 import { UsersService } from '../user/users.service';
-import {ReturnDatabase} from "./dto/database-create-return.dto";
+import { ReturnDatabase } from './dto/database-create-return.dto';
 
 @Controller('databases')
 export class DatabasesController {
@@ -65,8 +65,9 @@ export class DatabasesController {
 
       await this.usersService.findOne(userMakingRequest.id);
 
-      const databaseReturn:ReturnDatabase = await this.databasesService.insert(
-        createDatabaseDto, userMakingRequest
+      const databaseReturn: ReturnDatabase = await this.databasesService.insert(
+        createDatabaseDto,
+        userMakingRequest,
       );
       const newDatabaseId = databaseReturn.id;
 

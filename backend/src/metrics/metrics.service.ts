@@ -104,8 +104,8 @@ export class MetricsService {
    */
   async getQueryCountByUser_Id(user_id: string) {
     try {
-      return await this.dataSource
-        .query(`SELECT SUM(stat.calls), DB.datname FROM docker.pg_stat_statements AS stat 
+      return await this.dataSource.query(
+        `SELECT SUM(stat.calls), DB.datname FROM docker.pg_stat_statements AS stat 
             JOIN PG_DATABASE AS DB
             ON DBID = oid
             WHERE DBID in
@@ -115,7 +115,9 @@ export class MetricsService {
                         WHERE UOD.user_id = $1)
                 )
             AND  userID NOT IN ( SELECT oid FROM pg_roles WHERE rolname = 'postgres' or rolname = 'admin') GROUP BY DB.datname;
-            `, [user_id]);
+            `,
+        [user_id],
+      );
     } catch (e) {
       throw new BadRequestException('SQL execution failed');
     }

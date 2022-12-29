@@ -1,4 +1,4 @@
-import {BadRequestException, Injectable} from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { DeleteResult, InsertResult, Repository, UpdateResult } from 'typeorm';
 import { Database } from './database.entity';
@@ -6,8 +6,8 @@ import { CreateDatabaseDto } from './dto/create-database.dto';
 import { v4 as generateUUID } from 'uuid';
 import { UpdateDatabaseDto } from './dto/update-database.dto';
 import { DatabaseManagementService } from '../metaDatabaseManagement/databaseManagement.Service';
-import {UsersService} from "../user/users.service";
-import {ReturnDatabase} from "./dto/database-create-return.dto";
+import { UsersService } from '../user/users.service';
+import { ReturnDatabase } from './dto/database-create-return.dto';
 
 @Injectable()
 export class DatabasesService {
@@ -15,7 +15,7 @@ export class DatabasesService {
     @InjectRepository(Database)
     private databasesRepository: Repository<Database>,
     private databaseManagementDao: DatabaseManagementService,
-    private UsersService: UsersService
+    private UsersService: UsersService,
   ) {}
 
   public findOne(database_id: string): Promise<Database> {
@@ -33,14 +33,20 @@ export class DatabasesService {
     );
   }
 
-  public async insert(databaseDto: CreateDatabaseDto, userMakingRequest: string): Promise<ReturnDatabase> {
+  public async insert(
+    databaseDto: CreateDatabaseDto,
+    userMakingRequest: string,
+  ): Promise<ReturnDatabase> {
     const database: Database = {
       ...databaseDto,
       ...{ id: generateUUID(), creation_date_time: new Date() },
     };
     const result = await this.databasesRepository.insert(database);
-    return await this.createDatabaseWithUser(databaseDto.name, userMakingRequest, database.id);
-
+    return await this.createDatabaseWithUser(
+      databaseDto.name,
+      userMakingRequest,
+      database.id,
+    );
   }
 
   public update(database: UpdateDatabaseDto): Promise<UpdateResult> {
@@ -51,34 +57,42 @@ export class DatabasesService {
     return this.databasesRepository.delete(id);
   }
 
-
   /**
    * creates a new database and a user that can use it
    * @param databaseName the name of the database
    * @param userMakingRequest the id of the user making the request
    * @param databaseId the uuid of the database
    */
-  public async createDatabaseWithUser(databaseName: string, userMakingRequest: string, databaseId: string): Promise<ReturnDatabase>  {
+  public async createDatabaseWithUser(
+    databaseName: string,
+    userMakingRequest: string,
+    databaseId: string,
+  ): Promise<ReturnDatabase> {
     if (
       (await this.databaseManagementDao.lookUpDatabase(databaseName)) ==
       undefined
     ) {
-      databaseName = userMakingRequest+"."+databaseName
-      await this.databaseManagementDao.createDatabase(databaseName)
+      databaseName = userMakingRequest + '.' + databaseName;
+      await this.databaseManagementDao.createDatabase(databaseName);
     }
 
     const password = Math.random().toString(36).slice(-8);
-    const username = databaseId+"."+databaseName
+    const username = databaseId + '.' + databaseName;
 
     await this.databaseManagementDao.createUser(username, password);
 
     await this.databaseManagementDao.grantUserAccessToDatabase(
-        username,
-        databaseName,
+      username,
+      databaseName,
     );
 
-    const returnDatabase:ReturnDatabase = {id:userMakingRequest,username:username,password:password,databaseName:databaseName}
-    console.log(returnDatabase)
-    return returnDatabase
+    const returnDatabase: ReturnDatabase = {
+      id: userMakingRequest,
+      username: username,
+      password: password,
+      databaseName: databaseName,
+    };
+    console.log(returnDatabase);
+    return returnDatabase;
   }
 }

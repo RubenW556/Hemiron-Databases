@@ -20,9 +20,11 @@ export class DatabaseManagementService {
 
   async lookUpUser(userName: string) {
     try {
-      return (await this.dataSource.query(
-        `SELECT 1 FROM pg_user WHERE usename='${userName}'`,
-      ))[0];
+      return (
+        await this.dataSource.query(
+          `SELECT 1 FROM pg_user WHERE usename='${userName}'`,
+        )
+      )[0];
     } catch (e) {
       throw new BadRequestException('SQL execution failed');
     }

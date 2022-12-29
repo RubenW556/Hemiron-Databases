@@ -1,10 +1,10 @@
-import {BadRequestException, Injectable, Res} from '@nestjs/common';
+import { BadRequestException, Injectable, Res } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { DeleteResult, Repository } from 'typeorm';
 import { User } from './user.entity';
-import { createUserDto } from "./dto/create-user.dto";
+import { createUserDto } from './dto/create-user.dto';
 import { MetricsService } from '../metrics/metrics.service';
-import {DatabaseManagementService} from "../metaDatabaseManagement/databaseManagement.Service";
+import { DatabaseManagementService } from '../metaDatabaseManagement/databaseManagement.Service';
 
 @Injectable()
 export class UsersService {
@@ -39,9 +39,9 @@ export class UsersService {
    * creates user
    * @param {createUserDto} id UUID of requested user as string
    */
-  async putOne(createUserDto: createUserDto, username:string): Promise<User> {
-    const newUser:User = {id: username, username: createUserDto.username};
-    await this.usersRepository.insert(newUser)
+  async putOne(createUserDto: createUserDto, username: string): Promise<User> {
+    const newUser: User = { id: username, username: createUserDto.username };
+    await this.usersRepository.insert(newUser);
 
     return newUser;
   }
@@ -62,7 +62,7 @@ export class UsersService {
     if ((await this.databaseManagementService.lookUpUser(id))[0] == undefined) {
       new BadRequestException('user does not exist');
     }
-    const result = (await this.metricsService.getQueryCountByUser_Id(id));
+    const result = await this.metricsService.getQueryCountByUser_Id(id);
 
     if (result === null) {
       throw new BadRequestException('User has no queries');
