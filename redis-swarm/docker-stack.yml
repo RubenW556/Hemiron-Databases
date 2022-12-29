@@ -8,15 +8,15 @@ services:
       # Set the number of replicas to 1
       replicas: 1
       # Constrain the service to run on a specific node
-      placement:
-        constraints: [ node.hostname == manager-1.inf-hsleiden.nl ]
+      #placement:
+        #constraints: [ node.hostname == manager-1.inf-hsleiden.nl ]
       # Use DNS Round-Robin (DNSRR) for service discovery
-      endpoint_mode: dnsrr
+      #endpoint_mode: DNSRR
     ports:
       - "6379:6379"
     # Connect the service to the 'redis' network
     networks:
-      - redis
+      - redis-swarm
 
   # Define the Redis UI service
   redis-ui:
@@ -24,10 +24,10 @@ services:
     ports:
       - '5001:5001'
     networks:
-      - redis
+      - redis-swarm
 
 networks:
-  redis:
+  redis-swarm:
     external: true
     # Set the network's name
     name: redis-swarm

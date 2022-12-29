@@ -1,0 +1,21 @@
+version: '3.7'
+
+services:
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+    networks:
+      - redis-swarm
+
+  redis-ui:
+    image: marian/rebrow
+    ports:
+      - '5001:5001'
+    networks:
+      - redis-swarm
+
+networks:
+  redis-swarm:
+    external: true
+    name: redis-swarm
