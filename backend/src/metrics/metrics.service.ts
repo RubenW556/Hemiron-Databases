@@ -112,10 +112,10 @@ export class MetricsService {
                 (SELECT oid FROM PG_DATABASE WHERE datname
                     in ( SELECT DB.name
                         FROM docker.user_owns_database as UOD JOIN docker.database as DB ON database_id = id
-                        WHERE UOD.user_id = '${user_id}')
+                        WHERE UOD.user_id = $1)
                 )
             AND  userID NOT IN ( SELECT oid FROM pg_roles WHERE rolname = 'postgres' or rolname = 'admin') GROUP BY DB.datname;
-            `);
+            `, [user_id]);
     } catch (e) {
       throw new BadRequestException('SQL execution failed');
     }
