@@ -3,18 +3,22 @@ import { AxiosError } from 'axios';
 import { catchError, firstValueFrom } from 'rxjs';
 import { Injectable, Logger } from '@nestjs/common';
 import { PatchUserDatabaseMetricsDto } from './patchUserDatabaseMetrics.dto';
+import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class BillingIntegrationService {
   private readonly logger = new Logger(BillingIntegrationService.name);
-  constructor(private readonly httpService: HttpService) {}
+  constructor(
+    private readonly httpService: HttpService,
+    private configService: ConfigService,
+  ) {}
 
   /**
    * Send user PostgresSQL metrics to billing api endpoint
    * @param {PatchUserDatabaseMetricsDto} payload
    */
   async patchPostgresUserDataToBilling(payload: PatchUserDatabaseMetricsDto) {
-    const endpointURL = process.env.METRICS_ENDPOINT_POSTGRES;
+    const endpointURL = this.configService.get('METRICS_ENDPOINT_POSTGRES');
 
     return this.patchDataToBillingEndpoint(payload, endpointURL);
   }
@@ -23,7 +27,7 @@ export class BillingIntegrationService {
    * Send user Redis metrics to billing api endpoint
    * @param {PatchUserDatabaseMetricsDto} payload   */
   async patchRedisUserDataToBilling(payload: PatchUserDatabaseMetricsDto) {
-    const endpointURL = process.env.METRICS_ENDPOINT_REDIS;
+    const endpointURL = this.configService.get('METRICS_ENDPOINT_REDIS');
 
     return this.patchDataToBillingEndpoint(payload, endpointURL);
   }
