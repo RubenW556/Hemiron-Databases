@@ -7,8 +7,14 @@ networks:
 services:
   db:
     image: postgres:15.0
+    extra_hosts:
+      - "manager-1.inf-hsleiden:192.168.195.109"
+      - "manager-2.inf-hsleiden:192.168.195.168"
     env_file:
       - .env
   adminer:
     image: adminer
+    extra_hosts:
+      - "manager-1.inf-hsleiden:192.168.195.109"
+      - "manager-2.inf-hsleiden:192.168.195.168"
     restart: always
