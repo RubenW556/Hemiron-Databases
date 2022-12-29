@@ -58,7 +58,7 @@ export class UsersService {
     if ((await this.databaseManagementDao.lookUpUser(id))[0] == undefined) {
       new BadRequestException('user does not exist');
     }
-    const result = (await this.metricsService.getQueryCountByUser_Id(id))[0];
+    const result = (await this.metricsService.getQueryCountByUser_Id(id));
 
     if (result === null) {
       throw new BadRequestException('User has no queries');
