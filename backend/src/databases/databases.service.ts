@@ -39,7 +39,7 @@ export class DatabasesService {
       ...{ id: generateUUID(), creation_date_time: new Date() },
     };
     const result = await this.databasesRepository.insert(database);
-    return await this.createDatabaseWithUser(databaseDto.name, userMakingRequest);
+    return await this.createDatabaseWithUser(databaseDto.name, userMakingRequest, database.id);
 
   }
 
@@ -51,8 +51,14 @@ export class DatabasesService {
     return this.databasesRepository.delete(id);
   }
 
-  //database management context
-  public async createDatabaseWithUser(databaseName: string, userMakingRequest: string): Promise<ReturnDatabase>  {
+
+  /**
+   * creates a new database and a user that can use it
+   * @param databaseName the name of the database
+   * @param userMakingRequest the id of the user making the request
+   * @param databaseId the uuid of the database
+   */
+  public async createDatabaseWithUser(databaseName: string, userMakingRequest: string, databaseId: string): Promise<ReturnDatabase>  {
     if (
       (await this.databaseManagementDao.lookUpDatabase(databaseName)) ==
       undefined
@@ -62,22 +68,15 @@ export class DatabasesService {
     }
 
     const password = Math.random().toString(36).slice(-8);
-    const username = userMakingRequest+"."+databaseName
+    const username = databaseId+"."+databaseName
 
     await this.databaseManagementDao.createUser(username, password);
-
-
 
     await this.databaseManagementDao.grantUserAccessToDatabase(
         username,
         databaseName,
     );
 
-
-    await this.databaseManagementDao.grantUserAccessToDatabase(
-        username,
-      databaseName,
-    );
     const returnDatabase:ReturnDatabase = {id:userMakingRequest,username:username,password:password,databaseName:databaseName}
     console.log(returnDatabase)
     return returnDatabase
