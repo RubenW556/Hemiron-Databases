@@ -1,15 +1,4 @@
-import {
-  Body,
-  Controller,
-  Delete,
-  Get,
-  HttpCode,
-  HttpStatus,
-  Param,
-  ParseUUIDPipe,
-  Patch,
-  ValidationPipe,
-} from '@nestjs/common';
+import { Body, Controller, Delete, Get, HttpCode, HttpStatus, Param, ParseUUIDPipe, Patch, } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { User } from './user.entity';
 import { createUserDto } from './dto/create-user.dto';
@@ -58,7 +47,7 @@ export class UsersController {
   @Patch()
   @HttpCode(HttpStatus.CREATED)
   async createUser(
-    @Body('user', new ValidationPipe()) user: createUserDto,
+    @Body() user: createUserDto,
   ): Promise<string> {
     await this.usersService.putOne(user);
     return user.id;
