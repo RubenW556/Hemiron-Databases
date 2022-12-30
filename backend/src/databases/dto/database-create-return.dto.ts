@@ -4,5 +4,4 @@ export class ReturnDatabase {
   readonly password?: string;
   readonly databaseName?: string;
   readonly database_id: string;
-
 }

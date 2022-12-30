@@ -4,7 +4,7 @@ import { UsersService } from './users.service';
 import { User } from './user.entity';
 import { UsersController } from './users.controller';
 import { MetricsService } from '../metrics/metrics.service';
-import {DatabaseManagementService} from "../metaDatabaseManagement/databaseManagement.Service";
+import { DatabaseManagementService } from '../metaDatabaseManagement/databaseManagement.Service';
 
 @Module({
   imports: [TypeOrmModule.forFeature([User])],

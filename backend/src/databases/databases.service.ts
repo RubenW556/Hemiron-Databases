@@ -1,12 +1,11 @@
-import {BadRequestException, HttpException, HttpStatus, Injectable} from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { DeleteResult, InsertResult, Repository, UpdateResult } from 'typeorm';
+import { DeleteResult, Repository, UpdateResult } from 'typeorm';
 import { Database } from './database.entity';
 import { CreateDatabaseDto } from './dto/create-database.dto';
 import { v4 as generateUUID } from 'uuid';
 import { UpdateDatabaseDto } from './dto/update-database.dto';
 import { DatabaseManagementService } from '../metaDatabaseManagement/databaseManagement.Service';
-import { UsersService } from '../user/users.service';
 import { ReturnDatabase } from './dto/database-create-return.dto';
 
 @Injectable()
@@ -15,7 +14,6 @@ export class DatabasesService {
     @InjectRepository(Database)
     private databasesRepository: Repository<Database>,
     private databaseManagementDao: DatabaseManagementService,
-    private UsersService: UsersService,
   ) {}
 
   public findOne(database_id: string): Promise<Database> {
@@ -41,7 +39,7 @@ export class DatabasesService {
       ...databaseDto,
       ...{ id: generateUUID(), creation_date_time: new Date() },
     };
-    const result = await this.databasesRepository.insert(database);
+    await this.databasesRepository.insert(database);
     return await this.createDatabaseWithUser(
       databaseDto.name,
       userMakingRequest,
@@ -86,9 +84,8 @@ export class DatabasesService {
       username: username,
       password: password,
       databaseName: databaseName,
-      database_id: databaseId
+      database_id: databaseId,
     };
-    console.log(returnDatabase);
     return returnDatabase;
   }
 }

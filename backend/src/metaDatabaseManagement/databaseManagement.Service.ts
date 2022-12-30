@@ -38,14 +38,16 @@ export class DatabaseManagementService {
           `,
       );
     } catch (e) {
-      throw new BadRequestException("database name not available")
+      throw new BadRequestException('database name not available');
     }
   }
 
   async lookUpDatabase(databaseName: string) {
     try {
-      return await this.dataSource.query(
-        `SELECT FROM pg_database WHERE datname = '${databaseName}'`,
+      return (
+        await this.dataSource.query(
+          `SELECT FROM pg_database WHERE datname = '${databaseName}'`,
+        )
       )[0];
     } catch (e) {
       throw new BadRequestException('SQL execution failed');
