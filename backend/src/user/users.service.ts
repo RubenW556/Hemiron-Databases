@@ -58,7 +58,7 @@ export class UsersService {
    * @param {string} user_id UUID of to be deleted user as string
    */
   async getQueryCount(id: string): Promise<number> {
-    if ((await this.databaseManagementService.lookUpUser(id))[0] == undefined) {
+    if ((await this.databaseManagementService.lookUpUser(id)) == undefined) {
       new BadRequestException('user does not exist');
     }
     const result = await this.metricsService.getQueryCountByUser_Id(id);
