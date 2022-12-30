@@ -33,7 +33,7 @@ export class DatabasesService {
   public async insert(databaseDto: CreateDatabaseDto): Promise<InsertResult> {
     const database: Database = {
       ...databaseDto,
-      ...{ id: generateUUID(), creation_date_time: new Date() },
+      ...{ id: generateUUID(), created_at: new Date() },
     };
     const result = this.databasesRepository.insert(database);
     await this.createDatabaseWithUser(databaseDto.name);

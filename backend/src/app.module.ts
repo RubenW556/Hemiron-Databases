@@ -11,6 +11,7 @@ import { UserOwnsDatabase } from './user-owns-database/user-owns-database.entity
 // import { APP_GUARD } from '@nestjs/core';//todo enable auth when fixed
 import { TasksModule } from './tasks/tasks.module';
 import { AuthMiddleware } from './auth.middleware';
+import { RedisModule } from './redis/redis.module';
 
 @Module({
   imports: [
@@ -34,6 +35,7 @@ import { AuthMiddleware } from './auth.middleware';
     DatabasesModule,
     UserOwnsDatabaseModule,
     TasksModule,
+    RedisModule,
   ],
   // providers: [//todo enable auth when fixed
   //   {

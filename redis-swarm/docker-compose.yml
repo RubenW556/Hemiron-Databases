@@ -6,16 +6,16 @@ services:
     ports:
       - "6379:6379"
     networks:
-      - redis-swarm
+      - redis
 
   redis-ui:
     image: marian/rebrow
     ports:
       - '5001:5001'
     networks:
-      - redis-swarm
+      - redis
 
 networks:
-  redis-swarm:
+  redis:
     external: true
-    name: redis-swarm
+    name: redis
