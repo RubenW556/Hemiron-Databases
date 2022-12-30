@@ -12,6 +12,7 @@ CREATE TABLE $PG_DB_SCHEMA.database (
     "name" character varying(50) NOT NULL,
     "type" $PG_DB_SCHEMA.type_enum NOT NULL,
     "creation_date_time" TIMESTAMP NOT NULL,
+    "pgd_id" integer NOT NULL,
     CONSTRAINT "Database_pk" PRIMARY KEY ("id")
 );
 

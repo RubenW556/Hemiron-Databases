@@ -1,4 +1,4 @@
-import { Injectable, BadRequestException, Logger } from '@nestjs/common';
+import { BadRequestException, Injectable, Logger } from '@nestjs/common';
 import { InjectDataSource } from '@nestjs/typeorm';
 import { DataSource } from 'typeorm';
 
@@ -109,10 +109,10 @@ export class MetricsService {
             JOIN PG_DATABASE AS DB
             ON DBID = oid
             WHERE DBID in
-                (SELECT oid FROM PG_DATABASE WHERE datname
-                    in ( SELECT DB.name
-                        FROM docker.user_owns_database as UOD JOIN docker.database as DB ON database_id = id
-                        WHERE UOD.user_id = $1)
+                (
+                    SELECT pgd_id FROM docker.database
+                    INNER JOIN docker.user_owns_database uod on docker.database.id = uod.database_id
+                    WHERE uod.user_id = $1
                 )
             AND  userID NOT IN ( SELECT oid FROM pg_roles WHERE rolname = 'postgres' or rolname = 'admin') GROUP BY DB.datname;
             `, [user_id]);
