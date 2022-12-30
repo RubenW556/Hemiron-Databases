@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import {BadRequestException, HttpException, HttpStatus, Injectable} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { DeleteResult, InsertResult, Repository, UpdateResult } from 'typeorm';
 import { Database } from './database.entity';
@@ -60,24 +60,19 @@ export class DatabasesService {
   /**
    * creates a new database and a user that can use it
    * @param databaseName the name of the database
-   * @param userMakingRequest the id of the user making the request
+   * @param userMakingRequest the user making the request
    * @param databaseId the uuid of the database
    */
   public async createDatabaseWithUser(
     databaseName: string,
-    userMakingRequest: string,
+    userMakingRequest,
     databaseId: string,
   ): Promise<ReturnDatabase> {
-    if (
-      (await this.databaseManagementDao.lookUpDatabase(databaseName)) ==
-      undefined
-    ) {
-      databaseName = userMakingRequest + '.' + databaseName;
-      await this.databaseManagementDao.createDatabase(databaseName);
-    }
-
     const password = Math.random().toString(36).slice(-8);
     const username = databaseId + '.' + databaseName;
+    databaseName = userMakingRequest.id + '.' + databaseName;
+
+    await this.databaseManagementDao.createDatabase(databaseName);
 
     await this.databaseManagementDao.createUser(username, password);
 
@@ -87,10 +82,11 @@ export class DatabasesService {
     );
 
     const returnDatabase: ReturnDatabase = {
-      id: userMakingRequest,
+      user_id: userMakingRequest.id,
       username: username,
       password: password,
       databaseName: databaseName,
+      database_id: databaseId
     };
     console.log(returnDatabase);
     return returnDatabase;

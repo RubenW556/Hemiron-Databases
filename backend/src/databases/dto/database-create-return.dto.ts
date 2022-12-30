@@ -1,6 +1,8 @@
 export class ReturnDatabase {
-  readonly id: string;
+  readonly user_id: string;
   readonly username?: string;
   readonly password?: string;
   readonly databaseName?: string;
+  readonly database_id: string;
+
 }

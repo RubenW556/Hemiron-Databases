@@ -31,7 +31,6 @@ export class UsersService {
     if (user == null) {
       throw new BadRequestException("can't find user by uuid");
     }
-
     return user;
   }
 

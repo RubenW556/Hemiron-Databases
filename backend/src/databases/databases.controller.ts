@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   Body,
   Controller,
   Delete,
@@ -60,7 +61,6 @@ export class DatabasesController {
     @Res({ passthrough: true }) res: Response,
     @Body() createDatabaseDto: CreateDatabaseDto,
   ): Promise<ReturnDatabase> {
-    try {
       const userMakingRequest = res.locals.userMakingRequest;
 
       await this.usersService.findOne(userMakingRequest.id);
@@ -69,16 +69,13 @@ export class DatabasesController {
         createDatabaseDto,
         userMakingRequest,
       );
-      const newDatabaseId = databaseReturn.id;
-
+      const newDatabaseId = databaseReturn.database_id;
       await this.userOwnsDatabaseService.insert(
         newDatabaseId,
         userMakingRequest.id,
       );
+
       return databaseReturn;
-    } catch (e) {
-      res.status(HttpStatus.INTERNAL_SERVER_ERROR);
-    }
   }
 
   @Patch()

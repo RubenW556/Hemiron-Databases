@@ -10,9 +10,9 @@ export class DatabaseManagementService {
   async createUser(userName: string, password: string) {
     try {
       await this.dataSource.query(
-        `CREATE USER ${userName} WITH PASSWORD '${password}'`,
+        `CREATE USER "${userName}" WITH PASSWORD '${password}'`,
       );
-      await this.dataSource.query(`GRANT ${userName} TO admin`);
+      await this.dataSource.query(`GRANT "${userName}" TO admin`);
     } catch (e) {
       throw new BadRequestException('SQL execution failed');
     }
@@ -22,7 +22,7 @@ export class DatabaseManagementService {
     try {
       return (
         await this.dataSource.query(
-          `SELECT 1 FROM pg_user WHERE usename='${userName}'`,
+          `SELECT 1 FROM pg_user WHERE usename="${userName}"`,
         )
       )[0];
     } catch (e) {
@@ -34,11 +34,11 @@ export class DatabaseManagementService {
   async createDatabase(databaseName: string) {
     try {
       await this.dataSource.query(
-        `CREATE DATABASE ${databaseName}
+        `CREATE DATABASE "${databaseName}"
           `,
       );
     } catch (e) {
-      throw new BadRequestException('SQL execution failed');
+      throw new BadRequestException("database name not available")
     }
   }
 
@@ -56,7 +56,7 @@ export class DatabaseManagementService {
   async grantUserAccessToDatabase(userName: string, databaseName: string) {
     try {
       return await this.dataSource.query(
-        `ALTER DATABASE ${databaseName} OWNER TO ${userName}`,
+        `ALTER DATABASE "${databaseName}" OWNER TO "${userName}"`,
       );
     } catch (e) {
       throw new BadRequestException('SQL execution failed');

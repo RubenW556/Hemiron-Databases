@@ -3,13 +3,13 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { UsersService } from './users.service';
 import { User } from './user.entity';
 import { UsersController } from './users.controller';
-import { DatabaseManagementDao } from '../dao/databaseManagement.dao';
 import { MetricsService } from '../metrics/metrics.service';
+import {DatabaseManagementService} from "../metaDatabaseManagement/databaseManagement.Service";
 
 @Module({
   imports: [TypeOrmModule.forFeature([User])],
   exports: [UsersService],
   controllers: [UsersController],
-  providers: [UsersService, MetricsService, DatabaseManagementDao],
+  providers: [UsersService, MetricsService, DatabaseManagementService],
 })
 export class UsersModule {}
