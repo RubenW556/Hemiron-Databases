@@ -73,7 +73,7 @@ export class MetricsService {
         ON database.id = user_owns_database.database_id 
         AND user_owns_database.user_id = $1
         INNER JOIN pg_database AS t1
-        ON database.oid = t1.oid
+        ON database.pgd_id = t1.oid
         LIMIT $2
         OFFSET $3;
       `,
