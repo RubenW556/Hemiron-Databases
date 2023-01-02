@@ -76,4 +76,14 @@ export class DatabaseManagementService {
       throw new BadRequestException('SQL execution failed');
     }
   }
+
+  async revokeAccessFromPublic( databaseName: string) {
+    try {
+      return await this.dataSource.query(
+          `REVOKE ALL PRIVILEGES ON DATABASE "${databaseName}" FROM PUBLIC`
+      );
+    } catch (e) {
+      throw new BadRequestException('SQL execution failed');
+    }
+  }
 }
