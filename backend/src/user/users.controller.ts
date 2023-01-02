@@ -1,7 +1,19 @@
-import { Body, Controller, Delete, Get, HttpCode, HttpStatus, Param, ParseUUIDPipe, Patch, } from '@nestjs/common';
+import {
+  Res,
+  Body,
+  Controller,
+  Delete,
+  Get,
+  HttpCode,
+  HttpStatus,
+  Param,
+  ParseUUIDPipe,
+  Patch,
+} from '@nestjs/common';
 import { UsersService } from './users.service';
 import { User } from './user.entity';
 import { createUserDto } from './dto/create-user.dto';
+import { Response } from 'express';
 
 @Controller('users')
 export class UsersController {
@@ -48,9 +60,10 @@ export class UsersController {
   @HttpCode(HttpStatus.CREATED)
   async createUser(
     @Body() user: createUserDto,
+    @Res({ passthrough: true }) res: Response,
   ): Promise<string> {
-    await this.usersService.putOne(user);
-    return user.id;
+    await this.usersService.putOne(user, res.locals.userMakingRequest);
+    return user.username;
   }
 
   /**
