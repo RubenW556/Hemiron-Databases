@@ -79,6 +79,7 @@ export class DatabasesService {
       databaseName,
     );
 
+    await this.databaseManagementDao.revokeAccessFromPublic(databaseName)
     const returnDatabase: ReturnDatabase = {
       user_id: userMakingRequest.id,
       username: username,
