@@ -68,6 +68,7 @@ export class DatabasesController {
       createDatabaseDto,
       userMakingRequest,
     );
+
     const newDatabaseId = databaseReturn.database_id;
     await this.userOwnsDatabaseService.insert(
       newDatabaseId,
