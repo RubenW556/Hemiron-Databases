@@ -52,10 +52,9 @@ export class UsersController {
     return this.usersService.getQueryCount(id);
   }
 
-  /**
+  /** TODO: Ruben er bestaat nog geen putOne in userService
    * Api endpoint for creating user returns the id of made user
    * @param {User} user user to be made
-   */
   @Patch()
   @HttpCode(HttpStatus.CREATED)
   async createUser(
@@ -65,6 +64,7 @@ export class UsersController {
     await this.usersService.putOne(user, res.locals.userMakingRequest);
     return user.id;
   }
+   */
 
   /**
    * Api endpoint for deleting user by id
