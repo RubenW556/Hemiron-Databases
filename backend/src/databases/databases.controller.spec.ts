@@ -5,7 +5,7 @@ import { Database } from './database.entity';
 import { DatabasesService } from './databases.service';
 import { UserOwnsDatabaseService } from '../user-owns-database/user-owns-database.service';
 import { UserOwnsDatabase } from '../user-owns-database/user-owns-database.entity';
-import { DatabaseManagementService } from '../metaDatabaseManagement/databaseManagement.Service';
+import { DatabaseManagementService } from '../metaDatabaseManagement/databaseManagement.service';
 import { UsersService } from '../user/users.service';
 import { User } from '../user/user.entity';
 

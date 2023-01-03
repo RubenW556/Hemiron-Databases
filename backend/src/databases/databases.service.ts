@@ -5,7 +5,7 @@ import { Database } from './database.entity';
 import { CreateDatabaseDto } from './dto/create-database.dto';
 import { v4 as generateUUID } from 'uuid';
 import { UpdateDatabaseDto } from './dto/update-database.dto';
-import { DatabaseManagementService } from '../metaDatabaseManagement/databaseManagement.Service';
+import { DatabaseManagementService } from '../metaDatabaseManagement/databaseManagement.service';
 import { ReturnDatabase } from './dto/database-create-return.dto';
 
 @Injectable()
@@ -35,16 +35,21 @@ export class DatabasesService {
     databaseDto: CreateDatabaseDto,
     userMakingRequest: string,
   ): Promise<ReturnDatabase> {
-    const database: Database = {
-      ...databaseDto,
-      ...{ id: generateUUID(), creation_date_time: new Date() },
-    };
-    await this.databasesRepository.insert(database);
-    return await this.createDatabaseWithUser(
+    const databaseId = generateUUID();
+
+    const dto: ReturnDatabase = await this.createDatabaseWithUser(
       databaseDto.name,
       userMakingRequest,
-      database.id,
+      databaseId,
     );
+
+    const database: Database = {
+      ...databaseDto,
+      ...{ id: databaseId, creation_date_time: new Date(), pgd_id: dto.pg_id },
+    };
+
+    await this.databasesRepository.insert(database);
+    return dto;
   }
 
   public update(database: UpdateDatabaseDto): Promise<UpdateResult> {
@@ -85,6 +90,9 @@ export class DatabasesService {
       password: password,
       databaseName: databaseName,
       database_id: databaseId,
+      pg_id: await this.databaseManagementDao.getDatabasePGIDByName(
+        databaseName,
+      ),
     };
     return returnDatabase;
   }

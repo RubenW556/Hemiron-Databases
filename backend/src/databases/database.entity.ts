@@ -13,4 +13,7 @@ export class Database {
 
   @Column()
   creation_date_time: Date;
+
+  @Column()
+  pgd_id: number;
 }
