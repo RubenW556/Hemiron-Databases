@@ -12,7 +12,7 @@ export class Database {
   type: string;
 
   @Column()
-  created_at: Date;
+  creation_date_time: Date;
 
   @Column()
   pgd_id: number;
