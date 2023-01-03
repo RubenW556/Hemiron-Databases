@@ -15,4 +15,3 @@ CI_Cleanup:
     <<: *template
     script:
         - docker image prune -a -f # cleanup unused images after each time to reduce disk space waste
-

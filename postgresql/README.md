@@ -99,22 +99,10 @@ This table schema has been normalized to second normal form, because normalizing
 ### Entity Relationship Diagram
 ![picture of the final Entity Relationship Diagram ](Entity Relationship Diagram.png)
 
-
-    **NOTE: Update: 26-12-2022**  
-    After revision the team has decided to remodel the database to reflect our current scope and usecase.
-    Changes are:
-        - 'Creation_datetime' changed to 'Created_at' because this is best practice
-        - Username has been removed because it turns out this can be retrieved from user.id, it also has no further usecase
-        - 'cpu_used' has been changed to 'query_count' because this is the metric we decide to send to Billing
-    
-    The latest version includes these changes and can be seen below:
-
-![img.png](Entity Relationship Diagram2.png)
-
 ## References:
 [Database normalization description - Office](https://learn.microsoft.com/en-us/office/troubleshoot/access/database-normalization-description) (2022, May 5). Microsoft Learn.
 
 
 # TODO
--[ ] [low priority]: Review Creation of trigger on user and/or db deletion to check if the user owned any database, 
-if True; check if any other user owned database, if False; delete database aswell as user. Else; only delete user
+-[ ] #TODO: update to most recent model after remodelling changes of 22-12-2022
+
