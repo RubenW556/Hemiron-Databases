@@ -2,7 +2,6 @@ import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { DeleteResult, Repository } from 'typeorm';
 import { User } from './user.entity';
-import { createUserDto } from './dto/create-user.dto';
 import { MetricsService } from '../metrics/metrics.service';
 import { DatabaseManagementService } from '../metaDatabaseManagement/databaseManagement.service';
 
@@ -36,18 +35,19 @@ export class UsersService {
 
   /** TODO: Ruben help, I think this is unnecessary?
    * creates user
-   * @param {createUserDto} id UUID of requested user as string
-  async putOne(createUserDto: createUserDto, username: string): Promise<User> {
-    const newUser: User = { id: username, username: createUserDto.username };
+   * @param {string} id UUID of requested user as string
+**/
+  async putOne( id: string): Promise<User> {
+    const newUser: User = { id: id };
     await this.usersRepository.insert(newUser);
 
     return newUser;
   }
-   */
+
 
   /**
    * deletes user
-   * @param {string} user_id UUID of to be deleted user as string
+   * @param {string} id UUID of to be deleted user as string
    */
   async remove(id: string): Promise<DeleteResult> {
     return await this.usersRepository.delete(id);

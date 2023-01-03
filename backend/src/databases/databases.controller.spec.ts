@@ -8,6 +8,8 @@ import { UserOwnsDatabase } from '../user-owns-database/user-owns-database.entit
 import { DatabaseManagementService } from '../metaDatabaseManagement/databaseManagement.service';
 import { UsersService } from '../user/users.service';
 import { User } from '../user/user.entity';
+import { MetricsService } from "../metrics/metrics.service";
+import {DataSource} from "typeorm";
 
 describe('DatabasesController', () => {
   let controller: DatabasesController;
@@ -16,7 +18,7 @@ describe('DatabasesController', () => {
   const mockUserOwnsDatabase = {};
   const mockDatabaseManagementDao = {};
   const mockUserDatabase = {};
-
+  const mockDataSource = {}
   beforeEach(async () => {
     const moduleFixture: TestingModule = await Test.createTestingModule({
       providers: [
@@ -24,6 +26,7 @@ describe('DatabasesController', () => {
         DatabasesController,
         DatabasesService,
         UsersService,
+        MetricsService,
         {
           provide: DatabaseManagementService,
           useValue: mockDatabaseManagementDao,
@@ -39,6 +42,10 @@ describe('DatabasesController', () => {
         {
           provide: getRepositoryToken(User),
           useValue: mockUserDatabase,
+        },
+        {
+          provide: DataSource,
+          useValue: mockDataSource,
         },
       ],
     }).compile();

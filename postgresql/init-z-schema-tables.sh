@@ -23,7 +23,7 @@ CREATE TABLE $PG_DB_SCHEMA.user (
 
 CREATE TABLE $PG_DB_SCHEMA.query (
     "resource_used" int NOT NULL,
-    "creation_date_time" TIMESTAMP NOT NULL,
+    "created_at" TIMESTAMP NOT NULL,
     "storage_after_query" int NOT NULL,
     "database_id" uuid NOT NULL,
     CONSTRAINT "Query_pk" PRIMARY KEY ("created_at","database_id"),
