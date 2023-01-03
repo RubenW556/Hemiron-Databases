@@ -4,7 +4,7 @@ import { DeleteResult, Repository } from 'typeorm';
 import { User } from './user.entity';
 import { createUserDto } from './dto/create-user.dto';
 import { MetricsService } from '../metrics/metrics.service';
-import { DatabaseManagementService } from '../metaDatabaseManagement/databaseManagement.service';
+import { DatabaseManagementService } from '../meta-database-management/databaseManagement.service';
 
 @Injectable()
 export class UsersService {
