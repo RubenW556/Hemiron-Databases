@@ -1,3 +1,6 @@
+import {IsUUID} from "class-validator";
+
 export class createUserDto {
-  readonly username: string;
+  @IsUUID(4)
+  readonly id: string;
 }
