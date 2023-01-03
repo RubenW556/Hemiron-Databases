@@ -5,7 +5,7 @@ import { Database } from './database.entity';
 import { DatabasesService } from './databases.service';
 import { UserOwnsDatabaseService } from '../user-owns-database/user-owns-database.service';
 import { UserOwnsDatabase } from '../user-owns-database/user-owns-database.entity';
-import { DatabaseManagementDao } from '../dao/databaseManagement.dao';
+import { DatabaseManagementService } from '../metaDatabaseManagement/databaseManagement.service';
 import { UsersService } from '../user/users.service';
 import { User } from '../user/user.entity';
 
@@ -24,7 +24,10 @@ describe('DatabasesController', () => {
         DatabasesController,
         DatabasesService,
         UsersService,
-        { provide: DatabaseManagementDao, useValue: mockDatabaseManagementDao },
+        {
+          provide: DatabaseManagementService,
+          useValue: mockDatabaseManagementDao,
+        },
         {
           provide: getRepositoryToken(Database),
           useValue: mockDatabaseRepository,

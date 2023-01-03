@@ -1,4 +1,5 @@
 import {
+  Res,
   Body,
   Controller,
   Delete,
@@ -8,11 +9,11 @@ import {
   Param,
   ParseUUIDPipe,
   Patch,
-  ValidationPipe,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { User } from './user.entity';
 import { createUserDto } from './dto/create-user.dto';
+import { Response } from 'express';
 
 @Controller('users')
 export class UsersController {
@@ -40,16 +41,29 @@ export class UsersController {
   }
 
   /**
+   * Api endpoint for getting query count by id
+   * @param {string} id user id of user whose query count is requested
+   */
+  @Get('queryCount/:id')
+  @HttpCode(HttpStatus.OK)
+  async getQueryCountById(
+    @Param('id', new ParseUUIDPipe({ version: '4' })) id,
+  ): Promise<number> {
+    return this.usersService.getQueryCount(id);
+  }
+
+  /**
    * Api endpoint for creating user returns the id of made user
    * @param {User} user user to be made
    */
   @Patch()
   @HttpCode(HttpStatus.CREATED)
   async createUser(
-    @Body('user', new ValidationPipe()) user: createUserDto,
+    @Body() user: createUserDto,
+    @Res({ passthrough: true }) res: Response,
   ): Promise<string> {
-    await this.usersService.putOne(user);
-    return user.id;
+    await this.usersService.putOne(user, res.locals.userMakingRequest);
+    return user.username;
   }
 
   /**

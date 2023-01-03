@@ -5,6 +5,7 @@ CREATE TABLE "database" (
     "name" character varying(50) NOT NULL,
     "type" type_enum NOT NULL,
     "created_at" TIMESTAMP NOT NULL,
+    "pgd_id" integer NOT NULL,
     CONSTRAINT "Database_pk" PRIMARY KEY ("id")
 );
 

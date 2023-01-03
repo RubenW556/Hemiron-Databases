@@ -1,18 +1,19 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { DeleteResult, InsertResult, Repository, UpdateResult } from 'typeorm';
+import { DeleteResult, Repository, UpdateResult } from 'typeorm';
 import { Database } from './database.entity';
 import { CreateDatabaseDto } from './dto/create-database.dto';
 import { v4 as generateUUID } from 'uuid';
 import { UpdateDatabaseDto } from './dto/update-database.dto';
-import { DatabaseManagementDao } from '../dao/databaseManagement.dao';
+import { DatabaseManagementService } from '../metaDatabaseManagement/databaseManagement.service';
+import { ReturnDatabase } from './dto/database-create-return.dto';
 
 @Injectable()
 export class DatabasesService {
   constructor(
     @InjectRepository(Database)
     private databasesRepository: Repository<Database>,
-    private databaseManagementDao: DatabaseManagementDao,
+    private databaseManagementDao: DatabaseManagementService,
   ) {}
 
   public findOne(database_id: string): Promise<Database> {
@@ -30,14 +31,25 @@ export class DatabasesService {
     );
   }
 
-  public async insert(databaseDto: CreateDatabaseDto): Promise<InsertResult> {
+  public async insert(
+    databaseDto: CreateDatabaseDto,
+    userMakingRequest: string,
+  ): Promise<ReturnDatabase> {
+    const databaseId = generateUUID();
+
+    const dto: ReturnDatabase = await this.createDatabaseWithUser(
+      databaseDto.name,
+      userMakingRequest,
+      databaseId,
+    );
+
     const database: Database = {
       ...databaseDto,
-      ...{ id: generateUUID(), creation_date_time: new Date() },
+      ...{ id: databaseId, creation_date_time: new Date(), pgd_id: dto.pg_id },
     };
-    const result = this.databasesRepository.insert(database);
-    await this.createDatabaseWithUser(databaseDto.name);
-    return result;
+
+    await this.databasesRepository.insert(database);
+    return dto;
   }
 
   public update(database: UpdateDatabaseDto): Promise<UpdateResult> {
@@ -48,25 +60,40 @@ export class DatabasesService {
     return this.databasesRepository.delete(id);
   }
 
-  //database management context
-  public async createDatabaseWithUser(databaseName: string) {
-    //todo create databasename based on username
-    if (
-      (await this.databaseManagementDao.lookUpDatabase(databaseName))[0] ==
-      undefined
-    ) {
-      await this.databaseManagementDao.createDatabase(databaseName);
-    }
-    //todo get user from tokens
-    //todo use password from request or generate password and return it to the requester
-    if (
-      (await this.databaseManagementDao.lookUpUser('test1'))[0] == undefined
-    ) {
-      await this.databaseManagementDao.createUser('test1', 'test1');
-    }
+  /**
+   * creates a new database and a user that can use it
+   * @param databaseName the name of the database
+   * @param userMakingRequest the user making the request
+   * @param databaseId the uuid of the database
+   */
+  public async createDatabaseWithUser(
+    databaseName: string,
+    userMakingRequest,
+    databaseId: string,
+  ): Promise<ReturnDatabase> {
+    const password = Math.random().toString(36).slice(-8);
+    const username = databaseId + '.' + databaseName;
+    databaseName = userMakingRequest.id + '.' + databaseName;
+
+    await this.databaseManagementDao.createDatabase(databaseName);
+
+    await this.databaseManagementDao.createUser(username, password);
+
     await this.databaseManagementDao.grantUserAccessToDatabase(
-      'test1',
+      username,
       databaseName,
     );
+
+    const returnDatabase: ReturnDatabase = {
+      user_id: userMakingRequest.id,
+      username: username,
+      password: password,
+      databaseName: databaseName,
+      database_id: databaseId,
+      pg_id: await this.databaseManagementDao.getDatabasePGIDByName(
+        databaseName,
+      ),
+    };
+    return returnDatabase;
   }
 }

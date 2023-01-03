@@ -5,24 +5,26 @@ import { DatabasesController } from './databases.controller';
 import { DatabasesService } from './databases.service';
 import { UserOwnsDatabaseService } from '../user-owns-database/user-owns-database.service';
 import { UserOwnsDatabase } from '../user-owns-database/user-owns-database.entity';
-// import { AuthenticationService } from 'hemiron-auth/dist/services/authentication.service';//todo enable auth when fixed
-import { DatabaseManagementDao } from '../dao/databaseManagement.dao';
+import { AuthenticationService } from 'hemiron-auth/dist/services/authentication.service';
+import { DatabaseManagementService } from '../metaDatabaseManagement/databaseManagement.service';
 import { UsersService } from '../user/users.service';
 import { User } from '../user/user.entity';
+import { MetricsModule } from '../metrics/metrics.module';
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([Database]),
     TypeOrmModule.forFeature([UserOwnsDatabase]),
     TypeOrmModule.forFeature([User]),
+    MetricsModule,
   ],
   controllers: [DatabasesController],
   providers: [
     DatabasesService,
-    DatabaseManagementDao,
+    DatabaseManagementService,
     UserOwnsDatabaseService,
     UsersService,
-    // AuthenticationService,//todo enable auth when fixed
+    AuthenticationService,
   ],
 })
 export class DatabasesModule {}
