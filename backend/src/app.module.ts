@@ -6,43 +6,47 @@ import { Database } from './databases/database.entity';
 import { DatabasesModule } from './databases/databases.module';
 import { UserOwnsDatabaseModule } from './user-owns-database/user-owns-database.module';
 import { UserOwnsDatabase } from './user-owns-database/user-owns-database.entity';
-// import { AuthenticationValidatorModule } from 'hemiron-auth/dist/authentication-validator.module'; //todo enable auth when fixed
-// import { AuthenticationValidationGuard } from 'hemiron-auth/dist/guards/authentication-validation.guard'; //todo enable auth when fixed
-// import { APP_GUARD } from '@nestjs/core';//todo enable auth when fixed
+import { APP_GUARD } from '@nestjs/core';
 import { TasksModule } from './tasks/tasks.module';
 import { AuthMiddleware } from './auth.middleware';
+import { AuthenticationValidationGuard } from 'hemiron-auth/dist/guards/authentication-validation.guard';
+import { AuthenticationValidatorModule } from 'hemiron-auth/dist/authentication-validator.module';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 import { RedisModule } from './redis/redis.module';
 
 @Module({
   imports: [
+    ConfigModule.forRoot(),
     TypeOrmModule.forRootAsync({
-      useFactory: () => ({
+      imports: [ConfigModule],
+      inject: [ConfigService],
+      useFactory: (configService: ConfigService) => ({
         type: 'postgres',
-        host: process.env.POSTGRES_HOST,
-        schema: process.env.POSTGRES_USER_SCHEMA,
-        port: parseInt(process.env.POSTGRES_PORT),
-        username: process.env.POSTGRES_USER_USERNAME,
-        password: process.env.POSTGRES_USER_PASSWORD,
-        database: process.env.POSTGRES_DATABASE,
+        host: configService.get('POSTGRES_HOST'),
+        schema: configService.get('POSTGRES_USER_SCHEMA'),
+        port: +configService.get('POSTGRES_PORT'),
+        username: configService.get('POSTGRES_USER_USERNAME'),
+        password: configService.get('POSTGRES_USER_PASSWORD'),
+        database: configService.get('POSTGRES_DATABASE'),
         entities: [User, Database, UserOwnsDatabase],
         logging: true,
       }),
     }),
-    // AuthenticationValidatorModule.setup({//todo enable auth when fixed
-    //   authenticationServerURL: 'http://manager-3.inf-hsleiden:3000',
-    // }),
+    AuthenticationValidatorModule.setup({
+      authenticationServerURL: process.env.AUTH_SERVER_URL,
+    }),
     UsersModule,
     DatabasesModule,
     UserOwnsDatabaseModule,
     TasksModule,
     RedisModule,
   ],
-  // providers: [//todo enable auth when fixed
-  //   {
-  //     provide: APP_GUARD,
-  //     useClass: AuthenticationValidationGuard,
-  //   },
-  // ],
+  providers: [
+    {
+      provide: APP_GUARD,
+      useClass: AuthenticationValidationGuard,
+    },
+  ],
 })
 export class AppModule implements NestModule {
   // noinspection JSUnusedGlobalSymbols

@@ -1,13 +1,18 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { DeleteResult, InsertResult, Repository } from 'typeorm';
+import { DeleteResult, Repository } from 'typeorm';
 import { User } from './user.entity';
+import { createUserDto } from './dto/create-user.dto';
+import { MetricsService } from '../metrics/metrics.service';
+import { DatabaseManagementService } from '../metaDatabaseManagement/databaseManagement.service';
 
 @Injectable()
 export class UsersService {
   constructor(
     @InjectRepository(User)
     private usersRepository: Repository<User>,
+    private databaseManagementService: DatabaseManagementService,
+    private metricsService: MetricsService,
   ) {}
 
   /**
@@ -26,23 +31,41 @@ export class UsersService {
     if (user == null) {
       throw new BadRequestException("can't find user by uuid");
     }
-
     return user;
   }
 
   /**
    * creates user
-   * @param {string} user UUID of requested user as string
+   * @param {createUserDto} id UUID of requested user as string
    */
-  putOne(user: User): Promise<InsertResult> {
-    return this.usersRepository.insert(user);
+  async putOne(createUserDto: createUserDto, username: string): Promise<User> {
+    const newUser: User = { id: username, username: createUserDto.username };
+    await this.usersRepository.insert(newUser);
+
+    return newUser;
   }
 
   /**
    * deletes user
-   * @param {string} id UUID of to be deleted user as string
+   * @param {string} user_id UUID of to be deleted user as string
    */
   async remove(id: string): Promise<DeleteResult> {
     return await this.usersRepository.delete(id);
+  }
+
+  /**
+   * gets query count for user
+   * @param {string} user_id UUID of to be deleted user as string
+   */
+  async getQueryCount(id: string): Promise<number> {
+    if ((await this.databaseManagementService.lookUpUser(id)) == undefined) {
+      new BadRequestException('user does not exist');
+    }
+    const result = await this.metricsService.getQueryCountByUser_Id(id);
+
+    if (result === null) {
+      throw new BadRequestException('User has no queries');
+    }
+    return result;
   }
 }
