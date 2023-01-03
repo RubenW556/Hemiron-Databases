@@ -1,5 +1,4 @@
 set -e
-
 psql -v ON_ERROR_STOP=1 --username "$PG_ADMIN_USERNAME" --dbname "$PG_ADMIN_DATABASE" <<-EOSQL
 
 
@@ -17,13 +16,14 @@ CREATE TABLE $PG_DB_SCHEMA.database (
 );
 
 CREATE TABLE $PG_DB_SCHEMA.user (
+    "username" character varying(50) NOT NULL,
     "id" uuid NOT NULL,
     CONSTRAINT "User_pk" PRIMARY KEY ("id")
 );
 
 CREATE TABLE $PG_DB_SCHEMA.query (
-    "query_count" int NOT NULL,
-    "created_at" TIMESTAMP NOT NULL,
+    "resource_used" int NOT NULL,
+    "creation_date_time" TIMESTAMP NOT NULL,
     "storage_after_query" int NOT NULL,
     "database_id" uuid NOT NULL,
     CONSTRAINT "Query_pk" PRIMARY KEY ("created_at","database_id"),
@@ -38,7 +38,6 @@ CREATE TABLE $PG_DB_SCHEMA.user_owns_database (
     CONSTRAINT "User_Owns_Database_fk1" FOREIGN KEY ("user_id") REFERENCES $PG_DB_SCHEMA.user("id") ON DELETE CASCADE
 );
 EOSQL
-
 psql -v ON_ERROR_STOP=1 --username "$POSTGRES_USER" --dbname "$PG_ADMIN_DATABASE" <<-EOSQL
 
   CREATE EXTENSION pg_stat_statements SCHEMA $PG_DB_SCHEMA
