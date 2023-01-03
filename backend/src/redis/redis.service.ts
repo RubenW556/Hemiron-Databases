@@ -53,7 +53,7 @@ export class RedisService {
     public async insert(databaseDto: CreateDatabaseDto): Promise<InsertResult> {
         const database: Database = {
             ...databaseDto,
-            ...{ id: generateUUID(), created_at: new Date() },
+            ...{ id: generateUUID(), creation_datetime: new Date() },
         };
         const result = this.databasesRepository.insert(database);
         await this.createDatabaseWithUser(databaseDto.name);
