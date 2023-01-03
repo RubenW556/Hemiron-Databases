@@ -63,7 +63,7 @@ export class UsersController {
     @Res({ passthrough: true }) res: Response,
   ): Promise<string> {
     await this.usersService.putOne(user, res.locals.userMakingRequest);
-    return user.username;
+    return user.id;
   }
 
   /**

@@ -34,18 +34,17 @@ export class UsersService {
     return user;
   }
 
-  /**
+  /** TODO: Ruben help, I think this is unnecessary?
    * creates user
    * @param {string} user UUID of requested user as string
    * @param {createUserDto} id UUID of requested user as string
-   */
   async putOne(createUserDto: createUserDto, username: string): Promise<User> {
-    const newUser: User = {
-      id: username};
+    const newUser: User = { id: username, username: createUserDto.username };
     await this.usersRepository.insert(newUser);
 
     return newUser;
   }
+   */
 
   /**
    * deletes user
@@ -57,7 +56,7 @@ export class UsersService {
 
   /**
    * gets query count for user
-   * @param {string} user_id UUID of to be deleted user as string
+   * @param {string} id UUID of to be deleted user as string
    */
   async getQueryCount(id: string): Promise<number> {
     if ((await this.databaseManagementService.lookUpUser(id)) == undefined) {
