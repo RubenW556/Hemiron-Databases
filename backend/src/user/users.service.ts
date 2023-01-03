@@ -36,12 +36,10 @@ export class UsersService {
 
   /**
    * creates user
-   * @param {string} user UUID of requested user as string
    * @param {createUserDto} id UUID of requested user as string
    */
   async putOne(createUserDto: createUserDto, username: string): Promise<User> {
-    const newUser: User = {
-      id: username};
+    const newUser: User = { id: username, username: createUserDto.username };
     await this.usersRepository.insert(newUser);
 
     return newUser;
@@ -49,7 +47,7 @@ export class UsersService {
 
   /**
    * deletes user
-   * @param {string} id UUID of to be deleted user as string
+   * @param {string} user_id UUID of to be deleted user as string
    */
   async remove(id: string): Promise<DeleteResult> {
     return await this.usersRepository.delete(id);

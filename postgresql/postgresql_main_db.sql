@@ -4,22 +4,23 @@ CREATE TABLE "database" (
     "id" uuid NOT NULL,
     "name" character varying(50) NOT NULL,
     "type" type_enum NOT NULL,
-    "created_at" TIMESTAMP NOT NULL,
+    "creation_date_time" TIMESTAMP NOT NULL,
     "pgd_id" integer NOT NULL,
     CONSTRAINT "Database_pk" PRIMARY KEY ("id")
 );
 
 CREATE TABLE "user" (
     "id" uuid NOT NULL,
+    "username" character varying(50) NOT NULL,
     CONSTRAINT "User_pk" PRIMARY KEY ("id")
 );
 
 CREATE TABLE "query" (
-    "query_count" int NOT NULL,
-    "created_at" TIMESTAMP NOT NULL,
+    "resource_used" int NOT NULL,
+    "creation_date_time" TIMESTAMP NOT NULL,
     "storage_after_query" int NOT NULL,
     "database_id" uuid NOT NULL,
-    CONSTRAINT "Query_pk" PRIMARY KEY ("created_at","database_id"),
+    CONSTRAINT "Query_pk" PRIMARY KEY ("creation_date_time","database_id"),
     CONSTRAINT "Query_fk0" FOREIGN KEY ("database_id") REFERENCES "database"("id")
 );
 
