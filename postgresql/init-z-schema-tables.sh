@@ -17,14 +17,13 @@ CREATE TABLE $PG_DB_SCHEMA.database (
 );
 
 CREATE TABLE $PG_DB_SCHEMA.user (
-    "username" character varying(50) NOT NULL,
     "id" uuid NOT NULL,
     CONSTRAINT "User_pk" PRIMARY KEY ("id")
 );
 
 CREATE TABLE $PG_DB_SCHEMA.query (
-    "resource_used" int NOT NULL,
-    "creation_date_time" TIMESTAMP NOT NULL,
+    "query_count" int NOT NULL,
+    "created_at" TIMESTAMP NOT NULL,
     "storage_after_query" int NOT NULL,
     "database_id" uuid NOT NULL,
     CONSTRAINT "Query_pk" PRIMARY KEY ("creation_date_time","database_id"),
