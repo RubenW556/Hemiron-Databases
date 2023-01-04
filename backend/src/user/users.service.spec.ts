@@ -2,8 +2,9 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { UsersService } from './users.service';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { User } from './user.entity';
-import { DeleteResult, InsertResult } from 'typeorm';
+import {DataSource, DeleteResult, InsertResult} from 'typeorm';
 import { MetricsService } from '../metrics/metrics.service';
+import {DatabaseManagementService} from "../metaDatabaseManagement/databaseManagement.service";
 
 describe('user service', () => {
   let service: UsersService;
@@ -12,16 +13,18 @@ describe('user service', () => {
 
   const mockDataCollectionDao = {};
 
+  const mockDataSource = {};
+
   const mockUserRepository = {
     find: jest.fn(function () {
       const user: User[] = [
-        { id: validUuid1, username: '123' },
-        { id: validUuid2, username: '123' },
+        { id: validUuid1 },
+        { id: validUuid2 },
       ];
       return user;
     }),
     findOneBy: jest.fn(function (id) {
-      return { id: id.id, username: '123' };
+      return { id: id.id};
     }),
     insert: jest.fn(function () {
       return new InsertResult();
@@ -34,7 +37,8 @@ describe('user service', () => {
   beforeEach(async () => {
     const moduleFixture: TestingModule = await Test.createTestingModule({
       providers: [
-        UsersService,
+        UsersService, DatabaseManagementService,
+        { provide: DataSource, useValue: mockDataSource },
         { provide: getRepositoryToken(User), useValue: mockUserRepository },
         { provide: MetricsService, useValue: mockDataCollectionDao },
       ],
@@ -59,12 +63,12 @@ describe('user service', () => {
     expect(spy).toHaveBeenCalledWith({ id: validUuid1 });
   });
 
-  it('should put user into database', async () => {
+ it('should put user into database', async () => {
     const spy = jest.spyOn(mockUserRepository, 'insert');
 
-    await service.putOne({ username: '123' }, 'test');
+    await service.putOne(validUuid1);
 
-    expect(spy).toHaveBeenCalledWith({ id: validUuid1, username: '123' });
+    expect(spy).toHaveBeenCalledWith({id: validUuid1});
   });
 
   it('should delete user by uuid', async () => {
