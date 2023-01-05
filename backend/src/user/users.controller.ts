@@ -66,7 +66,6 @@ export class UsersController {
     return user.id;
   }
 
-
   /**
    * Api endpoint for deleting user by id
    * @param {String} id id of user to be deleted

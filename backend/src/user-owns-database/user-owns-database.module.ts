@@ -10,4 +10,5 @@ import { AuthenticationService } from 'hemiron-auth/dist/services/authentication
   controllers: [UserOwnsDatabaseController],
   providers: [UserOwnsDatabaseService, AuthenticationService],
 })
+
 export class UserOwnsDatabaseModule {}

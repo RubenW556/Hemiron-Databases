@@ -36,14 +36,13 @@ export class UsersService {
   /**
    * creates user
    * @param {string} id UUID of requested user as string
-**/
-  async putOne( id: string): Promise<User> {
+   **/
+  async putOne(id: string): Promise<User> {
     const newUser: User = { id: id };
     await this.usersRepository.insert(newUser);
 
     return newUser;
   }
-
 
   /**
    * deletes user
