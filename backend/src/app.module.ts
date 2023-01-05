@@ -12,19 +12,19 @@ import { AuthMiddleware } from './auth.middleware';
 import { AuthenticationValidationGuard } from 'hemiron-auth/dist/guards/authentication-validation.guard';
 import { AuthenticationValidatorModule } from 'hemiron-auth/dist/authentication-validator.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import { RedisModule } from './redis/redis.module';
 import {AppController} from "./app.controller";
 import {AppService} from "./app.service";
 import * as redisStore from 'cache-manager-redis-store';
-
+import { RedisModule } from '@liaoliaots/nestjs-redis';
 @Module({
   imports: [
     ConfigModule.forRoot(),
-    CacheModule.register({
-      isGlobal: true,
-      store: redisStore,
-      host: process.env.REDIS_HOST,
-      port: process.env.REDIS_PORT,
+    RedisModule.forRoot({
+      config: {
+        host: 'localhost',
+        port: 6379,
+        password: 'authpassword'
+      }
     }),
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],

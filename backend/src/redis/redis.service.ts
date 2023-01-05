@@ -6,11 +6,21 @@ import { CreateDatabaseDto } from "../databases/dto/create-database.dto";
 import { InsertResult } from "typeorm";
 import { Database } from "../databases/database.entity";
 
-@Injectable()
-export class RedisService {
+import { Injectable } from '@nestjs/common';
+import { RedisService, DEFAULT_REDIS_NAMESPACE } from '@liaoliaots/nestjs-redis';
 
-    constructor(
-        @Inject(IORedisKey) private readonly redis: Redis ) {
+@Injectable()
+export class RedisServiceService {
+    private readonly redis: Redis;
+
+    constructor(private readonly redis: RedisService) {
+        this.redis = this.redis.getClient();
+        // or
+        // this.redis = this.redis.getClient(DEFAULT_REDIS_NAMESPACE);
+    }
+
+    async set() {
+        return await this.redis.set('key', 'value', 'EX', 10);
     }
 
     public async test1(key, value): Promise<string> { //TODO: This code can be removed before deployment
