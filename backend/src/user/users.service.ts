@@ -33,7 +33,7 @@ export class UsersService {
     return user;
   }
 
-  /** TODO: Ruben help, I think this is unnecessary?
+  /**
    * creates user
    * @param {string} id UUID of requested user as string
 **/
