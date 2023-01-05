@@ -1,14 +1,6 @@
 import {Body, Controller, Get, HttpCode, HttpStatus, Inject, Param, Post, Res} from '@nestjs/common';
-import { Redis } from 'ioredis';
-import { IORedisKey } from './redis.module';
-import { Response } from "express";
-import { hash } from 'typeorm/util/stringutils';
-import {DatabasesService} from "../databases/databases.service";
-import {UserOwnsDatabaseService} from "../user-owns-database/user-owns-database.service";
-import {UsersService} from "../user/users.service";
 import {RedisService} from "./redis.service";
-import {CreateDatabaseDto} from "../databases/dto/create-database.dto";
-import {Database} from "../databases/database.entity";
+
 
 @Controller('redis')
 @Controller()
@@ -38,57 +30,57 @@ export class RedisController {
         return this.redisService.test4();
     }
 
-    @Get(':username')
-    @HttpCode(HttpStatus.OK)
-    public async delete(
-        @Res({ passthrough: true }) res: Response,
-        @Param('username') username: string,
-    ): Promise<string> {
-    try {
-        // select the database corresponding to the user
-        await this.redisService.select(hash(username));
-
-        // get the value of the 'data' key from the selected database
-        const data = await this.redisService.get('data');
-        return data;
-    }
-    catch (e) {
-        res.status(HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-    }
-
-
-    @Post()
-    @HttpCode(HttpStatus.CREATED)
-    async create(): Promise<void> {
-        const dbs = await this.redis.config('GET', 'databases');
-        const newDb = parseInt(dbs.databases, 10) + 1;
-        await this.redis.config('SET', 'databases', newDb.toString());
-    }
-
-    @Post()
-    @HttpCode(HttpStatus.CREATED) //todo validatioon
-    public async create(
-        @Res({ passthrough: true }) res: Response,
-        @Body() createDatabaseDto: CreateDatabaseDto,
-    ): Promise<Database> {
-        try {
-            const userMakingRequest = res.locals.userMakingRequest;
-
-            await this.usersService.findOne(userMakingRequest.id);
-
-            const insertResult = await this.databasesService.insert(
-                createDatabaseDto,
-            );
-            const newDatabaseId = insertResult.identifiers[0].id;
-
-            await this.userOwnsDatabaseService.insert(
-                newDatabaseId,
-                userMakingRequest.id,
-            );
-            return await this.databasesService.findOne(newDatabaseId);
-        } catch (e) {
-            res.status(HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-    }
+    //@Get(':username')
+    //@HttpCode(HttpStatus.OK)
+    //public async delete(
+    //    @Res({ passthrough: true }) res: Response,
+    //    @Param('username') username: string,
+    //): Promise<string> {
+    //try {
+    //    // select the database corresponding to the user
+    //    await this.redisService.select(hash(username));
+//
+    //    // get the value of the 'data' key from the selected database
+    //    const data = await this.redisService.get('data');
+    //    return data;
+    //}
+    //catch (e) {
+    //    res.status(HttpStatus.INTERNAL_SERVER_ERROR);
+    //    }
+    //}
+//
+//
+    //@Post()
+    //@HttpCode(HttpStatus.CREATED)
+    //async create(): Promise<void> {
+    //    const dbs = await this.redis.config('GET', 'databases');
+    //    const newDb = parseInt(dbs.databases, 10) + 1;
+    //    await this.redis.config('SET', 'databases', newDb.toString());
+    //}
+//
+    //@Post()
+    //@HttpCode(HttpStatus.CREATED) //todo validatioon
+    //public async create(
+    //    @Res({ passthrough: true }) res: Response,
+    //    @Body() createDatabaseDto: CreateDatabaseDto,
+    //): Promise<Database> {
+    //    try {
+    //        const userMakingRequest = res.locals.userMakingRequest;
+//
+    //        await this.usersService.findOne(userMakingRequest.id);
+//
+    //        const insertResult = await this.databasesService.insert(
+    //            createDatabaseDto,
+    //        );
+    //        const newDatabaseId = insertResult.identifiers[0].id;
+//
+    //        await this.userOwnsDatabaseService.insert(
+    //            newDatabaseId,
+    //            userMakingRequest.id,
+    //        );
+    //        return await this.databasesService.findOne(newDatabaseId);
+    //    } catch (e) {
+    //        res.status(HttpStatus.INTERNAL_SERVER_ERROR);
+    //    }
+    //}
 }
