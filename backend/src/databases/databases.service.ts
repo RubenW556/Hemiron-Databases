@@ -5,7 +5,7 @@ import { Database } from './database.entity';
 import { CreateDatabaseDto } from './dto/create-database.dto';
 import { v4 as generateUUID } from 'uuid';
 import { UpdateDatabaseDto } from './dto/update-database.dto';
-import { DatabaseManagementService } from '../metaDatabaseManagement/databaseManagement.service';
+import { DatabaseManagementService } from '../meta-database-management/database-management.service';
 import { ReturnDatabase } from './dto/database-create-return.dto';
 
 @Injectable()
@@ -84,6 +84,7 @@ export class DatabasesService {
       databaseName,
     );
 
+    await this.databaseManagementDao.revokeAccessFromPublic(databaseName);
     const returnDatabase: ReturnDatabase = {
       user_id: userMakingRequest.id,
       username: username,
