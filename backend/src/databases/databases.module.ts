@@ -6,7 +6,7 @@ import { DatabasesService } from './databases.service';
 import { UserOwnsDatabaseService } from '../user-owns-database/user-owns-database.service';
 import { UserOwnsDatabase } from '../user-owns-database/user-owns-database.entity';
 import { AuthenticationService } from 'hemiron-auth/dist/services/authentication.service';
-import { DatabaseManagementService } from '../meta-database-management/databaseManagement.service';
+import { DatabaseManagementService } from '../metaDatabaseManagement/databaseManagement.service';
 import { UsersService } from '../user/users.service';
 import { User } from '../user/user.entity';
 import { MetricsModule } from '../metrics/metrics.module';
