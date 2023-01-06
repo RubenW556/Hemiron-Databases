@@ -55,6 +55,7 @@ export class UsersController {
   /**
    * Api endpoint for creating user returns the id of made user
    * @param {User} user user to be made
+   * @param res
    */
   @Patch()
   @HttpCode(HttpStatus.CREATED)
