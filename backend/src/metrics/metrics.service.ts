@@ -25,6 +25,8 @@ export class MetricsService {
       [databaseId],
     );
 
+    if (!postWithquery[0]) return '0';
+
     return postWithquery[0].db_size;
   }
 
