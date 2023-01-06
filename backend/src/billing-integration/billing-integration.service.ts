@@ -38,7 +38,7 @@ export class BillingIntegrationService {
    * @param endpointURL
    */
   async patchDataToBillingEndpoint(payload, endpointURL) {
-    const { data } = await firstValueFrom(
+    const { status, data } = await firstValueFrom(
       this.httpService.patch(endpointURL, payload).pipe(
         catchError((error: AxiosError) => {
           throw new Error(error.message);
@@ -46,6 +46,6 @@ export class BillingIntegrationService {
       ),
     );
     this.logger.log(`Successfully patched data to billing.`);
-    return data;
+    return { status, data };
   }
 }
