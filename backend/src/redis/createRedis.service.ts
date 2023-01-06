@@ -1,22 +1,15 @@
-import { Injectable } from "@nestjs/common";
-import { Controller, Get, HttpCode, HttpStatus, Inject, Param, Res} from '@nestjs/common';
-import { Redis } from 'ioredis';
-import { IORedisKey } from './redis.module';
-import { CreateDatabaseDto } from "../databases/dto/create-database.dto";
-import { InsertResult } from "typeorm";
-import { Database } from "../databases/database.entity";
-
 import { Injectable } from '@nestjs/common';
 import { RedisService, DEFAULT_REDIS_NAMESPACE } from '@liaoliaots/nestjs-redis';
+import Redis from 'ioredis';
 
 @Injectable()
-export class RedisServiceService {
+export class CreateRedisService {
     private readonly redis: Redis;
 
-    constructor(private readonly redis: RedisService) {
-        this.redis = this.redis.getClient();
+    constructor(private readonly redisService: RedisService) {
+        this.redis = this.redisService.getClient();
         // or
-        // this.redis = this.redis.getClient(DEFAULT_REDIS_NAMESPACE);
+        // this.redis = this.redisService.getClient(DEFAULT_REDIS_NAMESPACE);
     }
 
     async set() {

@@ -1,0 +1,25 @@
+networks:
+  hemiron-ntw-compose:
+    external: true
+    name: hemiron-ntw-compose
+
+services:
+  redis:
+    container_name: cache
+    image: redis
+    #ports:
+    #  - 6379:6379
+    volumes:
+      - redis:/data
+    labels:
+      # For Url ${PRIMARY_DOMAIN}/redis / redis.${PRIMARY_DOMAIN}
+      - "traefik.http.routers.redis.rule=(Host(`${PRIMARY_DOMAIN}`) && Path(`/redis`)) || Host(`redis.${PRIMARY_DOMAIN}`)"
+      - "traefik.http.routers.redis.entrypoints=web"
+      - "traefik.http.routers.redis.tls=false"
+      - "traefik.http.services.redis.loadbalancer.server.port=${REDIS_PORT}"
+    networks:
+      - hemiron-ntw-compose
+
+volumes:
+  redis:
+    driver: local

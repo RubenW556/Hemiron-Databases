@@ -1,13 +1,7 @@
 import {DynamicModule, FactoryProvider, Module, ModuleMetadata} from '@nestjs/common';
 import IORedis, {Redis, RedisOptions} from "ioredis";
-import {DatabasesController} from "../databases/databases.controller";
-import {DatabasesService} from "../databases/databases.service";
-import {DatabaseManagementService} from "../metaDatabaseManagement/databaseManagement.service";
-import {UserOwnsDatabaseService} from "../user-owns-database/user-owns-database.service";
-import {UsersService} from "../user/users.service";
-import {AuthenticationService} from "hemiron-auth/dist/services/authentication.service";
 import {RedisController} from "./redis.controller";
-import {RedisService} from "./redis.service";
+import {CreateRedisService} from "./createRedis.service";
 export const IORedisKey = 'IORedis';
 
 type RedisModuleOptions = {
@@ -24,10 +18,10 @@ type RedisAsyncModuleOptions = {
 
 @Module({
     controllers: [RedisController],
-    providers: [RedisService],
+    providers: [CreateRedisService],
 
 })
-export class RedisModule {
+export class RedisAppModule {
     static async registerAsync(
         {
             useFactory,
@@ -46,7 +40,7 @@ export class RedisModule {
         };
 
         return{
-            module: RedisModule,
+            module: RedisAppModule,
             imports,
             providers: [redisProvider],
             exports: [redisProvider],

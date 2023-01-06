@@ -1,12 +1,12 @@
 import {Body, Controller, Get, HttpCode, HttpStatus, Inject, Param, Post, Res} from '@nestjs/common';
-import {RedisService} from "./redis.service";
+import {CreateRedisService} from "./createRedis.service";
 
 
 @Controller('redis')
 @Controller()
 export class RedisController {
     constructor(
-        private redisService: RedisService,
+        private redisService: CreateRedisService,
     ) {}
 
     @Get('test1/:key')

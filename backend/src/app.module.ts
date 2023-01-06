@@ -14,17 +14,25 @@ import { AuthenticationValidatorModule } from 'hemiron-auth/dist/authentication-
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import {AppController} from "./app.controller";
 import {AppService} from "./app.service";
-import * as redisStore from 'cache-manager-redis-store';
 import { RedisModule } from '@liaoliaots/nestjs-redis';
+import { RedisAppModule } from "./redis/redisApp.Module";
+
 @Module({
   imports: [
     ConfigModule.forRoot(),
     RedisModule.forRoot({
+      readyLog: true,
+      closeClient: true,
       config: {
-        host: 'localhost',
+        host: process.env.REDIS_HOST,
         port: 6379,
-        password: 'authpassword'
+        password: 'authpassword',
+        onClientCreated(client) {
+          client.on('error', err => {});
+          client.on('ready', () => {});
+        }
       }
+
     }),
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
@@ -48,6 +56,7 @@ import { RedisModule } from '@liaoliaots/nestjs-redis';
     DatabasesModule,
     UserOwnsDatabaseModule,
     TasksModule,
+    RedisAppModule,
     RedisModule,
   ],
   controllers: [AppController],
