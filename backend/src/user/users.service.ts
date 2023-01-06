@@ -3,7 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { DeleteResult, Repository } from 'typeorm';
 import { User } from './user.entity';
 import { MetricsService } from '../metrics/metrics.service';
-import { DatabaseManagementService } from '../metaDatabaseManagement/databaseManagement.service';
+import { DatabaseManagementService } from '../meta-database-management/database-management.service';
 
 @Injectable()
 export class UsersService {
