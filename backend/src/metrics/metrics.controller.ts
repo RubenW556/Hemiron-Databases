@@ -22,7 +22,7 @@ export class MetricsController {
   }
 
   @Get('databases/postgres/users/:id')
-  async getAllDatabaseMetricsOfUser(
+  async getAllPostgresDatabaseMetricsOfUser(
     @Req() request: Request,
     @Res() response: Response,
     @Param('id') id: string,
@@ -40,7 +40,7 @@ export class MetricsController {
   }
 
   @Get('databases/postgres/databases/:id')
-  async getSizeOfSingleDatabase(
+  async getSizeOfSinglePostgresDatabase(
     @Req() request: Request,
     @Res() response: Response,
     @Param('id') id: number,
