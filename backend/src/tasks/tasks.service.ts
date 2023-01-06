@@ -15,7 +15,10 @@ export class TasksService {
     private usersService: UsersService,
   ) {}
 
-  async initiateUserPostgresMetrics() {
+  /**
+   * Initiates process to integrate all postgres metrics to billing.
+   */
+  async initiateUserPostgresMetricsIntegration() {
     try {
       const users = await this.usersService.findAll();
       for (const user of users) {
@@ -55,10 +58,13 @@ export class TasksService {
     }
   }
 
+  /**
+   * Initiates periodic metrics integration every 3 Hours.
+   */
   @Cron(CronExpression.EVERY_3_HOURS)
   handleCron() {
     this.logger.log('Initiating periodic metrics integration.');
-    this.initiateUserPostgresMetrics().then(() => {
+    this.initiateUserPostgresMetricsIntegration().then(() => {
       this.logger.log('Concluding periodic metrics integration.');
     });
   }
