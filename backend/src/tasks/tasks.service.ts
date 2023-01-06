@@ -2,7 +2,7 @@ import { Injectable, Logger } from '@nestjs/common';
 import { Cron, CronExpression } from '@nestjs/schedule';
 import { MetricsService } from '../metrics/metrics.service';
 import { BillingIntegrationService } from '../billing-integration/billing-integration.service';
-import { PatchUserDatabaseMetricsDto } from '../billing-integration/patchUserDatabaseMetrics.dto';
+import { PatchUserDatabaseMetricsDto } from '../billing-integration/patch-user-database-metrics.dto';
 import { UsersService } from '../user/users.service';
 
 @Injectable()

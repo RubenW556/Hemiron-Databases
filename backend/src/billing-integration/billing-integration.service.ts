@@ -2,7 +2,7 @@ import { HttpService } from '@nestjs/axios';
 import { AxiosError } from 'axios';
 import { catchError, firstValueFrom } from 'rxjs';
 import { Injectable, Logger } from '@nestjs/common';
-import { PatchUserDatabaseMetricsDto } from './patchUserDatabaseMetrics.dto';
+import { PatchUserDatabaseMetricsDto } from './patch-user-database-metrics.dto';
 import { ConfigService } from '@nestjs/config';
 
 @Injectable()
