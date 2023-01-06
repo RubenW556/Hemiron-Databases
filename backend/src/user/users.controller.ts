@@ -1,5 +1,4 @@
 import {
-  Res,
   Body,
   Controller,
   Delete,
@@ -13,7 +12,6 @@ import {
 import { UsersService } from './users.service';
 import { User } from './user.entity';
 import { createUserDto } from './dto/create-user.dto';
-import { Response } from 'express';
 
 @Controller('users')
 export class UsersController {
@@ -58,10 +56,7 @@ export class UsersController {
    * */
   @Patch()
   @HttpCode(HttpStatus.CREATED)
-  async createUser(
-    @Body() user: createUserDto,
-    @Res({ passthrough: true }) res: Response,
-  ): Promise<string> {
+  async createUser(@Body() user: createUserDto): Promise<string> {
     await this.usersService.putOne(user.id);
     return user.id;
   }
