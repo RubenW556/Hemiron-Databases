@@ -30,6 +30,16 @@ export class RedisController {
         return this.redisService.test4();
     }
 
+    @Get('test5')
+    async getInfo5(): Promise<string> {
+        return this.redisService.test5();
+    }
+
+    @Get('test6')
+    async getInfo6(): Promise<string> {
+        return this.redisService.test6();
+    }
+
     //@Get(':username')
     //@HttpCode(HttpStatus.OK)
     //public async delete(

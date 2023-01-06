@@ -5,9 +5,17 @@ import Redis from 'ioredis';
 @Injectable()
 export class CreateRedisService {
     private readonly redis: Redis;
+    private readonly redis1: Redis;
+    private readonly client: Redis;
 
     constructor(private readonly redisService: RedisService) {
-        this.redis = this.redisService.getClient();
+        this.redis = this.redisService.getClient(DEFAULT_REDIS_NAMESPACE);
+        this.redis1 = new Redis(6379, "redis.localhost");
+        this.client = new Redis({
+            sentinels: [{ host: process.env.REDIS_HOST }],
+            name: DEFAULT_REDIS_NAMESPACE
+        });
+
         // or
         // this.redis = this.redisService.getClient(DEFAULT_REDIS_NAMESPACE);
     }
@@ -31,6 +39,12 @@ export class CreateRedisService {
 
     public async test4(): Promise<string> { //TODO: This code can be removed before deployment
         return this.redis.client.toString();
+    }
+    public async test5(): Promise<string> { //TODO: This code can be removed before deployment
+        return this.redis1.client('INFO');
+    }
+    public async test6(): Promise<string> { //TODO: This code can be removed before deployment
+        return this.client.client('INFO');
     }
 
 
