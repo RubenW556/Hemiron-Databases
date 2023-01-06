@@ -10,9 +10,9 @@ export class MetricsService {
 
   /**
    * Gets size of single database
-   * @param {string} databaseName Name of Database to get size of
+   * @param {number} databaseId Oid of Database to get size of
    */
-  async getDatabaseSize(databaseName: string) {
+  async getDatabaseSize(databaseId: number) {
     const postWithquery = await this.dataSource.query(
       `
         SELECT t1.datname AS db_name,
@@ -22,7 +22,7 @@ export class MetricsService {
         DESC 
         LIMIT 1;
       `,
-      [databaseName],
+      [databaseId],
     );
 
     return postWithquery[0].db_size;
