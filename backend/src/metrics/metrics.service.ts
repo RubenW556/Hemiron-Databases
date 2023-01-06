@@ -31,28 +31,6 @@ export class MetricsService {
   }
 
   /**
-   * Gets sizes of all databases
-   */
-  getAllDatabaseSizesOfAllUsers() {
-    try {
-      return this.dataSource.query(
-        `
-          SELECT t1.datname AS db_name,
-          pg_database_size(t1.datname) AS db_size
-          FROM pg_database AS t1
-          ORDER BY pg_database_size(t1.datname)
-          LIMIT $1 
-          OFFSET $2;
-        `,
-        [100, 0],
-      );
-    } catch (e) {
-      this.logger.error(e);
-      return null;
-    }
-  }
-
-  /**
    * Gets sizes of all Postgres databases of user combined
    * @param {string} uuid UUID of requested user as string
    * @param pageNumber

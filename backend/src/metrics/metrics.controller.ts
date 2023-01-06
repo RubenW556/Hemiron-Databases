@@ -21,11 +21,6 @@ export class MetricsController {
     response.status(HttpStatus.OK).send({ message: `test` });
   }
 
-  @Get('databases/postgres/users')
-  getAllDatabaseMetrics(): any {
-    return this.metricsService.getAllDatabaseSizesOfAllUsers();
-  }
-
   @Get('databases/postgres/users/:id')
   async getAllDatabaseMetricsOfUser(
     @Req() request: Request,
