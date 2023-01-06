@@ -32,6 +32,11 @@ export class BillingIntegrationService {
     return this.patchDataToBillingEndpoint(payload, endpointURL);
   }
 
+  /**
+   * Send payload to given URL endpoint
+   * @param {PatchUserDatabaseMetricsDto} payload
+   * @param endpointURL
+   */
   async patchDataToBillingEndpoint(payload, endpointURL) {
     const { data } = await firstValueFrom(
       this.httpService.patch(endpointURL, payload).pipe(
