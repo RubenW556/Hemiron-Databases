@@ -100,7 +100,7 @@ export class MetricsService {
   }
 
   getHello() {
-    return 'Helo world';
+    return 'Hello world';
   }
 
   /**
