@@ -83,7 +83,7 @@ export class MetricsService {
       );
     } catch (e) {
       this.logger.error(e);
-      return null;
+      return [];
     }
   }
 
