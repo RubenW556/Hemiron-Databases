@@ -5,13 +5,16 @@ import { getRepositoryToken } from '@nestjs/typeorm';
 import { UserOwnsDatabase } from './user-owns-database.entity';
 import { UsersService } from '../user/users.service';
 import { User } from '../user/user.entity';
+import { DatabaseManagementService } from '../metaDatabaseManagement/databaseManagement.service';
+import { DataSource } from 'typeorm';
+import { MetricsService } from '../metrics/metrics.service';
 
 describe('UserOwnsDatabaseController', () => {
   let controller: UserOwnsDatabaseController;
 
   const mockUserOwnsDatabase = {};
-
   const UserDatabase = {};
+  const mockDataSource = {};
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -19,6 +22,8 @@ describe('UserOwnsDatabaseController', () => {
       providers: [
         UserOwnsDatabaseService,
         UsersService,
+        DatabaseManagementService,
+        MetricsService,
         {
           provide: getRepositoryToken(UserOwnsDatabase),
           useValue: mockUserOwnsDatabase,
@@ -26,6 +31,10 @@ describe('UserOwnsDatabaseController', () => {
         {
           provide: getRepositoryToken(User),
           useValue: UserDatabase,
+        },
+        {
+          provide: DataSource,
+          useValue: mockDataSource,
         },
       ],
     }).compile();
