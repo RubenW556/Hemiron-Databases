@@ -45,6 +45,7 @@ export class BillingIntegrationService {
         }),
       ),
     );
+    this.logger.log(`Successfully patched data to billing.`);
     return data;
   }
 }
