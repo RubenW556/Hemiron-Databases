@@ -16,7 +16,7 @@ import { User as UserMakingRequest } from 'hemiron-auth/dist/models/user';
 describe('DatabasesController', () => {
   let controller: DatabasesController;
 
-  const validDatabaseRecord: Database = { id: '77807154-2c3a-44e0-94a9-409805cf9a2f', name: 'Database name', type: 'postgres', creation_date_time: new Date(), pgd_id: 16463 };
+  const validDatabaseRecord: Database = { id: '77807154-2c3a-44e0-94a9-409805cf9a2f', name: 'Database name', type: 'postgres', created_at: new Date(), pgd_id: 16463 };
 
   const mockResponse = {
     status: jest.fn((x) => x),
