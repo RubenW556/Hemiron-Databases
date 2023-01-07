@@ -10,9 +10,9 @@ export class MetricsService {
 
   /**
    * Gets size of single database
-   * @param {string} databaseName Name of Database to get size of
+   * @param {number} databaseId Oid of Database to get size of
    */
-  async getDatabaseSize(databaseName: string) {
+  async getDatabaseSize(databaseId: number) {
     const postWithquery = await this.dataSource.query(
       `
         SELECT t1.datname AS db_name,
@@ -22,32 +22,12 @@ export class MetricsService {
         DESC 
         LIMIT 1;
       `,
-      [databaseName],
+      [databaseId],
     );
 
-    return postWithquery[0].db_size;
-  }
+    if (!postWithquery[0]) return '0';
 
-  /**
-   * Gets sizes of all databases
-   */
-  getAllDatabaseSizesOfAllUsers() {
-    try {
-      return this.dataSource.query(
-        `
-          SELECT t1.datname AS db_name,
-          pg_database_size(t1.datname) AS db_size
-          FROM pg_database AS t1
-          ORDER BY pg_database_size(t1.datname)
-          LIMIT $1 
-          OFFSET $2;
-        `,
-        [100, 0],
-      );
-    } catch (e) {
-      this.logger.error(e);
-      return null;
-    }
+    return postWithquery[0].db_size;
   }
 
   /**
@@ -81,7 +61,7 @@ export class MetricsService {
       );
     } catch (e) {
       this.logger.error(e);
-      return null;
+      return [];
     }
   }
 
@@ -98,7 +78,7 @@ export class MetricsService {
   }
 
   getHello() {
-    return 'Helo world';
+    return 'Hello world';
   }
 
   /**

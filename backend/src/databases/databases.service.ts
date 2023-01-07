@@ -46,7 +46,7 @@ export class DatabasesService {
 
     const database: Database = {
       ...databaseDto,
-      ...{ id: databaseId, creation_date_time: new Date(), pgd_id: dto.pg_id },
+      ...{ id: databaseId, created_at: new Date(), pgd_id: dto.pg_id },
     };
 
     await this.databasesRepository.insert(database);
