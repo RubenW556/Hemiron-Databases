@@ -1,4 +1,4 @@
-import {CacheModule, MiddlewareConsumer, Module, NestModule} from '@nestjs/common';
+import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { User } from './user/user.entity';
 import { UsersModule } from './user/users.module';
@@ -12,10 +12,10 @@ import { AuthMiddleware } from './auth.middleware';
 import { AuthenticationValidationGuard } from 'hemiron-auth/dist/guards/authentication-validation.guard';
 import { AuthenticationValidatorModule } from 'hemiron-auth/dist/authentication-validator.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import {AppController} from "./app.controller";
-import {AppService} from "./app.service";
+import { AppController } from './app.controller';
+import { AppService } from './app.service';
 import { RedisModule } from '@liaoliaots/nestjs-redis';
-import { RedisAppModule } from "./redis/redisApp.Module";
+import { RedisAppModule } from './redis/redisApp.Module';
 
 @Module({
   imports: [
@@ -29,11 +29,10 @@ import { RedisAppModule } from "./redis/redisApp.Module";
         //path: '/redis',
         //password: 'authpassword',
         onClientCreated(client) {
-          client.on('error', err => {});
+          client.on('error', () => {});
           client.on('ready', () => {});
-        }
-      }
-
+        },
+      },
     }),
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
@@ -66,7 +65,7 @@ import { RedisAppModule } from "./redis/redisApp.Module";
       provide: APP_GUARD,
       useClass: AuthenticationValidationGuard,
     },
-      AppService,
+    AppService,
   ],
 })
 export class AppModule implements NestModule {
