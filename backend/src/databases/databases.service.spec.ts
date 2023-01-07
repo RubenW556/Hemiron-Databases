@@ -60,7 +60,7 @@ describe('Databases service', () => {
       expect(result).toBe(validDatabaseRecord);
     });
 
-    it('should call findOne on databaseService', async () => {
+    it('should call findOneByOrFail on databasesRepository', async () => {
       const spy = jest.spyOn(mockDatabasesRepository, 'findOneByOrFail');
       await service.findOne(validDatabaseRecord.id);
       expect(spy).toHaveBeenCalledWith({ id: validDatabaseRecord.id });
@@ -75,7 +75,7 @@ describe('Databases service', () => {
       expect(result[0]).toBe(validDatabaseRecord);
     });
 
-    it('should call query on databaseService', async () => {
+    it('should call query on databasesRepository', async () => {
       const spy = jest.spyOn(mockDatabasesRepository, 'query');
       await service.findAllForUser(validDatabaseRecord.id);
       expect(spy).toHaveBeenCalled();
@@ -94,7 +94,7 @@ describe('Databases service', () => {
       expect(result.password).toBeDefined();
     });
 
-    it('should call query on databaseService', async () => {
+    it('should call query on databasesRepository', async () => {
       const spy = jest.spyOn(mockDatabasesRepository, 'query');
       await service.findAllForUser(validDatabaseRecord.id);
       expect(spy).toHaveBeenCalled();
