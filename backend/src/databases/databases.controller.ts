@@ -15,8 +15,7 @@ export class DatabasesController {
     private databasesService: DatabasesService,
     private userOwnsDatabaseService: UserOwnsDatabaseService,
     private usersService: UsersService,
-  ) {
-  }
+  ) {}
 
   @Get(':id')
   @HttpCode(HttpStatus.OK)
@@ -80,7 +79,10 @@ export class DatabasesController {
   ): Promise<Database> {
     try {
       const userMakingRequest = res.locals.userMakingRequest;
-      await this.userOwnsDatabaseService.findOne(database.id, userMakingRequest.id);
+      await this.userOwnsDatabaseService.findOne(
+        database.id,
+        userMakingRequest.id,
+      );
 
       await this.databasesService.update(database);
       return await this.databasesService.findOne(database.id);
