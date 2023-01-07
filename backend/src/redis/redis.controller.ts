@@ -9,36 +9,96 @@ export class RedisController {
         private redisService: CreateRedisService,
     ) {}
 
-    @Get('test1/:key')
-    async setAndGetValue(@Param('key') key: string): Promise<string> {
-        const value = 'hell-o-worl';
-        return this.redisService.test1(key, value);
+    @Get('setkey/:key/:value')
+    async setKey(@Param('key') key: string, @Param('value') value: string): Promise<string> {
+        return this.redisService.set(key, value);
     }
 
-    @Get('test2')
+    @Get('getkey/:key')
+    async getValue(@Param('key') key: string): Promise<string> {
+        return this.redisService.get(key);
+    }
+
+    @Get('deletekey/:key')
+    async deleteKey(@Param('key') key: string): Promise<string> {
+        let result = await this.redisService.delete(key);
+        if (result === 1) {
+            return "OK";
+        } else if (result === 0) {
+            return "Key doesn't exist";
+        }
+        else return result.toString();
+    }
+
+    @Get('client')
     async getInfo(): Promise<string> {
-        return this.redisService.test2();
+        return this.redisService.getClientInfo();
     }
 
-    @Get('test3')
-    async getInfo2(): Promise<string> {
-        return this.redisService.test3();
+    @Get('info')
+    async getRedisInfo(): Promise<string> {
+        return this.redisService.getRedisInfo();
     }
 
-    @Get('test4')
-    async getInfo3(): Promise<string> {
-        return this.redisService.test4();
+    @Get('currentuser')
+    async getCurrentUser(): Promise<string> {
+        return this.redisService.getCurrentUser();
     }
 
-    @Get('test5')
-    async getInfo5(): Promise<string> {
-        return this.redisService.test5();
+    @Get('getallkeys')
+    async getAllKeys(): Promise<string[]> {
+        return this.redisService.getAllKeys();
     }
 
-    @Get('test6')
-    async getInfo6(): Promise<string> {
-        return this.redisService.test6();
+    @Get('login/:username/:password')
+    async login(@Param('username') username: string, @Param('password') password: string): Promise<string> {
+        return this.redisService.login(username, password);
     }
+
+    @Get('addpassword/:username/:password')
+    async addPassword(@Param('username') username: string, @Param('password') password: string): Promise<string> {
+        return this.redisService.addPassword(username, password);
+    }
+
+    @Get('deletepassword/:username/:password')
+    async delPassword(@Param('username') username: string, @Param('password') password: string): Promise<string> {
+        return await this.redisService.deletePassword(username, password);
+    }
+
+    @Get('deleteuser/:username')
+    async createUserName(@Param('username') username: string): Promise<string> {
+        let result = await this.redisService.deleteUser(username);
+        if (result === 1) {
+            return "OK";
+        } else if (result === 0) {
+            return "User doesn't exist";
+        }
+        return result.toString();
+    }
+
+    @Get('createuser/:username/:password')
+    async createUser(@Param('username') username: string, @Param('password') password: string): Promise<string> {
+        let response = await this.redisService.getAllUsers();
+        if (response.includes(username)){
+            return "Username already in use, please pick another username"
+        }
+        return this.redisService.addPassword(username, password);
+    }
+
+    @Get('allusers')
+    async getAllUsers(): Promise<string[]> {
+        return this.redisService.getAllUsers();
+    }
+
+    @Get('user/:username')
+    async getUser(@Param('username') username: string): Promise<string[]> {
+        let response = await this.redisService.getUser(username);
+        if (response == null){
+            return ["User doesn't exist"];
+        }
+        return this.redisService.getUser(username);
+    }
+
 
     //@Get(':username')
     //@HttpCode(HttpStatus.OK)

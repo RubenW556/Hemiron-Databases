@@ -5,46 +5,96 @@ import Redis from 'ioredis';
 @Injectable()
 export class CreateRedisService {
     private readonly redis: Redis;
-    private readonly redis1: Redis;
-    private readonly client: Redis;
+
 
     constructor(private readonly redisService: RedisService) {
         this.redis = this.redisService.getClient(DEFAULT_REDIS_NAMESPACE);
-        this.redis1 = new Redis(6379, "redis.localhost");
-        this.client = new Redis({
-            sentinels: [{ host: process.env.REDIS_HOST }],
-            name: DEFAULT_REDIS_NAMESPACE
-        });
-
-        // or
-        // this.redis = this.redisService.getClient(DEFAULT_REDIS_NAMESPACE);
+        //this.redis = this.redisService.clients.get(username)
+        // this.redis1 = new Redis(6379, "redis");
     }
 
-    async set() {
-        return await this.redis.set('key', 'value', 'EX', 10);
+    public async set(key, value): Promise<string> {
+        let currentUser = await this.getCurrentUser()
+        let fullKey = currentUser + ":" + key
+        let response = await this.redis.set(fullKey, value)
+        return response;
     }
 
-    public async test1(key, value): Promise<string> { //TODO: This code can be removed before deployment
-        await this.redis.set(key, value)
-        return this.redis.get(key);
+    public async get(key): Promise<string> {
+        let currentUser = await this.getCurrentUser()
+        let fullKey = currentUser + ":" + key
+        let response = await this.redis.get(fullKey)
+        return response;
     }
 
-    public async test2(): Promise<string> { //TODO: This code can be removed before deployment
+    public async delete(key): Promise<number> {
+        let currentUser = await this.getCurrentUser()
+        let fullKey = currentUser + ":" + key
+        let response = await this.redis.del(fullKey)
+        return response;
+    }
+
+    public async getClientInfo(): Promise<string> {
         return this.redis.client('INFO');
     }
 
-    public async test3(): Promise<string> { //TODO: This code can be removed before deployment
+    public async getRedisInfo(): Promise<string> {
         return this.redis.info();
     }
 
-    public async test4(): Promise<string> { //TODO: This code can be removed before deployment
-        return this.redis.client.toString();
+    public async getCurrentUser(): Promise<string> {
+        return this.redis.acl('WHOAMI');
     }
-    public async test5(): Promise<string> { //TODO: This code can be removed before deployment
-        return this.redis1.client('INFO');
+
+    public async getAllKeys(): Promise<string[]> {
+        let currentUser = await this.getCurrentUser()
+
+        let searchTerm = '';
+        if(currentUser !== 'default'){
+            searchTerm = currentUser + ":";
+        }
+        searchTerm+='*';
+        let response = await this.redis.keys(searchTerm);
+        return response;
     }
-    public async test6(): Promise<string> { //TODO: This code can be removed before deployment
-        return this.client.client('INFO');
+
+    public async deleteUser(username): Promise<number> {
+        let response = await this.redis.acl('DELUSER',username);
+        return response;
+    }
+
+    public async login(username, password): Promise<string> {
+        let response = this.redis.auth(username, password);
+        return response;
+    }
+
+    public async addPassword(username, password): Promise<string> {
+        /*
+        * This Functionality automatically creates a new user in case the user didn't exist yet.
+        * Thus it functions both as AddPassword and as CreateUser to keep code DRY.
+         */
+        //let response1 = await this.redis.call('M.CUSTOMCMD', [])
+        const rules = ['on', '>' + password, '+GET', '~' + username + '*', '+SET', '~' + username + '*',
+            "+AUTH", "+ACL|WHOAMI", "+INFO", "+CLIENT|INFO", "+KEYS", "~" + username + "*", '+DEL', '~' + username + '*'];
+        let response = this.redis.acl('SETUSER', username, ...rules);
+        return response;
+    }
+
+    public async deletePassword(username, password): Promise<string> {
+        const rules = ['on', '<' + password, '+GET', '~' + username + '*', '+SET', '~' + username + '*',
+            "+AUTH", "+ACL|WHOAMI", "+INFO", "+CLIENT|INFO", "+KEYS", "~" + username + "*", '+DEL', '~' + username + '*'];
+        let response = this.redis.acl('SETUSER', username, ...rules);
+        return response;
+    }
+
+    public async getAllUsers(): Promise<string[]> {
+        let response = await this.redis.acl('USERS');
+        return response;
+    }
+
+    public async getUser(username): Promise<string[]> {
+        let response = await this.redis.acl('GETUSER', username);
+        return response;
     }
 
 
@@ -109,4 +159,6 @@ export class CreateRedisService {
     //        databaseName,
     //    );
     //}
+
+
 }

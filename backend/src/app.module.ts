@@ -24,9 +24,9 @@ import { RedisAppModule } from "./redis/redisApp.Module";
       readyLog: true,
       closeClient: true,
       config: {
-        host: 'localhost', //process.env.REDIS_HOST,
+        host: 'redis', //process.env.REDIS_HOST,
         port: 6379,
-        path: '/redis',
+        //path: '/redis',
         //password: 'authpassword',
         onClientCreated(client) {
           client.on('error', err => {});
