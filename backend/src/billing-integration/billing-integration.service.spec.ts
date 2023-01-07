@@ -65,7 +65,6 @@ describe('BillingIntegrationService', () => {
   it('billingIntegrationService should be defined', () => {
     expect(billingIntegrationService).toBeDefined();
   });
-  it('configService should be defined', () => {});
   describe('patchDataToBillingEndpoint', () => {
     it('should return status 200 and data object on patch request"', async () => {
       const data = ['test'];
