@@ -53,6 +53,17 @@ export class UsersService {
   }
 
   /**
+   * Creates a user if the user doesn't exist yet
+   * @param {string} userId UUID of requested user as string
+   */
+  async createUserIfNotExist(userId: string): Promise<void> {
+    const user: User = await this.usersRepository.findOneBy({ id: userId });
+    if (user == null) {
+      await this.usersRepository.insert({ id: userId });
+    }
+  }
+
+  /**
    * gets query count for user
    * @param {string} id UUID of to be deleted user as string
    */
