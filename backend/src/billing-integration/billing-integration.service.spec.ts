@@ -4,7 +4,6 @@ import { BillingIntegrationService } from './billing-integration.service';
 import { HttpService } from '@nestjs/axios';
 import { ConfigService } from '@nestjs/config';
 import { AxiosResponse } from 'axios';
-
 import { PatchUserDatabaseMetricsDto } from './patch-user-database-metrics.dto';
 import { of } from 'rxjs';
 
@@ -28,7 +27,7 @@ describe('BillingIntegrationService', () => {
       statusText: 'OK',
     };
 
-    const responseError: AxiosResponse<any> = {
+    const responseError500: AxiosResponse<any> = {
       data,
       headers: {},
       config: { url: 'http://localhost:3000/mockUrl' },
@@ -46,7 +45,14 @@ describe('BillingIntegrationService', () => {
             patch: jest
               .fn()
               .mockImplementationOnce(() => of(response))
-              .mockImplementationOnce(() => of(responseError)),
+              .mockImplementationOnce(() => of(responseError500))
+              .mockImplementationOnce(() =>
+                of(
+                  jest.fn(() => {
+                    throw new Error('MockError');
+                  }),
+                ),
+              ),
           },
         },
         {
@@ -76,15 +82,23 @@ describe('BillingIntegrationService', () => {
         ),
       ).toEqual({ data: data, status: 200 });
     });
-    it('should throw error on request failure"', async () => {
-      try {
+    it('should return status 500 on patch request failure"', async () => {
+      const data = ['test'];
+
+      expect(
         await billingIntegrationService.patchDataToBillingEndpoint(
           payloadMock,
           endpointMock,
-        );
-      } catch (e) {
-        expect(e.message).toBe('Internal server error');
-      }
+        ),
+      ).toEqual({ data: data, status: 500 });
+    });
+    it('should return no data on URL not found without error"', async () => {
+      expect(
+        await billingIntegrationService.patchDataToBillingEndpoint(
+          payloadMock,
+          endpointMock,
+        ),
+      ).toEqual({ data: undefined, status: undefined });
     });
   });
 });
