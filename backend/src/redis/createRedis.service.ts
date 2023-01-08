@@ -4,7 +4,6 @@ import {
   DEFAULT_REDIS_NAMESPACE,
 } from '@liaoliaots/nestjs-redis';
 import Redis from 'ioredis';
-import {constants} from "http2";
 
 @Injectable()
 export class CreateRedisService {
@@ -159,10 +158,5 @@ export class CreateRedisService {
   public async getRedisInfo(): Promise<string> {
     return this.redis.info();
   }
-
-
-
-
-
 
 }

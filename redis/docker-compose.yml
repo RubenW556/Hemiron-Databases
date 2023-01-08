@@ -19,6 +19,18 @@ services:
       - "traefik.http.services.redis.loadbalancer.server.port=${REDIS_PORT}"
     networks:
       - hemiron-ntw-compose
+  redis-ui:
+    image: marian/rebrow
+    ports:
+      - '5001:5001'
+    labels:
+      # For Url ${PRIMARY_DOMAIN}/redis-ui / redis-ui.${PRIMARY_DOMAIN}
+      - "traefik.http.routers.redis-ui.rule=(Host(`${PRIMARY_DOMAIN}`) && Path(`/redis-ui`)) || Host(`redis-ui.${PRIMARY_DOMAIN}`)"
+      - "traefik.http.routers.redis-ui.entrypoints=web"
+      - "traefik.http.routers.redis-ui.tls=false"
+      - "traefik.http.services.redis-ui.loadbalancer.server.port=${REDIS-UI_PORT}"
+    networks:
+      - hemiron-ntw-compose
 
 volumes:
   redis:

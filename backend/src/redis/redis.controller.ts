@@ -1,6 +1,5 @@
 import {Controller, Delete, Get, Param, Post, Put, Query} from '@nestjs/common';
 import { CreateRedisService } from './createRedis.service';
-import {ApiQuery} from '@nestjs/swagger'
 @Controller('redis')
 @Controller()
 export class RedisController {
