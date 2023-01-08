@@ -4,7 +4,7 @@ import { getRepositoryToken } from '@nestjs/typeorm';
 import { User } from './user.entity';
 import { DataSource, DeleteResult, InsertResult } from 'typeorm';
 import { MetricsService } from '../metrics/metrics.service';
-import { DatabaseManagementService } from '../metaDatabaseManagement/databaseManagement.service';
+import { DatabaseManagementService } from '../meta-database-management/database-management.service';
 
 describe('user service', () => {
   let service: UsersService;

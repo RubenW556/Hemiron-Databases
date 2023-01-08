@@ -7,6 +7,7 @@ import { v4 as generateUUID } from 'uuid';
 import { UpdateDatabaseDto } from './dto/update-database.dto';
 import { DatabaseManagementService } from '../meta-database-management/database-management.service';
 import { ReturnDatabase } from './dto/database-create-return.dto';
+import { User as UserMakingRequest } from 'hemiron-auth/dist/models/user';
 
 @Injectable()
 export class DatabasesService {
@@ -33,7 +34,7 @@ export class DatabasesService {
 
   public async insert(
     databaseDto: CreateDatabaseDto,
-    userMakingRequest: string,
+    userMakingRequest: UserMakingRequest,
   ): Promise<ReturnDatabase> {
     const databaseId = generateUUID();
 
@@ -68,7 +69,7 @@ export class DatabasesService {
    */
   public async createDatabaseWithUser(
     databaseName: string,
-    userMakingRequest,
+    userMakingRequest: UserMakingRequest,
     databaseId: string,
   ): Promise<ReturnDatabase> {
     const password = Math.random().toString(36).slice(-8);
