@@ -1,6 +1,6 @@
-import {Controller, Delete, Get, Param, Post, Put} from '@nestjs/common';
+import {Controller, Delete, Get, Param, Post, Put, Query} from '@nestjs/common';
 import { CreateRedisService } from './createRedis.service';
-
+import {ApiQuery} from '@nestjs/swagger'
 @Controller('redis')
 @Controller()
 export class RedisController {
@@ -34,54 +34,70 @@ export class RedisController {
     return this.redisService.getAllKeys();
   }
 
-  @Post('login/:username/:password')
+  @Get('allkeys/:dbname')
+  async getAllKeysFromDb(@Param('dbname') dbname?: string): Promise<string[]> {
+    return this.redisService.getAllKeys(dbname);
+  }
+
+  @Delete('allkeys')
+  async deleteAllKeys(): Promise<string> {
+    return this.redisService.deleteAllKeys();
+  }
+
+  @Delete('allkeys/:dbname')
+  async deleteAllKeysFromDb(@Param('dbname') dbname?: string): Promise<string> {
+    return this.redisService.deleteAllKeys(dbname);
+  }
+
+  @Post('login/:dbname/:password')
   async login(
-    @Param('username') username: string,
+    @Param('dbname') dbname: string,
     @Param('password') password: string,
   ): Promise<string> {
-    return this.redisService.login(username, password);
+    return this.redisService.login(dbname, password);
   }
 
-  @Put('password/:username/:password')
+  @Put('password/:dbname/:password')
   async addPassword(
-    @Param('username') username: string,
+    @Param('dbname') dbname: string,
     @Param('password') password: string,
   ): Promise<string> {
-    return this.redisService.addPassword(username, password);
+    return this.redisService.addPassword(dbname, password);
   }
 
-  @Delete('password/:username/:password')
+  @Delete('password/:dbname/:password')
   async deletePassword(
-    @Param('username') username: string,
+    @Param('dbname') dbname: string,
     @Param('password') password: string,
   ): Promise<string> {
-    return await this.redisService.deletePassword(username, password);
+    return await this.redisService.deletePassword(dbname, password);
   }
 
-  @Post('user/:username/:password')
-  async createUser(
-      @Param('username') username: string,
+  @Post('db/:dbname/:password')
+  async createDb(
+      @Param('dbname') dbname: string,
       @Param('password') password: string,
   ): Promise<string> {
-    const response = await this.redisService.getAllUsers();
-    if (response.includes(username)) {
-      return 'Username already in use, please pick another username';
+    const response = await this.redisService.getAllDatabases();
+    if (response.includes(dbname)) {
+      return 'Databasename already in use, please pick another Databasename';
     }
-    return this.redisService.addPassword(username, password);
+    return this.redisService.addPassword(dbname, password);
   }
 
-  @Get('user/:username')
-  async getUser(@Param('username') username: string): Promise<string[]> {
-    const response = await this.redisService.getUser(username);
+  @Get('db/:dbname')
+  async getDb(@Param('dbname') dbname: string): Promise<string[]> {
+    const response = await this.redisService.getDb(dbname);
     if (response == null) {
-      return ["User doesn't exist"];
+      return ["Database doesn't exist"];
     }
-    return this.redisService.getUser(username);
+    return this.redisService.getDb(dbname);
   }
 
-  @Delete('user/:username')
-  async createUserName(@Param('username') username: string): Promise<string> {
-    const result = await this.redisService.deleteUser(username);
+  @Delete('db/:dbname')
+  async deleteDb(@Param('dbname') dbname: string): Promise<string> {
+
+    const result = await this.redisService.deleteDb(dbname);
     if (result === 1) {
       return 'OK';
     } else if (result === 0) {
@@ -90,14 +106,14 @@ export class RedisController {
     return result.toString();
   }
 
-  @Get('allusers')
-  async getAllUsers(): Promise<string[]> {
-    return this.redisService.getAllUsers();
+  @Get('alldatabases')
+  async getAllDatabases(): Promise<string[]> {
+    return this.redisService.getAllDatabases();
   }
 
-  @Get('currentuser')
-  async getCurrentUser(): Promise<string> {
-    return this.redisService.getCurrentUser();
+  @Get('currentdatabase')
+  async getCurrentDatabase(): Promise<string> {
+    return this.redisService.getCurrentDb();
   }
 
   @Get('client')
