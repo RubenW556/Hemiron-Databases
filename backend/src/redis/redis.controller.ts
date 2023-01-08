@@ -1,8 +1,17 @@
-import {Controller, Delete, Get, Param, Post, Put, Query} from '@nestjs/common';
+import {
+  Controller,
+  Delete,
+  Get,
+  Logger,
+  Param,
+  Post,
+  Put,
+} from '@nestjs/common';
 import { CreateRedisService } from './createRedis.service';
 @Controller('redis')
-@Controller()
 export class RedisController {
+  private logger = new Logger(RedisController.name);
+
   constructor(private redisService: CreateRedisService) {}
 
   @Put('key/:key/:value')
@@ -28,19 +37,9 @@ export class RedisController {
     } else return result.toString();
   }
 
-  @Get('allkeys')
-  async getAllKeys(): Promise<string[]> {
-    return this.redisService.getAllKeys();
-  }
-
   @Get('allkeys/:dbname')
   async getAllKeysFromDb(@Param('dbname') dbname?: string): Promise<string[]> {
     return this.redisService.getAllKeys(dbname);
-  }
-
-  @Delete('allkeys')
-  async deleteAllKeys(): Promise<string> {
-    return this.redisService.deleteAllKeys();
   }
 
   @Delete('allkeys/:dbname')
@@ -74,9 +73,12 @@ export class RedisController {
 
   @Post('db/:dbname/:password')
   async createDb(
-      @Param('dbname') dbname: string,
-      @Param('password') password: string,
+    @Param('dbname') dbname: string,
+    @Param('password') password: string,
   ): Promise<string> {
+    if (dbname.includes(':')){
+      return 'A databasename is not allowed to contain a semicolon ":" '
+    }
     const response = await this.redisService.getAllDatabases();
     if (response.includes(dbname)) {
       return 'Databasename already in use, please pick another Databasename';
@@ -95,7 +97,6 @@ export class RedisController {
 
   @Delete('db/:dbname')
   async deleteDb(@Param('dbname') dbname: string): Promise<string> {
-
     const result = await this.redisService.deleteDb(dbname);
     if (result === 1) {
       return 'OK';
@@ -103,6 +104,11 @@ export class RedisController {
       return "User doesn't exist";
     }
     return result.toString();
+  }
+
+  @Get('usage/:dbname')
+  async getMemoryUsage(@Param('dbname') dbname: string): Promise<string> {
+    return this.redisService.getMemoryUsage(dbname);
   }
 
   @Get('alldatabases')
