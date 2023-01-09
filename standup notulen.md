@@ -240,3 +240,53 @@ Suleymen:
 #### Afspraken
 
 - Billing zal een eigen API beschikbaar stellen, die wij moeten aanspreken.
+
+
+
+### 24 november
+
+#### Stand-up
+Niels:
+- heeft feedback gekregen op MR
+- heeft feedback uitgewerkt
+- gaat data weergeven uit DB ipv mock data
+
+Max:
+- Heeft gewerkt aan docker presentatie
+
+Ruben:
+- heeft gewerkt aan typeORM
+- Gaat review uitwerken met response van endpoint
+
+Suleymen:
+- heeft gewerkt aan sonarqube
+- Heeft moeite met implementeren in pipeline/docker
+- Gaat sonar scan laten uitvoeren
+#### Stand-down
+
+Niels:
+- heeft aan de DB endpoint gewerkt.
+- gaat response template uitwerken
+Suleymen:
+- heeft gewerkt aan sonar
+- Gaat ontwerp DB refacotern met een enum
+Max:
+- heeft een docker bug opgelost
+- gaat presentatie bespreken
+
+Ruben:
+- heeft userscontroller uitgewerkt
+- met parameters en uitschrijven naar DB
+- Gaat MR review uitwerken
+#### Afspraken
+- Nogmaal is de gitflow besprken na incident dat Niels zelf ging mergen en de lock eraf had gehaald.
+- API zal bij resources de volgende response geven:
+```js
+{ 
+    count: number,
+    users: [],
+    request: {}
+}
+```
+- API endpoint zal een service bezitten die data opvraagt
+- API endpoint zal van een OTD gebruik maken om de parameters te definieren.
