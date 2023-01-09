@@ -15,7 +15,6 @@ describe('BillingIntegrationService', () => {
   };
   let billingIntegrationService: BillingIntegrationService;
 
-  new ModuleMocker(global);
   beforeAll(async () => {
     const data = ['test'];
 

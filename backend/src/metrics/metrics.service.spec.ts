@@ -22,7 +22,6 @@ describe('MetricsService', () => {
   let metricsService: MetricsService;
   let dataSource: DataSource;
 
-  new ModuleMocker(global);
   beforeAll(async () => {
     const moduleRef = await Test.createTestingModule({
       providers: [
