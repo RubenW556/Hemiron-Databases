@@ -11,7 +11,6 @@ import { MetricsService } from '../src/metrics/metrics.service';
 
 describe('TaskController (e2e)', () => {
   let app: INestApplication;
-  // let service: MetricsService;
   beforeEach(async () => {
     const moduleFixture: TestingModule = await Test.createTestingModule({
       imports: [
@@ -34,17 +33,11 @@ describe('TaskController (e2e)', () => {
       controllers: [AppController],
     }).compile();
 
-    // service = Test.moduleRef.get<ObjectService>(ObjectService);
-
     app = moduleFixture.createNestApplication();
     await app.init();
   });
 
   afterAll(async () => {
     await app.close();
-  });
-
-  it('will return the size of a database in kbs', () => {
-    // service.get;/**/
   });
 });

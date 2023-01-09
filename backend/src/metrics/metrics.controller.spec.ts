@@ -1,7 +1,6 @@
 import { Test } from '@nestjs/testing';
 import { MetricsController } from './metrics.controller';
 import { MetricsService } from './metrics.service';
-import { ModuleMocker } from 'jest-mock';
 import { Request, Response } from 'express';
 import { HttpStatus } from '@nestjs/common';
 
@@ -20,8 +19,6 @@ describe('MetricsController', () => {
     send: jest.fn((x) => x),
     resBody: jest.fn((x) => x),
   } as unknown as Response;
-
-  new ModuleMocker(global);
 
   beforeEach(async () => {
     const moduleRef = await Test.createTestingModule({
