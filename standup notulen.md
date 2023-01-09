@@ -196,3 +196,47 @@ Max:
 #### Afspraken:
 - Max heeft nogeens de nadruk op gitflow uitgelegd. Om problemen te voorkomen met conflicten zal iedereen een gitflow hanteren. Deze flow bestaat uit de volgende dingen:
 - Iedereen werkt vanuit zijn eigen feature branch. Wanneer een feature klaar is om te mergen, zal eerst de develop branch naar de feature branch gemergt worden. Zo kunnen eventuele conflicten, lokaal opgelost worden. Als er geen conflicten (meer) zijn, wordt er een MR met develop gemaakt. 
+
+### 17 november
+
+#### Stand-up
+Suleymen:
+- heeft SQL-implementatie script gemaakt
+- heeft SQL documentatie gemaakt
+- Gaat werken aan vervangende opdracht
+- Gaat funtionaliteit aanmaken db user maken
+
+Ruben:
+- Heeft connectie DB en backend gemaakt (typeorm)
+- Gaat er naar feedback van Max veranderen naar een injectable service
+
+Niels:
+- Heeft een db endpoint template in de backend opgezet
+- Gaat deze endpint uitwerken
+- Gaat deze endpoint in de frontend uitwerken
+
+Max:
+- Heeft docker entryfile script template gemaakt
+- Gaat deze afmaken naar implementatiemodel
+
+#### Stand-down
+Niels:
+- Heeft een mock db lijst in de endpoint gemaakt
+- Laat dit ook zien in de frontend
+- Gaat dit veranderen naar data uit een database
+Max:
+- Heeft gewerkt aan implementatie db schema
+- Heeft aan typeorm module gewerkt .
+- Gaat users in backend uitwerken.
+
+Ruben:
+- heeft aan typeorm module gewerkt en deze uitgewerkt.
+- Gaat conflicten oplossen en mergen.
+
+Suleymen:
+- Heeft sonar kunnen runnen op de lokale omgeving.
+- Gaat sonar implementeren op de pipeline
+- 
+#### Afspraken
+
+- Billing zal een eigen API beschikbaar stellen, die wij moeten aanspreken.
