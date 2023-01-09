@@ -1,6 +1,5 @@
 import { Test } from '@nestjs/testing';
 import { MetricsService } from './metrics.service';
-import { ModuleMocker } from 'jest-mock';
 import { DataSource } from 'typeorm';
 
 describe('MetricsService', () => {
