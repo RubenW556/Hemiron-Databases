@@ -41,10 +41,11 @@ Each level represents a different combination of impact and likelihood;
 For more information on these severities and how they are used in SonarQube, please visit the following link:
 https://docs.sonarcloud.io/digging-deeper/rules/.
 
+0. Start treafik service
 
-1. Dit is de command voor SonarQube server
-
-`docker compose up -d`
+1. Start SonarQube server
+- Creeër `.env` vanuit `.env.example`
+- Run `docker compose up -d`
 
 2. Ga naar `http://sonar.localhost`
 
