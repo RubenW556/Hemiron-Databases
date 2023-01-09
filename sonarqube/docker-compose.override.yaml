@@ -1,14 +1,12 @@
+volumes:
+  sonarqube:
+
 networks:
   hemiron-ntw-compose:
     external: true
     name: hemiron-ntw-compose
 
 services: # docker compose up
-  scanner: # docker compose up scanner
-    networks:
-      - hemiron-ntw-compose
-    volumes:
-      - ../backend:/usr/src
   sonarqube:
     networks:
       - hemiron-ntw-compose
