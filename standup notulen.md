@@ -346,3 +346,81 @@ Niels
 
 #### Afspraken:
 - Niels Gaat Eigen board beter bijhouden.
+
+### 8 december
+#### Standup
+
+Suleymen
+
+- sonarcube af, verbinden lukt nog niet
+- gaat oplossen met gene die over sonar gaat. Kan die gene niet bereiken. Gaat op zoek
+- heeft merge review niet kunnen bekijken.
+- Gaat nu meteen review maken
+
+Ruben
+test gefixt
+* database e2e mock
+* user
+* heeft onderzoek
+* Heeft request aangepast
+* gaat start maken database voor gebruik users aanmaken (backend)
+* aangelopen: bij e2e volledige module testen kan niet zonder échte database. Hierom kan dat niet goed getest worden in de pipeline. Misschien test-db op swarm.
+* Heeft review goedgekeurd
+
+Niels
+* heeft onderzoeksrapport gemaakt
+* Gaat begin maken. user permissions endpoint gaan maken database
+* heeft board niet bijgehouden
+* gaat alsnog board bijhouden
+* Heeft reviewer aangepast naar Max
+
+Max
+
+* Heeft onderzoek gemaakt
+* reverse-proxy
+* Afspreken met Ron hoe dat precies op swarm in gaat stellen
+* Is tegenaangelopen met reviews niet uitgevoerd.
+* gaat review Ruben nogmaals maken
+* gaat review frontend niels maken
+* Moet eerst angular bestuderen
+
+#### STANDDOWN
+
+MAX: 
+
+- CRONJOB opstellen voor connectie billing (task-service)
+
+Suleymen:
+
+* Heeft persoon gevonden (Koen) en bericht
+* Heeft readme doorgelezen en toegepast (sonar)
+* Kan nog niet verbinden omdat sonarqube server eruit ligt (error 500)
+* Gaat schema db aanpassen (cascade ).
+* lowercase: Gaat nog even de merge reviewen van de aanpassen
+
+Ruben:
+* Heeft client databases aanmaaken gemaakt
+* Heeft client user implementatie gemaakt
+* Heeft client user gekoppeld aan hun db
+* Loopt tegenaan Nieuwe gebruikers kunnen alle databases inzien
+* Gaat deze bug oplossen door entryfile db aan te passen
+
+Niels:
+
+* heeft backend endpoint gemaakt user owns db (permissie)
+* heeft frontend modulair gemaakt. (staat op review)
+* Gaat auth implementere in backend met middleware
+
+Max
+
+* Heeft traefik in swarm gemaakt
+* Het lukt niet door zerotier gedoe
+* Gaat Database in de swarm, maar wacht af tot het echt nodig.
+* Gaat inventarisering maken voor connectie met billing
+
+
+#### Afspraken:
+
+* Bij review iemand kiezen uit groep -> afpsraak. -> gratis koffie
+* Bij review niet goed : maak draft
+* Bij review reactie: klik resolved
