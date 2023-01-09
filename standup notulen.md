@@ -149,3 +149,49 @@ Ruben
 
 * Het is vakantie , iedereen heeft afgesproken om na de vakantie door te werken. alles is af/uitgevoerd, volgens planning
 * Max zal de pipeline video thuis afmaken en inleveren
+
+### 10 november
+
+#### Stand-up
+
+Suleymen:
+- Heeft alles met docker laten runnen.
+- Gaat database op docker laten runnen via compose
+
+Ruben:
+- Heeft postgres op compose gedraait
+- Heeft backend op compose gedraait
+- Heeft moeite gehad met connectie maken API en DB. 
+- Gaat hier nog een tutorial van bekijken en uitwerken.
+
+Niels:
+- Heeft frontend gefixt
+- Gaat SWAL implementeren
+- Gaat begin maken aan normalisatie database
+
+Max:
+- Heeft aan db docker opzet gewerkt
+- Gaat dit checken en mergen
+
+
+#### Stand-down
+Niels:
+- heeft SWAL geimplementeerd op frontend
+- heeft begin endpoint databases gemaakt
+- Gaat select maken voor de endpoint
+
+Suleymen:
+- Heeft conceptueel model gemaakt/inventarisering db
+- Gaat een implementatiemodel maken db
+- Gaat vervangende opdracht maken ontwikkelstraat (rollback, sonar of artifact)
+
+Ruben:
+- heeft een connectie gemaakt met DB
+- Gaat nieuwe user aanmaken realiseren
+
+Max:
+- Heeft gewerkt aan docker opzet
+- Gaat DB verder uitwerken in compose
+
+Afspraken:
+- Max heeft nogeens de nadruk op gitflow uitgelegd
