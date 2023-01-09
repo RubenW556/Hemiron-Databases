@@ -290,3 +290,59 @@ Ruben:
 ```
 - API endpoint zal een service bezitten die data opvraagt
 - API endpoint zal van een OTD gebruik maken om de parameters te definieren.
+
+### 1 december
+#### standup 
+
+Niels
+
+- Ik heb in de frontend de functionaliteit aangemaakt om databases aan te maken en te deleten. Die staat al een weekje op review dus kan gemerged worden. 
+- Deze week zal ik alles wat gemaakt hebt om dit werkend te maken moeten updaten omdat de database structuur aangepast is. 
+- Ik ga user permissions toevoegen op een database
+
+Ruben
+
+- Ik heb de user controller uitgewerkt. Deze gebruikt nu ook input validatie. Hiervoor heb ik ook gelijk tests geschreven. 
+- Deze week ga ik een database aanmaken waar de databases van onze eindgebruikers in komen.
+
+Suleymen
+
+- Ik heb de database aanpassingen doorgevoerd. 
+- Daarna heb ik gewerkt aan sonar cube het is gelukt om client werkend te krijgen maar het verbinden van de server en client is nog niet gelukt. 
+- Deze week ga ik dit proberen op te lossen
+
+#### standdown
+
+Ruben:
+- Heeft Suleymen geholpen met merge issues en docker flow.
+- Hotfix bash geregeld in sh file. Dit zit in merge request.
+- Gaat merge request specifiek per issue mergen
+- Gaat databases per gebruikers aanmaken in backend
+
+Suleymen
+
+- Heeft Sonarscanner service verbinden met de sonarcube server
+- Heeft changes voor database doorgevoerd
+- Heeft changes ook in database schema z sh file gemaakt
+- Gaat login voor sonarscanner invoeren
+- Gaat sonarscanner presenteerbaar maken
+
+Max
+
+- Heeft vorige week tot vandaag gewerkt aan opsplitsing van stages, test is nu apart van build
+- Heeft implementatie van docker in frontend
+- Heeft beide zijn bijna klaar voor mergen
+- Gaat docker uitwerken
+- Gaat aan verslag werken
+- Gaat mogelijk de anderen helpen
+
+Niels
+- heeft frontend verplaatst van core naar eigen map
+- heeft sql veranderd naar sh
+- heeft endpoint gefixt omdat database veranderd was
+- Gaat als de review in shared gereviewed is kan ik verder gaan
+- Gaat dan kan ik edit maken of iets anders toevoegen
+- Gaat Users permissions geven op een database
+
+#### Afspraken:
+- Niels Gaat Eigen board beter bijhouden.
