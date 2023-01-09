@@ -525,6 +525,37 @@ Max:
 - Bij creatie database wordth één user aangemaakt en bijgehouden. Een database kan één user gekoppeld hebben. Een user kan wel meerdere database gekoppeld hebben
 
 
+### 20 december
+
+Ruben:
+* Heeft queries afgemaakt in service.
+* Heeft moeite met bloated aantal van queries
+* Gaat services samenvoegen met DAO
+* Gaat database seeder opzetten via entrypoint.
+* Gaat queries per database teruggeven.
+
+Suleymen:
+* Heeft sonar laten reviewen is goed que functies. Heeft meer onderzoek moeten doen voor uitleg geven sonar.
+* Gaat readme maken sonarqube
+* Gaat readme maken db
+* Gaat remodelleren db
+* Gaat trigger aanpassen om sonar te testen in pipeline job
+
+Niels:
+* Heeft auth middleware gemaakt.
+* Gaat List eigen databases op basis van ingelogde gebruiker
+
+Max:
+* Heeft opvragen db -size protoptype
+* Heeft scheduler protype gemaakt om periodiek http-requests te versturen (naar billing)
+* Gaat uitproberen e2e testen met database in pipeline.
+* Gaat db -size netjes afwerken
+* Gaat reactie Ron afwachten met subdomeinen
+
+Afspraken:
+* We gebruiken de volgende template als database naam van clienten [uuid.databasename]
+* Wanneer MR laat weten in groepschat.
+
 ### 22 december:
 #### STANDUP
 
