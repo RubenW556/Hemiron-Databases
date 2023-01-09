@@ -424,3 +424,102 @@ Max
 * Bij review iemand kiezen uit groep -> afpsraak. -> gratis koffie
 * Bij review niet goed : maak draft
 * Bij review reactie: klik resolved
+
+### 15 december
+#### standup
+
+
+Suleymen:
+
+* Heeft contact met koen gevonden
+* Manager was down want node-2 was down
+* Gaat nu connectie maken sonarqube
+* Heeft cascade getest en gemaakt en gerieviewed
+* Gaat nog modelleren over database
+* Gaat readme/docu maken voor database opzet
+* (Gaat trigger database maken user verwijderen kijkt of hij de db ownt of niet zo ja)
+* Wilt ook nog iets in de backend gaan maken, even kijken wat
+
+Ruben:
+* Niet gelukt bug op te lossen
+* Heeft test-branch verwerkt
+* Heeft database feedback verwerkt voor request.
+* Gaat bug fixen
+* Gaat onderzoek doen naar performance queries en deze uitlezen van database, voor uiteindelijk doorsturen billing.
+* Had moeite met traefik en docker compose gaat besprken met Max
+
+Niels:
+* Heeft endpoint gemerged
+* Gaat modulair mergen
+* Heeft auth gemaakt
+* Gaat auth proberen in middleware te verwerken.
+* Gaat auth implementeren in endpoint databases
+
+
+Max:
+
+* Heeft gewerkt aan traefik
+* Heeft Pipeline shared gemaakt
+* Heeft growthbook
+* Heeft opzet gedaan connectie maken met billing, periodiek data versturen in api
+* Ga subdomein lijst opstellen voor traefik
+* Gaat Ron informeren over Docker in Docker
+* Liep vast bij tests  analyse in pipeline, want die werken ook op lokaal niet eens
+* Wij gaan vanaf vandaag óók dinsdag 4u extra standdown
+* Wij gaan ook proberen naast donderdag een extra dag effectief te werken.
+
+#### Reflectie:
+- Max vraagt iedereen wat zij vinden van hoe het gaat
+- Ruben vind het een beetje langzaam gaan
+- Wilt misschien 2e standdown implementeren
+
+
+#### Integratie Billing
+Max heeft besproken met Billing voor aanleveren data. Dit gaat hij aankomende week opzetten. Hier een korte uitwerking
+
+
+```js
+const request = {
+uuid: number,
+size: number,
+queries: number,
+uptime: number
+}
+```
+* zo wil billing data aangeleverd krijgen. op endpoint user/databasedata
+* Per 3 uur
+* Billing zal later headers toevoegen ivm auth
+
+
+#### Standown:
+Ruben:
+* Test-fixes gemerged op
+* Heeft onderzocht hoe queries berekenen
+* Gaat Dit implementeren via nestJS in een service
+* Heeft traefik werkend gekregen
+
+Niels:
+* Traefik opgelost (port veranderd naar 4200 want auth)
+* Base url api toegepast in frontend
+* Heeft merge uitgevoerd
+* Gaat auth middleware maken en implementeren
+
+Suleymen:
+* Heeft sonar up gekregen en kunnen verbinden
+* Moet nog even overleggen met koen voor laatste puntjes op de I
+* Heeft functie gemaakt database verwijderen als gebruiker wordt verwijderd, moet nog getest worden
+* Gaat dit verder uitwerken
+* Gaat readme maken db
+* Gaat remodelleren db
+
+Max:
+* Heeft meeting gehad Billing data aanleveren
+* Heeft data verzameld van andere taems om traefik te configureren
+* heeft gekeken naar traefik implementatie
+* Gaat database size onderzoeken
+
+#### Afspraken
+* Wij gaan vanaf vandaag óók dinsdag 4u extra standdown (online)
+* Wij gaan ook proberen naast donderdag een extra dag effectief te werken.
+* Wij veranderen het volgende in onze aanpak:
+- Bij creatie database wordth één user aangemaakt en bijgehouden. Een database kan één user gekoppeld hebben. Een user kan wel meerdere database gekoppeld hebben
