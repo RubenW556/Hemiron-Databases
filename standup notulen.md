@@ -523,3 +523,73 @@ Max:
 * Wij gaan ook proberen naast donderdag een extra dag effectief te werken.
 * Wij veranderen het volgende in onze aanpak:
 - Bij creatie database wordth één user aangemaakt en bijgehouden. Een database kan één user gekoppeld hebben. Een user kan wel meerdere database gekoppeld hebben
+
+
+### 22 december:
+#### STANDUP
+
+Ruben:
+* Heeft DAO deels samengevoegd
+* Heeft queries per database teruggeven.
+* Gaat services samenvoegen met DAO afmaken
+* Gaat database seeder opzetten via entrypoint.
+* Had moeite met traefik, gaat hier nog naar kijken en opnieuw builden
+
+Suleymen:
+
+* heeft db readme gemaakt en feedback verwerkt
+* Heeft onderzoek gedaan sonarqube
+* Heeft als het goed is een job voor sonar in pipeline
+* Gaat remodelleren db met de rest
+* Gaat uptime functionaliteit maken
+* Wilt even zerotier weer kijken hoe het werkt
+
+Niels:
+
+* Heeft poging gedaan filter maken
+* Gaat dit op een andere manier aanpakken en verder proberen
+* Gaat frontend database /of redis aanmaken fixen
+
+De volgende subdomeinen zijn opgezet:
+
+* api.hemiron.inf-hsleiden.nl
+* database.hemiron.inf-hsleiden.nl
+* web.hemiron.inf-hsleiden.nl
+* sonarqube.hemiron.inf-hsleiden.nl
+
+Max:
+
+* Heeft gekeken e2e-testing
+* Gaat endpoint voor metrics
+* Gaat nog even met Ron in overleg over sub
+* Gaat billing container in e2e testen
+
+### standown 22/12
+
+Max:
+
+* heeft endpoint gemaatk metrics
+* heeft remodel gedaan
+* Gaat dit verder gemaakt
+
+
+Suleymen:
+* heeft Readme gemaakt sonarqube
+* Heeft remodeling gemaakt
+
+Ruben:
+
+* Heeft remodel gewerkt
+* Heeft db query ophalen afgewerkt van postgres
+* Heeft test geupdatet
+* Gaat db creation afmaken met nieuwe model
+* Gaat zorgen dat frontend integratie met postgres client datbase aanmaken
+
+Niels:
+* heeft db overzicht toont alleen eigen dbs met delete confirmation
+* heeft create database frontend gemaakt.
+* Heeft lint fixen geprobeerd
+* Heeft remodeeling db gemaakt
+* Gaat remodelling verwerken op eigen functionaliteit
+* Heeft button gefixt
+* gaat info page specifieke database met credists etc 
