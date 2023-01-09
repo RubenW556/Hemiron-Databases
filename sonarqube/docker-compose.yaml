@@ -5,6 +5,10 @@ networks:
     name: databases-sonar
 
 services:
+  scanner:
+    image: sonarsource/sonar-scanner-cli:latest
+    env_file:
+      - .env
   sonarqube:
     image: sonarqube:latest
     extra_hosts:
