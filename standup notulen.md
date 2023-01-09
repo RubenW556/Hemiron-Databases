@@ -193,5 +193,6 @@ Max:
 - Heeft gewerkt aan docker opzet
 - Gaat DB verder uitwerken in compose
 
-Afspraken:
-- Max heeft nogeens de nadruk op gitflow uitgelegd
+#### Afspraken:
+- Max heeft nogeens de nadruk op gitflow uitgelegd. Om problemen te voorkomen met conflicten zal iedereen een gitflow hanteren. Deze flow bestaat uit de volgende dingen:
+- Iedereen werkt vanuit zijn eigen feature branch. Wanneer een feature klaar is om te mergen, zal eerst de develop branch naar de feature branch gemergt worden. Zo kunnen eventuele conflicten, lokaal opgelost worden. Als er geen conflicten (meer) zijn, wordt er een MR met develop gemaakt. 
