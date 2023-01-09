@@ -242,7 +242,6 @@ Suleymen:
 - Billing zal een eigen API beschikbaar stellen, die wij moeten aanspreken.
 
 
-
 ### 24 november
 
 #### Stand-up
@@ -526,7 +525,7 @@ Max:
 
 
 ### 20 december
-
+#### standdown
 Ruben:
 * Heeft queries afgemaakt in service.
 * Heeft moeite met bloated aantal van queries
@@ -552,7 +551,7 @@ Max:
 * Gaat db -size netjes afwerken
 * Gaat reactie Ron afwachten met subdomeinen
 
-Afspraken:
+#### Afspraken:
 * We gebruiken de volgende template als database naam van clienten [uuid.databasename]
 * Wanneer MR laat weten in groepschat.
 
@@ -595,7 +594,7 @@ Max:
 * Gaat nog even met Ron in overleg over sub
 * Gaat billing container in e2e testen
 
-### standown 22/12
+#### standown
 
 Max:
 
@@ -624,3 +623,149 @@ Niels:
 * Gaat remodelling verwerken op eigen functionaliteit
 * Heeft button gefixt
 * gaat info page specifieke database met credists etc 
+
+
+### 27 december
+
+#### standdown
+
+Suleymen:
+* Heeft remodel toegepast
+* Db-instance (entryfiles)
+* DB Readme
+* Backend entities
+* ERD
+* Loopt aan tegen benaming van  client db.  user.uuid met veranderingen. Dacht dat db-uuid zou worden afgewerkt
+* Gaat Redis compose opzetten
+
+Ruben:
+* Heeft db creation grotendeels afgemaakt.
+* Gaat metrics modulair maken MR reviewen.
+* Gaat eigen MR uitwerken op basis van die veranderingen
+* Gaat MR query count na metrics module aanpassen en mergen.
+* Gaat oid aanmaken bij creation DB en voegd deze in onze db tabel.
+* Gaat database access permissies met public role/group.
+
+
+Max:
+* Heeft refactor gedaan metrics,
+* Heeft Auth uitgezet,
+* Gaat hostnaming toevoeging on dockerstacks
+* Gaat kijken of het wel uitgezet moet worden.
+* Heeft Billing-integratie module (af)gemaakt
+* Gaat Metrics aanpassen met join (database-data-collection, metrics.service geQueryCountByUser).
+* Gaat test uitwerken van metrics.
+* Laat traefik even aan de zijlijn.
+
+#### Afspraken:
+
+- In sonarqube dienen codesmells te worden bevestigd en zo snel mogelijk te worden opgelost,
+Deze dienen in een issue te worden geintegreerd.
+(het liefst in het eerst volgende MR)
+
+- Aangezien clienten hun db-naam kunnen veranderen, kunnen we niet meer vertrouwen hierop. Er zal oid worden geintegreerd en dit zal de naam vervangen wanneer een lijst van database wordt opgevraagd. (hiervoor meeten we later nog)
+
+### 29 dec
+#### STANDDOWN 
+
+Niels:
+* Heeft overzicht begin gemaakt.
+* Gaat dit afmaken.
+* Gaat OID inplementeren
+
+Ruben:
+* Heeft MR uitgewerkt (die oude)
+* Heeft db creatie uitgewerkt
+* Gaat dit refactoren
+* Gaat database access permissies met public role/group
+* Liep aan tegen parameter inputten met query. (branch database-creation, metaDatabasemanagement.service)
+
+Max:
+
+* Heeft Metrics met join en oid gerefactord
+* heeft docker hostnames geimplementeerd
+* Gaat growthbook helemaal weghalen.
+* heeft authentication weer geactiveerd
+* Gaat config module maken
+* Gaat unit-tests maken
+* Gaat e2e-tests maken
+
+Suleymen:
+
+* Heeft begin gemaakt gedeelde redis service, gaat hier mee staken, want niet nodig
+* Heeft moeite met opzetten docker compose lokaal, krijft foutmeldingen
+* Gaat dit verder uitwerken
+
+### 03 jan:
+#### Standddown
+
+Niels:
+
+* Heeft poging service tests gemaakt
+* Heeft oid verwerkt.
+* Heeft overzicht gemaakt
+* Liep tegenaan met inloggegevens client database.
+* Gaat dit afmaken met daadwerkelijke de username / db naam (gaat met Ruben eventueel hiermee aan de slag)
+* Gaat even alles compleet na.
+
+Ruben:
+* Heeft oid bij db creatie gemaakt.
+* Heeft permissies van public gemaakt
+* Laat parameters even aan de zijlijn.
+* Gaat MR review uitwerken van permissions database.
+* Loopt tegen aan met git verwikkelingen. Gaat hier aan knutselen.
+* Gaat trigger maken creatie user, bij creatie database.
+
+Suleymen
+
+* Heeft redis compose gemaakt.
+* Heeft begin redis controller en service gemaakt met om
+* eigen redis instances aanmaken
+* Wilt even valideren of dit de goede manier is (maakt MR aan).
+* Gaat basic functie testen op lokale omgeving voordat het verder uitgewerkt gaat worden.
+* Loopt tegen aan met achterlopende MR die conflicten. (Gaat dit oplossen met Ruben)
+
+Max:
+
+* Heeft config module gemaakt
+* Heeft Test foutloos gemaakt.
+* Heeft Metrics module uitgewerkt.
+* Gaat unit testing uitwerking, vind dit nog wel lastig.
+
+
+#### Afspraken:
+
+* Na een incident van foute code op dev, zal Suleymen zal beter de gitflow gaan volgen. 
+* Ook is het aan de reviewer om extra op te letten wanneer er conflicten zijn.
+* Iedereen gaat even tests doorlopen en fixen zodat foutmeldingen weg gaan. Dit wordt bij code van eigen functionaliteiten gedaan. Bij inmengen even overleggen met elkaar.
+* We gaan op de volgende manier errors loggen: Alles in de debug met de logger module en zo min mogelijk naar de eindgebruiker (in ieder geval een error code, en per geval ook een error message)
+* We zullen, om een een begin te maken met deploy, zorgen dat alles eerst op compose werkt. Dit wordt een alles omvattende opstelling van treafik, databases API, databases postgres, billing API
+
+
+### 05 jan
+#### STANDUP
+
+Niels:
+* Prioriteit, gaat tests foutloos maken
+* gaat verder met vorige standup
+* gaat werken aan het opzetten van Redis
+
+Ruben:
+* Heeft tests foutloos gemaakt.
+
+Suleymen:
+* Heeft redis compose opgezet
+* Loopt aan bij de connectie van redis met nestjs
+* Gaat vanaf nu vaker periodiek MRs maken
+* Gaat redis functionaleiten maken
+
+Max:
+* Gaat notulen in versiebeheer voegen DEADLINE DINSDAG
+* Gaat tests uitwerken
+
+#### Afspraken:
+
+- Iedereen gaat zijn functionaliteit af en haalt bugs/code smells eruit. Deadline Maandag
+- Vanaf nu gaan we alleen clean MRs sturen
+- Suleymen en Niels gaan redis functionaliteiten uitwerken. Dit bestaat uit een redis key-value store, waar clienten via een API van ons bewerkingen kunnen uitvoeren op redis. Dit bevat authenticatie dat clienten alleen bij hun eigen data kunnen.
+- Ook zal suleymen frequenter MRs maken om tussendoor te verifieren dat hij de goede kant op gaat, op tijd feedback kan krijgen en niet weken achterloopt op zijn branch.
