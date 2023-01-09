@@ -1,0 +1,16 @@
+networks:
+  hemiron-ntw-compose:
+    external: true
+    name: hemiron-ntw-compose
+
+services: # docker compose up
+  sonarqube:
+    networks:
+      - hemiron-ntw-compose
+    labels:
+      - "traefik.docker.network=hemiron-ntw-compose"
+      # For Url sonar.${PRIMARY_DOMAIN}
+      - "traefik.http.routers.sonar.rule=Host(`sonar.${PRIMARY_DOMAIN?Variable not set!}`)"
+      - "traefik.http.routers.sonar.entrypoints=web"
+      - "traefik.http.routers.sonar.tls=false"
+      - "traefik.http.services.sonar.loadbalancer.server.port=9000"
