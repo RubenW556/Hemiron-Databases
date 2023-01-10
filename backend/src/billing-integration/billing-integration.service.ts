@@ -2,7 +2,7 @@ import { HttpService } from '@nestjs/axios';
 import { AxiosError } from 'axios';
 import { catchError, firstValueFrom } from 'rxjs';
 import { Injectable, Logger } from '@nestjs/common';
-import { PatchUserDatabaseMetricsDto } from './patchUserDatabaseMetrics.dto';
+import { PatchUserDatabaseMetricsDto } from './patch-user-database-metrics.dto';
 import { ConfigService } from '@nestjs/config';
 
 @Injectable()
@@ -32,14 +32,20 @@ export class BillingIntegrationService {
     return this.patchDataToBillingEndpoint(payload, endpointURL);
   }
 
+  /**
+   * Send payload to given URL endpoint
+   * @param {PatchUserDatabaseMetricsDto} payload
+   * @param endpointURL
+   */
   async patchDataToBillingEndpoint(payload, endpointURL) {
-    const { data } = await firstValueFrom(
+    const { status, data } = await firstValueFrom(
       this.httpService.patch(endpointURL, payload).pipe(
         catchError((error: AxiosError) => {
           throw new Error(error.message);
         }),
       ),
     );
-    return data;
+    this.logger.log(`Successfully patched data to billing.`);
+    return { status, data };
   }
 }
