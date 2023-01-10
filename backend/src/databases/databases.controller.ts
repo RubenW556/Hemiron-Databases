@@ -66,7 +66,7 @@ export class DatabasesController {
   ): Promise<ReturnDatabase> {
     const userMakingRequest = res.locals.userMakingRequest as UserMakingRequest;
 
-    await this.usersService.findOne(userMakingRequest.id);
+    await this.usersService.createUserIfNotExist(userMakingRequest.id);
 
     const databaseReturn: ReturnDatabase = await this.databasesService.insert(
       createDatabaseDto,

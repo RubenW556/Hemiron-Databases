@@ -61,7 +61,7 @@ describe('DatabasesController', () => {
   };
 
   const mockUsersService = {
-    findOne: jest.fn(async (): Promise<void> => {
+    createUserIfNotExist: jest.fn(async (): Promise<void> => {
       return;
     }),
   };
@@ -161,8 +161,8 @@ describe('DatabasesController', () => {
       );
     });
 
-    it('should check if user exists', async () => {
-      const spy = jest.spyOn(mockUsersService, 'findOne');
+    it('should create user if user does not exist', async () => {
+      const spy = jest.spyOn(mockUsersService, 'createUserIfNotExist');
       await controller.create(mockResponse, createDatabaseDto);
       expect(spy).toHaveBeenCalledWith(
         mockResponse.locals.userMakingRequest.id,
