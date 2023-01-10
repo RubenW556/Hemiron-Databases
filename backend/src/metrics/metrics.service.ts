@@ -70,8 +70,7 @@ export class MetricsService {
     const payload = await this.getAllPostgresDatabaseSizesOfSingleUser(uuid);
     if (payload.length < 1) throw new Error('No data found');
     for (const database of payload) {
-      // convert string to number and add up
-      size = size + +database.db_size;
+      size = size + parseInt(database.db_size);
     }
     return size;
   }
@@ -110,7 +109,7 @@ export class MetricsService {
     try {
       const payload = await this.getQueryCountByUser_Id(uuid);
       for (const database of payload) {
-        queryCount = queryCount + +database.query_count;
+        queryCount = queryCount + parseInt(database.query_count);
       }
 
       return queryCount;
