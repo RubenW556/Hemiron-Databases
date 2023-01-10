@@ -13,11 +13,7 @@ export class TasksService {
     private metricsService: MetricsService,
     private billingService: BillingIntegrationService,
     private usersService: UsersService,
-  ) {
-    this.initiateUserPostgresMetricsIntegration().then(() => {
-      this.logger.log('Concluding periodic metrics integration.');
-    });
-  }
+  ) {}
 
   /**
    * Initiates process to integrate all postgres metrics to billing.
