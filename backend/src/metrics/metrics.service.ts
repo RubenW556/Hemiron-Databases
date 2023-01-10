@@ -68,7 +68,6 @@ export class MetricsService {
   async getCombinedPostgresSizeMetricsOfUser(uuid: string): Promise<number> {
     let size = 0;
     const payload = await this.getAllPostgresDatabaseSizesOfSingleUser(uuid);
-    this.logger.debug(payload);
     if (payload.length < 1) throw new Error('No data found');
     for (const database of payload) {
       // convert string to number and add up
@@ -109,10 +108,9 @@ export class MetricsService {
   async getCombinedPostgresQueryCountOfUser(uuid: string) {
     let queryCount = 0;
     try {
-      const queryCountByDatabase = await this.getQueryCountByUser_Id(uuid);
-
-      for (const count of queryCountByDatabase) {
-        queryCount = queryCount + +queryCountByDatabase.query_count;
+      const payload = await this.getQueryCountByUser_Id(uuid);
+      for (const database of payload) {
+        queryCount = queryCount + +database.query_count;
       }
 
       return queryCount;
