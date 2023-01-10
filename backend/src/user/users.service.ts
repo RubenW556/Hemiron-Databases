@@ -58,7 +58,7 @@ export class UsersService {
    */
   async getQueryCount(id: string): Promise<number> {
     if ((await this.databaseManagementService.lookUpUser(id)) == undefined) {
-      new BadRequestException('user does not exist');
+      throw new BadRequestException('user does not exist');
     }
     const result = await this.metricsService.getQueryCountByUser_Id(id);
 
