@@ -65,7 +65,7 @@ export class MetricsService {
     }
   }
 
-  async getCombinedPostgresMetricsOfUser(uuid: string): Promise<number> {
+  async getCombinedPostgresSizeMetricsOfUser(uuid: string): Promise<number> {
     let size = 0;
     const payload = await this.getAllPostgresDatabaseSizesOfSingleUser(uuid);
     this.logger.debug(payload);
@@ -88,7 +88,7 @@ export class MetricsService {
   async getQueryCountByUser_Id(user_id: string) {
     try {
       return await this.dataSource.query(
-        `SELECT SUM(stat.calls), DB.datname FROM docker.pg_stat_statements AS stat 
+        `SELECT SUM(stat.calls) AS query_count, DB.datname  FROM docker.pg_stat_statements AS stat 
             JOIN PG_DATABASE AS DB
             ON DBID = oid
             WHERE DBID in
@@ -103,6 +103,21 @@ export class MetricsService {
       );
     } catch (e) {
       throw new BadRequestException('SQL execution failed');
+    }
+  }
+
+  async getCombinedPostgresQueryCountOfUser(uuid: string) {
+    let queryCount = 0;
+    try {
+      const queryCountByDatabase = await this.getQueryCountByUser_Id(uuid);
+
+      for (const count of queryCountByDatabase) {
+        queryCount = queryCount + +queryCountByDatabase.query_count;
+      }
+
+      return queryCount;
+    } catch (e) {
+      return 0;
     }
   }
 }

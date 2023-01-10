@@ -24,9 +24,13 @@ export class TasksService {
       for (const user of users) {
         const uuid = user.id;
         let size;
+        let queries;
         try {
-          size = await this.metricsService.getCombinedPostgresMetricsOfUser(
+          size = await this.metricsService.getCombinedPostgresSizeMetricsOfUser(
             uuid,
+          );
+          queries = await this.metricsService.getCombinedPostgresQueryCountOfUser(
+              uuid,
           );
         } catch (e) {
           this.logger.debug(
@@ -38,6 +42,7 @@ export class TasksService {
         this.logger.debug(size);
         const payload: PatchUserDatabaseMetricsDto = {
           size: size,
+          queries: queries,
           userId: uuid,
         };
 
