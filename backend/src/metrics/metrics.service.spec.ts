@@ -93,19 +93,19 @@ describe('MetricsService', () => {
   describe('getCombinedPostgresMetricsOfUser', () => {
     it('should return db size number on existing db and user"', async () => {
       expect(
-        await metricsService.getCombinedPostgresMetricsOfUser(userUUIDMock),
+        await metricsService.getCombinedPostgresSizeMetricsOfUser(userUUIDMock),
       ).toEqual(6666);
     });
     it('should return db size as number on existing db and user"', async () => {
       expect(
-        typeof (await metricsService.getCombinedPostgresMetricsOfUser(
+        typeof (await metricsService.getCombinedPostgresSizeMetricsOfUser(
           userUUIDMock,
         )),
       ).toBe('number');
     });
     it('should throw error when no data is found', async () => {
       try {
-        await metricsService.getCombinedPostgresMetricsOfUser(userUUIDMock);
+        await metricsService.getCombinedPostgresSizeMetricsOfUser(userUUIDMock);
       } catch (e) {
         expect(e.message).toBe('No data found');
       }
