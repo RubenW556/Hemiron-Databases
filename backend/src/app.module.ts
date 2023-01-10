@@ -1,4 +1,4 @@
-import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
+import {Logger, MiddlewareConsumer, Module, NestModule} from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { User } from './user/user.entity';
 import { UsersModule } from './user/users.module';
@@ -29,8 +29,8 @@ import { RedisAppModule } from './redis/redisApp.Module';
         //path: '/redis',
         //password: 'authpassword',
         onClientCreated(client) {
-          client.on('error', () => {});
-          client.on('ready', () => {});
+          client.on('error', () => {AppModule.logger.log("[Error] Redisclient NOT created!!")});
+          client.on('ready', () => {AppModule.logger.log("Redisclient created!")});
         },
       },
     }),
@@ -70,6 +70,7 @@ import { RedisAppModule } from './redis/redisApp.Module';
 })
 export class AppModule implements NestModule {
   // noinspection JSUnusedGlobalSymbols
+  private static logger = new Logger(AppModule.name);
   public configure(consumer: MiddlewareConsumer) {
     consumer.apply(AuthMiddleware).forRoutes('*');
   }

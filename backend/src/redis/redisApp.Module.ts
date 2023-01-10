@@ -1,6 +1,6 @@
 import {
   DynamicModule,
-  FactoryProvider,
+  FactoryProvider, Logger,
   Module,
   ModuleMetadata,
 } from '@nestjs/common';
@@ -25,6 +25,7 @@ type RedisAsyncModuleOptions = {
   controllers: [RedisController],
   providers: [CreateRedisService],
 })
+
 export class RedisAppModule {
   static async registerAsync({
     useFactory,
@@ -46,7 +47,7 @@ export class RedisAppModule {
       module: RedisAppModule,
       imports,
       providers: [redisProvider],
-      exports: [redisProvider],
+      exports: [redisProvider, CreateRedisService],
     };
   }
 }

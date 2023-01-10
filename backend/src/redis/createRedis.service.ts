@@ -18,6 +18,7 @@ export class CreateRedisService {
   public async set(key, value): Promise<string> {
     const currentDb = await this.getCurrentDb();
     const fullKey = currentDb + ':' + key;
+    this.logger.log("inserting in key: " + key + " value: " + value)
     const response = await this.redis.set(fullKey, value);
     return response;
   }
