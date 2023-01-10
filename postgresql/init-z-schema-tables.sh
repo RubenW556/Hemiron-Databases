@@ -16,7 +16,6 @@ CREATE TABLE $PG_DB_SCHEMA.database (
 );
 
 CREATE TABLE $PG_DB_SCHEMA.user (
-    "username" character varying(50) NOT NULL,
     "id" uuid NOT NULL,
     CONSTRAINT "User_pk" PRIMARY KEY ("id")
 );

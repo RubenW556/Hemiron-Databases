@@ -5,9 +5,9 @@ import { getRepositoryToken } from '@nestjs/typeorm';
 import { UserOwnsDatabase } from './user-owns-database.entity';
 import { UsersService } from '../user/users.service';
 import { User } from '../user/user.entity';
-import { DatabaseManagementService } from '../metaDatabaseManagement/databaseManagement.service';
 import { DataSource } from 'typeorm';
 import { MetricsService } from '../metrics/metrics.service';
+import { DatabaseManagementService } from '../meta-database-management/database-management.service';
 
 describe('UserOwnsDatabaseController', () => {
   let controller: UserOwnsDatabaseController;

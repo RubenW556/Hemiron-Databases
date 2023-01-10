@@ -17,7 +17,8 @@ import { Database } from './database.entity';
 import { DatabasesService } from './databases.service';
 import { UserOwnsDatabaseService } from '../user-owns-database/user-owns-database.service';
 import { UsersService } from '../user/users.service';
-import { ReturnDatabase } from './dto/database-create-return.dto';
+import { CreateDatabaseResponseDto } from './dto/create-database-response.dto';
+import { User as UserMakingRequest } from 'hemiron-auth/dist/models/user';
 
 @Controller('databases')
 export class DatabasesController {
@@ -34,6 +35,9 @@ export class DatabasesController {
     @Param('id') id: string,
   ): Promise<Database> {
     try {
+      const userMakingRequest = res.locals.userMakingRequest;
+      await this.userOwnsDatabaseService.findOne(id, userMakingRequest.id);
+
       return await this.databasesService.findOne(id);
     } catch (e) {
       res.status(HttpStatus.INTERNAL_SERVER_ERROR);
@@ -55,27 +59,26 @@ export class DatabasesController {
   }
 
   @Post()
-  @HttpCode(HttpStatus.CREATED) //todo validatioon
+  @HttpCode(HttpStatus.CREATED)
   public async create(
     @Res({ passthrough: true }) res: Response,
     @Body() createDatabaseDto: CreateDatabaseDto,
-  ): Promise<ReturnDatabase> {
-    const userMakingRequest = res.locals.userMakingRequest;
+  ): Promise<CreateDatabaseResponseDto> {
+    const userMakingRequest = res.locals.userMakingRequest as UserMakingRequest;
 
-    await this.usersService.findOne(userMakingRequest.id);
+    await this.usersService.createUserIfNotExist(userMakingRequest.id);
 
-    const databaseReturn: ReturnDatabase = await this.databasesService.insert(
+    const databaseInfo = await this.databasesService.insert(
       createDatabaseDto,
       userMakingRequest,
     );
 
-    const newDatabaseId = databaseReturn.database_id;
     await this.userOwnsDatabaseService.insert(
-      newDatabaseId,
+      databaseInfo.database_id,
       userMakingRequest.id,
     );
 
-    return databaseReturn;
+    return databaseInfo;
   }
 
   @Patch()
@@ -85,6 +88,12 @@ export class DatabasesController {
     @Body() database: UpdateDatabaseDto,
   ): Promise<Database> {
     try {
+      const userMakingRequest = res.locals.userMakingRequest;
+      await this.userOwnsDatabaseService.findOne(
+        database.id,
+        userMakingRequest.id,
+      );
+
       await this.databasesService.update(database);
       return await this.databasesService.findOne(database.id);
     } catch (e) {
@@ -99,6 +108,9 @@ export class DatabasesController {
     @Param('id') id: string,
   ): Promise<void> {
     try {
+      const userMakingRequest = res.locals.userMakingRequest;
+      await this.userOwnsDatabaseService.findOne(id, userMakingRequest.id);
+
       await this.databasesService.delete(id);
     } catch (e) {
       res.status(HttpStatus.INTERNAL_SERVER_ERROR);

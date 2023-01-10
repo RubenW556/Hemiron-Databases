@@ -5,8 +5,9 @@ import { Database } from './database.entity';
 import { CreateDatabaseDto } from './dto/create-database.dto';
 import { v4 as generateUUID } from 'uuid';
 import { UpdateDatabaseDto } from './dto/update-database.dto';
-import { DatabaseManagementService } from '../metaDatabaseManagement/databaseManagement.service';
-import { ReturnDatabase } from './dto/database-create-return.dto';
+import { DatabaseManagementService } from '../meta-database-management/database-management.service';
+import { CreateDatabaseResponseDto } from './dto/create-database-response.dto';
+import { User as UserMakingRequest } from 'hemiron-auth/dist/models/user';
 
 @Injectable()
 export class DatabasesService {
@@ -33,23 +34,28 @@ export class DatabasesService {
 
   public async insert(
     databaseDto: CreateDatabaseDto,
-    userMakingRequest: string,
-  ): Promise<ReturnDatabase> {
+    userMakingRequest: UserMakingRequest,
+  ): Promise<CreateDatabaseResponseDto> {
     const databaseId = generateUUID();
 
-    const dto: ReturnDatabase = await this.createDatabaseWithUser(
+    const createdDatabaseInfo = await this.createDatabaseWithUser(
+      databaseId,
       databaseDto.name,
       userMakingRequest,
-      databaseId,
     );
 
-    const database: Database = {
-      ...databaseDto,
-      ...{ id: databaseId, created_at: new Date(), pgd_id: dto.pg_id },
-    };
+    await this.databasesRepository.insert({
+      id: databaseId,
+      name: databaseDto.name,
+      type: databaseDto.type,
+      created_at: new Date(),
+      pgd_id: createdDatabaseInfo.pg_id,
+    });
 
-    await this.databasesRepository.insert(database);
-    return dto;
+    return {
+      database_id: databaseId,
+      password: createdDatabaseInfo.password,
+    };
   }
 
   public update(database: UpdateDatabaseDto): Promise<UpdateResult> {
@@ -62,38 +68,52 @@ export class DatabasesService {
 
   /**
    * creates a new database and a user that can use it
+   * @param databaseId the uuid of the database
    * @param databaseName the name of the database
    * @param userMakingRequest the user making the request
-   * @param databaseId the uuid of the database
    */
-  public async createDatabaseWithUser(
-    databaseName: string,
-    userMakingRequest,
+  private async createDatabaseWithUser(
     databaseId: string,
-  ): Promise<ReturnDatabase> {
-    const password = Math.random().toString(36).slice(-8);
+    databaseName: string,
+    userMakingRequest: UserMakingRequest,
+  ): Promise<{ pg_id: any; password: string }> {
     const username = databaseId + '.' + databaseName;
-    databaseName = userMakingRequest.id + '.' + databaseName;
+    const password = this.generatePassword();
+    const postgresDatabaseName = userMakingRequest.id + '.' + databaseName;
 
-    await this.databaseManagementDao.createDatabase(databaseName);
+    await this.databaseManagementDao.createDatabase(postgresDatabaseName);
 
     await this.databaseManagementDao.createUser(username, password);
 
     await this.databaseManagementDao.grantUserAccessToDatabase(
       username,
-      databaseName,
+      postgresDatabaseName,
     );
 
-    const returnDatabase: ReturnDatabase = {
-      user_id: userMakingRequest.id,
-      username: username,
+    await this.databaseManagementDao.revokeAccessFromPublic(
+      postgresDatabaseName,
+    );
+
+    const postgresDatabaseId =
+      await this.databaseManagementDao.getDatabasePGIDByName(
+        postgresDatabaseName,
+      );
+
+    return {
+      pg_id: postgresDatabaseId,
       password: password,
-      databaseName: databaseName,
-      database_id: databaseId,
-      pg_id: await this.databaseManagementDao.getDatabasePGIDByName(
-        databaseName,
-      ),
     };
-    return returnDatabase;
+  }
+
+  private generatePassword(): string {
+    const chars =
+      '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+    let password = '';
+    for (let i = 0; i <= 12; i++) {
+      const randomNumber = Math.floor(Math.random() * chars.length);
+      password += chars.substring(randomNumber, randomNumber + 1);
+    }
+
+    return password;
   }
 }

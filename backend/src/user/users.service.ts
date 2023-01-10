@@ -3,7 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { DeleteResult, Repository } from 'typeorm';
 import { User } from './user.entity';
 import { MetricsService } from '../metrics/metrics.service';
-import { DatabaseManagementService } from '../metaDatabaseManagement/databaseManagement.service';
+import { DatabaseManagementService } from '../meta-database-management/database-management.service';
 
 @Injectable()
 export class UsersService {
@@ -33,7 +33,7 @@ export class UsersService {
     return user;
   }
 
-  /** TODO: Ruben help, I think this is unnecessary?
+  /**
    * creates user
    * @param {string} id UUID of requested user as string
    **/
@@ -50,6 +50,17 @@ export class UsersService {
    */
   async remove(id: string): Promise<DeleteResult> {
     return await this.usersRepository.delete(id);
+  }
+
+  /**
+   * Creates a user if the user doesn't exist yet
+   * @param {string} userId UUID of requested user as string
+   */
+  async createUserIfNotExist(userId: string): Promise<void> {
+    const user: User = await this.usersRepository.findOneBy({ id: userId });
+    if (user == null) {
+      await this.usersRepository.insert({ id: userId });
+    }
   }
 
   /**
