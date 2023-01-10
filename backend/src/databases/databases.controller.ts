@@ -17,7 +17,7 @@ import { Database } from './database.entity';
 import { DatabasesService } from './databases.service';
 import { UserOwnsDatabaseService } from '../user-owns-database/user-owns-database.service';
 import { UsersService } from '../user/users.service';
-import { ReturnDatabase } from './dto/database-create-return.dto';
+import { CreateDatabaseResponseDto } from './dto/create-database-response.dto';
 import { User as UserMakingRequest } from 'hemiron-auth/dist/models/user';
 
 @Controller('databases')
@@ -59,27 +59,26 @@ export class DatabasesController {
   }
 
   @Post()
-  @HttpCode(HttpStatus.CREATED) //todo validatioon
+  @HttpCode(HttpStatus.CREATED)
   public async create(
     @Res({ passthrough: true }) res: Response,
     @Body() createDatabaseDto: CreateDatabaseDto,
-  ): Promise<ReturnDatabase> {
+  ): Promise<CreateDatabaseResponseDto> {
     const userMakingRequest = res.locals.userMakingRequest as UserMakingRequest;
 
     await this.usersService.createUserIfNotExist(userMakingRequest.id);
 
-    const databaseReturn: ReturnDatabase = await this.databasesService.insert(
+    const databaseInfo = await this.databasesService.insert(
       createDatabaseDto,
       userMakingRequest,
     );
 
-    const newDatabaseId = databaseReturn.database_id;
     await this.userOwnsDatabaseService.insert(
-      newDatabaseId,
+      databaseInfo.database_id,
       userMakingRequest.id,
     );
 
-    return databaseReturn;
+    return databaseInfo;
   }
 
   @Patch()

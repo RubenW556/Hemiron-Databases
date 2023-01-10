@@ -107,15 +107,12 @@ describe('Databases service', () => {
       type: 'postgres',
     };
 
-    it('should return an object with user id', async () => {
+    it('should return an object with database_id and password', async () => {
       const userMakingRequest = {
         id: validUserID,
       } as unknown as UserMakingRequest;
       const result = await service.insert(createDatabaseDto, userMakingRequest);
-      expect(result.databaseName).toBe(
-        userMakingRequest.id + '.' + createDatabaseDto.name,
-      );
-      expect(result.username).toBeDefined();
+      expect(result.database_id).toBeDefined();
       expect(result.password).toBeDefined();
     });
 
