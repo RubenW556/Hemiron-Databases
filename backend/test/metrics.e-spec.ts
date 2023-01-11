@@ -1,13 +1,12 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { INestApplication } from '@nestjs/common';
-import { AppService } from '../src/app.service';
-import { AppController } from '../src/app.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { User } from '../src/user/user.entity';
 import { Database } from '../src/databases/database.entity';
 import { UserOwnsDatabase } from '../src/user-owns-database/user-owns-database.entity';
 import { TasksModule } from '../src/tasks/tasks.module';
 import { MetricsService } from '../src/metrics/metrics.service';
+import { MetricsController } from '../src/metrics/metrics.controller';
 
 describe('TaskController (e2e)', () => {
   let app: INestApplication;
@@ -29,8 +28,8 @@ describe('TaskController (e2e)', () => {
         }),
         TasksModule,
       ],
-      providers: [AppService, MetricsService],
-      controllers: [AppController],
+      providers: [MetricsService],
+      controllers: [MetricsController],
     }).compile();
 
     app = moduleFixture.createNestApplication();
