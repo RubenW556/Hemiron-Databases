@@ -84,6 +84,8 @@ CI_TEST_COV_BACKEND:
 
 CI_TEST_E2E_BACKEND:
     stage: test
+    image:
+        name: docker/compose:latest
     variables:
         BASE_IMAGE: node18-alpine
         PROJECT_ID: backend
@@ -97,6 +99,7 @@ CI_TEST_E2E_BACKEND:
         - echo "Running E2E_BACKEND"
         - docker login -u pipeline -p $BUILD_TOKEN $CI_REGISTRY
     script:
+        - (cd postgresql && docker compose up -d)
         - docker build -t $IMAGE_NAME_FINAL --target $TARGET_ID $PROJECT_ID/.
         - docker run --rm -t $IMAGE_NAME_FINAL
     after_script:
