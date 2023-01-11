@@ -127,7 +127,7 @@ export class CreateRedisService {
     return response;
   }
 
-  public async getMemoryUsage(dbname?: string): Promise<string> {
+  public async getMemoryUsage(dbname?: string): Promise<number> {
     const searchTerm = await this.getValidSearchTerm(dbname);
 
     let cursor = '0';
@@ -147,7 +147,7 @@ export class CreateRedisService {
         }
       }
     } while (cursor !== '0');
-    return totalMemoryUsage.toString() + ' bytes';
+    return totalMemoryUsage;
   }
 
   public async getAllDatabases(): Promise<string[]> {

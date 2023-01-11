@@ -129,7 +129,7 @@ export class RedisController {
 
   @Get('usage/:dbname')
   async getMemoryUsage(@Param('dbname') dbname: string): Promise<string> {
-    return this.redisService.getMemoryUsage(dbname);
+    return this.redisService.getMemoryUsage(dbname).toString() + ' bytes';
   }
 
   @Get('alldatabases')
