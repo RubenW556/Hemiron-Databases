@@ -1,11 +1,6 @@
-#trigger_job:
-#  trigger:
-#    include: child-pipeline.yml
-
 include:
   - local: "child-pipeline.yml"
   - local: "backend/child-pipeline-backend.yml"
-  - local: "frontend/child-pipeline-frontend.yml"
 
 default:
   timeout: 2 hours # terminate any job taking longer than 1 hour
@@ -32,7 +27,7 @@ image: docker:latest
 CI_PRE_CHECK:
   stage: pre-check
   <<: *template
-  allow_failure: true #On failure All jobs after this one, will not halt.
+  allow_failure: false #On failure All jobs after this one, will not halt.
   script:
     - echo "pre checking"
     - ls -l
