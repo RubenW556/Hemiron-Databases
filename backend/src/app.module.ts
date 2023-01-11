@@ -17,8 +17,6 @@ import { AuthMiddleware } from './auth.middleware';
 import { AuthenticationValidationGuard } from 'hemiron-auth/dist/guards/authentication-validation.guard';
 import { AuthenticationValidatorModule } from 'hemiron-auth/dist/authentication-validator.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
 import { RedisModule } from '@liaoliaots/nestjs-redis';
 import { RedisMainModule } from './redis/redis-main.Module';
 
@@ -66,13 +64,11 @@ import { RedisMainModule } from './redis/redis-main.Module';
     RedisMainModule,
     RedisModule,
   ],
-  controllers: [AppController],
   providers: [
     {
       provide: APP_GUARD,
       useClass: AuthenticationValidationGuard,
     },
-    AppService,
   ],
 })
 export class AppModule implements NestModule {
