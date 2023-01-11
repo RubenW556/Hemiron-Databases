@@ -8,6 +8,10 @@ networks:
     name: databases-db
 
 services:
+  scanner:
+    image: sonarsource/sonar-scanner-cli:4.8
+    env_file:
+      - .env
   backend:
     image: registry.inf-hsleiden.nl/2223.ipsenh-p1-p2/databases/backend:1.0.0-node18-alpine
     deploy:

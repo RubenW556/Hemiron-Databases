@@ -1,6 +1,5 @@
 import { Test } from '@nestjs/testing';
 import { MetricsService } from './metrics.service';
-import { ModuleMocker } from 'jest-mock';
 import { DataSource } from 'typeorm';
 
 describe('MetricsService', () => {
@@ -22,7 +21,6 @@ describe('MetricsService', () => {
   let metricsService: MetricsService;
   let dataSource: DataSource;
 
-  new ModuleMocker(global);
   beforeAll(async () => {
     const moduleRef = await Test.createTestingModule({
       providers: [
@@ -55,12 +53,6 @@ describe('MetricsService', () => {
   });
   it('dataSource should be defined', () => {
     expect(dataSource).toBeDefined();
-  });
-
-  describe('getHello', () => {
-    it('should return "Hello World!"', () => {
-      expect(metricsService.getHello()).toBe('Hello world');
-    });
   });
   describe('getDatabaseSize', () => {
     it('should return db size string on existing db"', async () => {

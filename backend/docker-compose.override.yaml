@@ -8,6 +8,12 @@ networks:
     name: hemiron-ntw-compose
 
 services: # docker compose up --build
+  scanner: # docker compose up scanner
+    networks:
+      - hemiron-ntw-compose
+    volumes:
+      - ./:/usr/src
+  #      - sonarqube:/usr/src/tmp/cacerts
   backend: # docker compose up --build backend
     restart: unless-stopped
     build:
