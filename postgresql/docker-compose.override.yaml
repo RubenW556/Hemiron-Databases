@@ -1,3 +1,4 @@
+version: '3.8'
 volumes:
   postgres:
 
@@ -20,7 +21,8 @@ services: # docker compose up --build
     volumes:
       - postgres:/var/lib/postgresql/data
       - ./init-a-user-db.sh:/docker-entrypoint-initdb.d/init-a-user-db.sh
-      - ./init-z-schema-tables.sh:/docker-entrypoint-initdb.d/init-z-schema-tables.sh
+      - ./init-y-schema-tables.sh:/docker-entrypoint-initdb.d/init-y-schema-tables.sh
+      - ./init-z-test-schema-tables.sh:/docker-entrypoint-initdb.d/init-z-test-schema-tables.sh
     networks:
       - databases-db-dev
       - hemiron-ntw-compose
