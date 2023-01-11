@@ -10,6 +10,8 @@ services: # docker compose up
   sonarqube:
     networks:
       - hemiron-ntw-compose
+    ports:
+      - 9000:9000
     labels:
       - "traefik.docker.network=hemiron-ntw-compose"
       # For Url sonar.${PRIMARY_DOMAIN}
