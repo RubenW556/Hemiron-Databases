@@ -43,12 +43,6 @@ describe('MetricsController', () => {
     expect(metricsController).toBeDefined();
   });
 
-  describe('getHello', () => {
-    it('should return status 200', async () => {
-      metricsController.getHello(requestMock, responseMock);
-      expect(responseMock.status).toHaveBeenCalledWith(HttpStatus.OK);
-    });
-  });
   describe('getAllPostgresSizeMetricsOfUser', () => {
     it('should return 200 with valid uuid', async () => {
       await metricsController.getAllPostgresDatabaseMetricsOfUser(

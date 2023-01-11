@@ -54,12 +54,6 @@ describe('MetricsService', () => {
   it('dataSource should be defined', () => {
     expect(dataSource).toBeDefined();
   });
-
-  describe('getHello', () => {
-    it('should return "Hello World!"', () => {
-      expect(metricsService.getHello()).toBe('Hello world');
-    });
-  });
   describe('getDatabaseSize', () => {
     it('should return db size string on existing db"', async () => {
       expect(await metricsService.getDatabaseSize(databaseOIDMock)).toEqual(
