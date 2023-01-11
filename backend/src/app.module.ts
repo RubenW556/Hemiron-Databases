@@ -1,4 +1,10 @@
-import {Logger, MiddlewareConsumer, MiddlewareConsumer, Module, NestModule} from '@nestjs/common';
+import {
+  Logger,
+  MiddlewareConsumer,
+  MiddlewareConsumer,
+  Module,
+  NestModule,
+} from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { User } from './user/user.entity';
 import { UsersModule } from './user/users.module';
@@ -27,8 +33,12 @@ import { RedisMainModule } from './redis/redis-main.Module';
         host: process.env.REDIS_HOST,
         port: 6379,
         onClientCreated(client) {
-          client.on('error', () => {this.logger.log("[Warning] Redisclient NOT created (yet) !")});
-          client.on('ready', () => {this.logger.log("Redisclient created!")});
+          client.on('error', () => {
+            this.logger.log('[Warning] Redisclient NOT created (yet) !');
+          });
+          client.on('ready', () => {
+            this.logger.log('Redisclient created!');
+          });
         },
       },
     }),

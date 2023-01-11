@@ -71,7 +71,9 @@ export class TasksService {
         try {
           // size is returned in bytes, billing wants all data in megabytes, so it is being converted here
           // One megabyte is 1.000.000 bytes, not 1.048.576 bytes, that usage is outdated: https://en.wikipedia.org/wiki/Megabyte
-          size = await this.metricsService.getCombinedRedisMetricsOfUser(uuid)/1000000;
+          size =
+            (await this.metricsService.getCombinedRedisMetricsOfUser(uuid)) /
+            1000000;
           queries = await this.metricsService.getCombinedRedisQueriesOfUser(
             uuid,
           );
