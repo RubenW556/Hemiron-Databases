@@ -2,6 +2,7 @@ networks:
   databases-frontend-dev:
     name: databases-frontend-dev
   databases-db-dev:
+    external: true
     name: databases-db-dev
   hemiron-ntw-compose:
     external: true
