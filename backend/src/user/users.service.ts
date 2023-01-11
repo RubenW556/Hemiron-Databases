@@ -71,7 +71,7 @@ export class UsersService {
     if ((await this.databaseManagementService.lookUpUser(id)) == undefined) {
       new BadRequestException('user does not exist');
     }
-    const result = await this.metricsService.getQueryCountByUser_Id(id);
+    const result = await this.metricsService.getPostgresQueryCountByUser_Id(id);
 
     if (result === null) {
       throw new BadRequestException('User has no queries');

@@ -63,10 +63,10 @@ export class TasksService {
       for (const user of users) {
         const uuid = user.id;
         let size;
+        let queries;
         try {
-          size = await this.metricsService.getCombinedRedisMetricsOfUser(
-              uuid,
-          );
+          size = await this.metricsService.getCombinedRedisMetricsOfUser(uuid);
+          queries = await this.metricsService.getCombinedRedisQueriesOfUser(uuid);
         } catch (e) {
           this.logger.debug(
               `Failed to get Postgres metrics for uuid ${uuid}... Skipping....`,
@@ -76,6 +76,7 @@ export class TasksService {
         this.logger.debug(size);
         const payload: PatchUserDatabaseMetricsDto = {
           size: size,
+          queries: queries,
           userId: uuid,
         };
 

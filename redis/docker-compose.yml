@@ -27,7 +27,7 @@ services:
     labels:
       - "traefik.docker.network=hemiron-ntw-compose"
       # For Url redisui.${PRIMARY_DOMAIN}:5001
-      - "traefik.http.routers.redisui.rule=(Host(`redisui.${PRIMARY_DOMAIN}`)"
+      - "traefik.http.routers.redisui.rule=Host(`redisui.${PRIMARY_DOMAIN}`)"
       - "traefik.http.routers.redisui.entrypoints=web"
       - "traefik.http.routers.redisui.tls=false"
       - "traefik.http.services.redisui.loadbalancer.server.port=${REDIS_UI_PORT}"

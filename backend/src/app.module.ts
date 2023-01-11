@@ -15,7 +15,8 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { RedisModule } from '@liaoliaots/nestjs-redis';
-import { RedisAppModule } from './redis/redisApp.Module';
+import { RedisMainModule } from './redis/redis-main.Module';
+import {CreateRedisService} from "./redis/create-redis.service";
 
 @Module({
   imports: [
@@ -24,12 +25,11 @@ import { RedisAppModule } from './redis/redisApp.Module';
       readyLog: true,
       closeClient: true,
       config: {
-        host: 'redis', //process.env.REDIS_HOST,
+        host: process.env.REDIS_HOST,
         port: 6379,
-        //path: '/redis',
         //password: 'authpassword',
         onClientCreated(client) {
-          client.on('error', () => {AppModule.logger.log("[Error] Redisclient NOT created!!")});
+          client.on('error', () => {AppModule.logger.log("[Warning] Redisclient NOT created (yet) !")});
           client.on('ready', () => {AppModule.logger.log("Redisclient created!")});
         },
       },
@@ -56,7 +56,7 @@ import { RedisAppModule } from './redis/redisApp.Module';
     DatabasesModule,
     UserOwnsDatabaseModule,
     TasksModule,
-    RedisAppModule,
+    RedisMainModule,
     RedisModule,
   ],
   controllers: [AppController],

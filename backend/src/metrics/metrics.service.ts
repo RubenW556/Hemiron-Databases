@@ -1,12 +1,14 @@
 import { BadRequestException, Injectable, Logger } from '@nestjs/common';
 import { InjectDataSource } from '@nestjs/typeorm';
 import { DataSource } from 'typeorm';
-import { CreateRedisService } from "../redis/createRedis.service";
+import { CreateRedisService } from "../redis/create-redis.service";
+import {QueryLoggingService} from "../redis/query-logging.service";
 
 @Injectable()
 export class MetricsService {
   private readonly logger = new Logger(MetricsService.name);
   private createRedisService: CreateRedisService;
+  private queryLoggingService: QueryLoggingService;
 
   constructor(@InjectDataSource() private dataSource: DataSource) {}
 
@@ -82,15 +84,38 @@ export class MetricsService {
       WHERE user_id = $1`, [uuid]
       )
       for (let i = 0; i < dbList.length; i++) {
-        const dbId = dbList[i];
-        const singleDBSize = await this.createRedisService.getMemoryUsage(dbId);
+        const database_uuid = dbList[i];
+        const singleDBSize = await this.createRedisService.getMemoryUsage(database_uuid);
         totalSizeOfUser += singleDBSize;
       }
     } catch (e) {
       this.logger.error(e);
     }
     return totalSizeOfUser;
-
+  }
+  /**
+   * Gets sizes of all Postgres databases of user combined
+   * @param {string} uuid UUID of requested user as string
+   */
+  async getAllRedisQueriesOfSingleUser(
+      uuid: string,
+  ): Promise<number>{
+    let totalQueriesOfUser = 0;
+    try {
+      const dbList = await this.dataSource.query(
+          `SELECT database_id 
+      FROM docker.user_owns_database 
+      WHERE user_id = $1`, [uuid]
+      )
+      for (let i = 0; i < dbList.length; i++) {
+        const database_uuid = dbList[i];
+        const singleDBQueries = this.queryLoggingService.getQueryByDbUUID(database_uuid);
+        totalQueriesOfUser += singleDBQueries;
+      }
+    } catch (e) {
+      this.logger.error(e);
+    }
+    return totalQueriesOfUser;
   }
 
   async getCombinedPostgresMetricsOfUser(uuid: string): Promise<number> {
@@ -112,6 +137,14 @@ export class MetricsService {
     return size;
   }
 
+  async getCombinedRedisQueriesOfUser(uuid: string): Promise<number> {
+    const totalQueries = await this.getAllRedisQueriesOfSingleUser(uuid);
+    this.logger.debug(totalQueries);
+    if (totalQueries < 1) throw new Error('No data found');
+    this.queryLoggingService.reset();
+    return totalQueries;
+  }
+
   getHello() {
     return 'Hello world';
   }
@@ -120,7 +153,7 @@ export class MetricsService {
    * gets query count of user from database
    * @param user_id user id whose query count is gotten
    */
-  async getQueryCountByUser_Id(user_id: string) {
+  async getPostgresQueryCountByUser_Id(user_id: string) {
     try {
       return await this.dataSource.query(
         `SELECT SUM(stat.calls), DB.datname FROM docker.pg_stat_statements AS stat 

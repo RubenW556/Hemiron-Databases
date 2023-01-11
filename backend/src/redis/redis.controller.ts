@@ -7,7 +7,7 @@ import {
   Put, Req, UsePipes, ValidationPipe,
 } from '@nestjs/common';
 
-import { CreateRedisService } from './createRedis.service';
+import { CreateRedisService } from './create-redis.service';
 
 @UsePipes(new ValidationPipe())
 @Controller('redis')
