@@ -3,10 +3,9 @@ import { AppModule } from './app.module';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
-  // @TODO update this with a domain
   app.enableCors({
     allowedHeaders: '*',
-    origin: '*',
+    origin: process.env.PRIMARY_DOMAIN,
     credentials: true,
   });
   await app.listen(process.env.PORT);
