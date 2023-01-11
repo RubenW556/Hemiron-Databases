@@ -6,12 +6,11 @@ import { UserOwnsDatabaseService } from '../user-owns-database/user-owns-databas
 import { UsersService } from '../user/users.service';
 import { Response } from 'express';
 import { HttpStatus } from '@nestjs/common';
-import { ReturnDatabase } from './dto/database-create-return.dto';
+import { CreateDatabaseResponseDto } from './dto/create-database-response.dto';
 import { CreateDatabaseDto } from './dto/create-database.dto';
 import { DeleteResult, InsertResult, UpdateResult } from 'typeorm';
 import { UpdateDatabaseDto } from './dto/update-database.dto';
 import { UserOwnsDatabase } from '../user-owns-database/user-owns-database.entity';
-import { User as UserMakingRequest } from 'hemiron-auth/dist/models/user';
 
 describe('DatabasesController', () => {
   let controller: DatabasesController;
@@ -27,7 +26,7 @@ describe('DatabasesController', () => {
   const mockResponse = {
     status: jest.fn((x) => x),
     locals: {
-      userMakingRequest: { id: '448098df-b9dd-4ec2-af9f-b23459b203a1' },
+      userMakingRequest: { id: 'c30a6cdd-02db-472f-8e69-80d57b67b3da' },
     },
   } as unknown as Response;
   const mockUnauthorizedResponse = {
@@ -39,15 +38,11 @@ describe('DatabasesController', () => {
     findAllForUser: jest.fn(
       async (): Promise<Database[]> => [validDatabaseRecord],
     ),
-    insert: jest.fn(async function (
-      databaseDto: CreateDatabaseDto,
-      userMakingRequest: UserMakingRequest,
-    ): Promise<ReturnDatabase> {
+    insert: jest.fn(async function (): Promise<CreateDatabaseResponseDto> {
       return {
         database_id: '836b450a-3720-48ab-ade5-97eb692737e2',
-        databaseName: databaseDto.name,
-        user_id: userMakingRequest.id,
-      } as ReturnDatabase;
+        password: 'randompassword',
+      };
     }),
     update: jest.fn(async function (
       updateDatabaseDto: UpdateDatabaseDto,
@@ -61,7 +56,7 @@ describe('DatabasesController', () => {
   };
 
   const mockUsersService = {
-    findOne: jest.fn(async (): Promise<void> => {
+    createUserIfNotExist: jest.fn(async (): Promise<void> => {
       return;
     }),
   };
@@ -146,10 +141,10 @@ describe('DatabasesController', () => {
       type: 'postgres',
     };
 
-    it('should return database name and user id in an object', async () => {
+    it('should return database_id and password in an object', async () => {
       const result = await controller.create(mockResponse, createDatabaseDto);
-      expect(result.databaseName).toBe(createDatabaseDto.name);
-      expect(result.user_id).toBe(mockResponse.locals.userMakingRequest.id);
+      expect(result.database_id).toBeDefined();
+      expect(result.password).toBeDefined();
     });
 
     it('should call insert on DatabasesService', async () => {
@@ -161,8 +156,8 @@ describe('DatabasesController', () => {
       );
     });
 
-    it('should check if user exists', async () => {
-      const spy = jest.spyOn(mockUsersService, 'findOne');
+    it('should create user if user does not exist', async () => {
+      const spy = jest.spyOn(mockUsersService, 'createUserIfNotExist');
       await controller.create(mockResponse, createDatabaseDto);
       expect(spy).toHaveBeenCalledWith(
         mockResponse.locals.userMakingRequest.id,
