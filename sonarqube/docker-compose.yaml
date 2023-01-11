@@ -1,0 +1,14 @@
+version: '3.8'
+networks:
+  databases-sonar:
+    external: true
+    name: databases-sonar
+
+services:
+  sonarqube:
+    image: sonarqube:latest
+    extra_hosts:
+      - "manager-1.inf-hsleiden:192.168.195.109"
+      - "manager-2.inf-hsleiden:192.168.195.168"
+    env_file:
+      - .env

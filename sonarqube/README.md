@@ -41,8 +41,19 @@ Each level represents a different combination of impact and likelihood;
 For more information on these severities and how they are used in SonarQube, please visit the following link:
 https://docs.sonarcloud.io/digging-deeper/rules/.
 
+0. Start treafik service
 
+1. Start SonarQube server
+- Creeër `.env` vanuit `.env.example`
+- Run `docker compose up -d`
 
+2. Ga naar `http://sonar.localhost`
+
+3.  Volg de stappen: Select Create new project.
+
+- Give your project a Project key and a Display name and select Set up.
+- Under Provide a token, select Generate a token. Give your token a name, select Generate, and click Continue.
+- Select your project's main language under Run analysis on your project, and follow the instructions to analyze your project. Here you'll download and execute a scanner on your code (if you're using Maven or Gradle, the scanner is automatically downloaded)
 
 ## Prerequisites - Server 
 ### Install and set up SonarQube server

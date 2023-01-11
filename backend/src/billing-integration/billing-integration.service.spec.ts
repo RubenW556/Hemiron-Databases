@@ -1,5 +1,4 @@
 import { Test } from '@nestjs/testing';
-import { ModuleMocker } from 'jest-mock';
 import { BillingIntegrationService } from './billing-integration.service';
 import { HttpService } from '@nestjs/axios';
 import { ConfigService } from '@nestjs/config';
@@ -15,7 +14,6 @@ describe('BillingIntegrationService', () => {
   };
   let billingIntegrationService: BillingIntegrationService;
 
-  new ModuleMocker(global);
   beforeAll(async () => {
     const data = ['test'];
 
