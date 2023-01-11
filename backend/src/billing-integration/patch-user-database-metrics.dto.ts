@@ -1,5 +1,5 @@
 export class PatchUserDatabaseMetricsDto {
   readonly userId: string;
-  readonly size?: number;
-  readonly queries?: number;
+  readonly postgres_size?: number;
+  readonly postgres_queries?: number;
 }
