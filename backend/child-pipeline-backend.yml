@@ -100,6 +100,7 @@ CI_TEST_E2E_BACKEND:
         - docker login -u pipeline -p $BUILD_TOKEN $CI_REGISTRY
     script:
         - (cd postgresql && cp .env.example .env)
+        - (cd postgresql && cp .env.example .env.dev)
         - (cd postgresql && docker-compose up -d db)
         - docker build -t $IMAGE_NAME_FINAL --target $TARGET_ID $PROJECT_ID/.
         - docker run --rm -t $IMAGE_NAME_FINAL
