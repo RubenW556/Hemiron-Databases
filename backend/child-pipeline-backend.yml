@@ -102,7 +102,7 @@ CI_TEST_E2E_BACKEND:
         - (cd postgresql && cp .env.example .env)
         - (cd postgresql && cp .env.example .env.dev)
         - docker network create hemiron-ntw-compose
-        - (cd postgresql && docker-compose up -d db)
+        - (cd postgresql && docker-compose up db)
         - docker build -t $IMAGE_NAME_FINAL --target $TARGET_ID $PROJECT_ID/.
         - docker run --rm -t $IMAGE_NAME_FINAL
     after_script:
