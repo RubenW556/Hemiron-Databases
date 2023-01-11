@@ -10,7 +10,7 @@ describe('BillingIntegrationService', () => {
   const endpointMock = '3333';
   const payloadMock: PatchUserDatabaseMetricsDto = {
     userId: 'string',
-    size: 7777,
+    postgres_size: 7777,
   };
   let billingIntegrationService: BillingIntegrationService;
 
