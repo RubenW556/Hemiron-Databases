@@ -3,4 +3,6 @@
 .npm/
 postgresql/.env
 postgresql/.env.dev
+sonarqube/.env
+
 *.env

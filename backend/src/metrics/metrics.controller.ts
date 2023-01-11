@@ -16,11 +16,6 @@ export class MetricsController {
 
   constructor(private metricsService: MetricsService) {}
 
-  @Get('test')
-  getHello(@Req() request: Request, @Res() response: Response) {
-    response.status(HttpStatus.OK).send({ message: `test` });
-  }
-
   @Get('databases/postgres/users/:id')
   async getAllPostgresDatabaseMetricsOfUser(
     @Req() request: Request,

@@ -1,6 +1,5 @@
 ## Runner setup
 
-[//]: # (todo compose file)
 Create config volume 
 - `docker volume create gitlab-runner-config`
 
