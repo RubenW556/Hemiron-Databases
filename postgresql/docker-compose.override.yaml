@@ -21,6 +21,7 @@ services: # docker compose up --build
       - postgres:/var/lib/postgresql/data
       - ./init-a-user-db.sh:/docker-entrypoint-initdb.d/init-a-user-db.sh
       - ./init-z-schema-tables.sh:/docker-entrypoint-initdb.d/init-z-schema-tables.sh
+      - ./init-z-test-schema-tables.sh:/docker-entrypoint-initdb.d/init-z-test-schema-tables.sh
     ports:
       - "5432:5432"
     networks:
