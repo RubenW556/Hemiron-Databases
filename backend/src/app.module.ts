@@ -1,7 +1,6 @@
 import {
   Logger,
   MiddlewareConsumer,
-  MiddlewareConsumer,
   Module,
   NestModule,
 } from '@nestjs/common';
