@@ -4,7 +4,10 @@ import {
   Get,
   Param,
   Post,
-  Put, Req, UsePipes, ValidationPipe,
+  Put,
+  Req,
+  UsePipes,
+  ValidationPipe,
 } from '@nestjs/common';
 
 import { CreateRedisService } from './create-redis.service';
@@ -12,17 +15,13 @@ import { CreateRedisService } from './create-redis.service';
 @UsePipes(new ValidationPipe())
 @Controller('redis')
 export class RedisController {
-
   constructor(private redisService: CreateRedisService) {}
 
   @Put('key/:key')
-  async setKey(
-      @Param('key') key: string,
-      @Req() req,
-  ): Promise<string> {
+  async setKey(@Param('key') key: string, @Req() req): Promise<string> {
     const value = req.body.value;
-    if (typeof(value) === 'undefined'){
-      return 'no value given in x-www-form-encoded parameter: value'
+    if (typeof value === 'undefined') {
+      return 'no value given in x-www-form-encoded parameter: value';
     }
     return this.redisService.set(key, value);
   }
@@ -53,13 +52,10 @@ export class RedisController {
   }
 
   @Post('login/:dbname/')
-  async login(
-    @Param('dbname') dbname: string,
-    @Req() req,
-  ): Promise<string> {
+  async login(@Param('dbname') dbname: string, @Req() req): Promise<string> {
     const password = req.body.password;
-    if (typeof(password) === 'undefined'){
-      return 'no value given in x-www-form-encoded parameter: password'
+    if (typeof password === 'undefined') {
+      return 'no value given in x-www-form-encoded parameter: password';
     }
     return this.redisService.login(dbname, password);
   }
@@ -70,8 +66,8 @@ export class RedisController {
     @Req() req,
   ): Promise<string> {
     const password = req.body.password;
-    if (typeof(password) === 'undefined'){
-      return 'no value given in x-www-form-encoded parameter: password'
+    if (typeof password === 'undefined') {
+      return 'no value given in x-www-form-encoded parameter: password';
     }
     return this.redisService.addPassword(dbname, password);
   }
@@ -82,20 +78,17 @@ export class RedisController {
     @Req() req,
   ): Promise<string> {
     const password = req.body.password;
-    if (typeof(password) === 'undefined'){
-      return 'no value given in x-www-form-encoded parameter: password'
+    if (typeof password === 'undefined') {
+      return 'no value given in x-www-form-encoded parameter: password';
     }
     return await this.redisService.deletePassword(dbname, password);
   }
 
   @Post('db/:dbname')
-  async createDb(
-    @Param('dbname') dbname: string,
-    @Req() req,
-  ): Promise<string> {
+  async createDb(@Param('dbname') dbname: string, @Req() req): Promise<string> {
     const password = req.body.password;
-    if (typeof(password) === 'undefined'){
-      return 'no value given in x-www-form-encoded parameter: password'
+    if (typeof password === 'undefined') {
+      return 'no value given in x-www-form-encoded parameter: password';
     }
     if (dbname.includes(':')) {
       return 'A databasename is not allowed to contain a semicolon ":" ';

@@ -16,7 +16,6 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { RedisModule } from '@liaoliaots/nestjs-redis';
 import { RedisMainModule } from './redis/redis-main.Module';
-import {CreateRedisService} from "./redis/create-redis.service";
 
 @Module({
   imports: [
@@ -27,7 +26,6 @@ import {CreateRedisService} from "./redis/create-redis.service";
       config: {
         host: process.env.REDIS_HOST,
         port: 6379,
-        //password: 'authpassword',
         onClientCreated(client) {
           client.on('error', () => {AppModule.logger.log("[Warning] Redisclient NOT created (yet) !")});
           client.on('ready', () => {AppModule.logger.log("Redisclient created!")});
@@ -68,10 +66,10 @@ import {CreateRedisService} from "./redis/create-redis.service";
     AppService,
   ],
 })
-export class AppModule implements NestModule {
-  // noinspection JSUnusedGlobalSymbols
-  private static logger = new Logger(AppModule.name);
-  public configure(consumer: MiddlewareConsumer) {
-    consumer.apply(AuthMiddleware).forRoutes('*');
+  export class AppModule implements NestModule {
+    // noinspection JSUnusedGlobalSymbols
+    private static logger = new Logger(AppModule.name);
+    public configure(consumer: MiddlewareConsumer) {
+      consumer.apply(AuthMiddleware).forRoutes('*');
+    }
   }
-}

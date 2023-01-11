@@ -1,8 +1,8 @@
 import { BadRequestException, Injectable, Logger } from '@nestjs/common';
 import { InjectDataSource } from '@nestjs/typeorm';
 import { DataSource } from 'typeorm';
-import { CreateRedisService } from "../redis/create-redis.service";
-import {QueryLoggingService} from "../redis/query-logging.service";
+import { CreateRedisService } from '../redis/create-redis.service';
+import { QueryLoggingService } from '../redis/query-logging.service';
 
 @Injectable()
 export class MetricsService {
@@ -73,19 +73,20 @@ export class MetricsService {
    * Gets sizes of all Postgres databases of user combined
    * @param {string} uuid UUID of requested user as string
    */
-  async getAllRedisDatabaseSizesOfSingleUser(
-      uuid: string,
-  ): Promise<number>{
+  async getAllRedisDatabaseSizesOfSingleUser(uuid: string): Promise<number> {
     let totalSizeOfUser = 0;
     try {
       const dbList = await this.dataSource.query(
-          `SELECT database_id 
+        `SELECT database_id 
       FROM docker.user_owns_database 
-      WHERE user_id = $1`, [uuid]
-      )
+      WHERE user_id = $1`,
+        [uuid],
+      );
       for (let i = 0; i < dbList.length; i++) {
         const database_uuid = dbList[i];
-        const singleDBSize = await this.createRedisService.getMemoryUsage(database_uuid);
+        const singleDBSize = await this.createRedisService.getMemoryUsage(
+          database_uuid,
+        );
         totalSizeOfUser += singleDBSize;
       }
     } catch (e) {
@@ -97,19 +98,19 @@ export class MetricsService {
    * Gets sizes of all Postgres databases of user combined
    * @param {string} uuid UUID of requested user as string
    */
-  async getAllRedisQueriesOfSingleUser(
-      uuid: string,
-  ): Promise<number>{
+  async getAllRedisQueriesOfSingleUser(uuid: string): Promise<number> {
     let totalQueriesOfUser = 0;
     try {
       const dbList = await this.dataSource.query(
-          `SELECT database_id 
+        `SELECT database_id 
       FROM docker.user_owns_database 
-      WHERE user_id = $1`, [uuid]
-      )
+      WHERE user_id = $1`,
+        [uuid],
+      );
       for (let i = 0; i < dbList.length; i++) {
         const database_uuid = dbList[i];
-        const singleDBQueries = this.queryLoggingService.getQueryByDbUUID(database_uuid);
+        const singleDBQueries =
+          this.queryLoggingService.getQueryByDbUUID(database_uuid);
         totalQueriesOfUser += singleDBQueries;
       }
     } catch (e) {

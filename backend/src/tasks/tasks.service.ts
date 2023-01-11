@@ -66,10 +66,12 @@ export class TasksService {
         let queries;
         try {
           size = await this.metricsService.getCombinedRedisMetricsOfUser(uuid);
-          queries = await this.metricsService.getCombinedRedisQueriesOfUser(uuid);
+          queries = await this.metricsService.getCombinedRedisQueriesOfUser(
+            uuid,
+          );
         } catch (e) {
           this.logger.debug(
-              `Failed to get Postgres metrics for uuid ${uuid}... Skipping....`,
+            `Failed to get Postgres metrics for uuid ${uuid}... Skipping....`,
           );
           continue;
         }
@@ -81,16 +83,16 @@ export class TasksService {
         };
 
         this.billingService
-            .patchRedisUserDataToBilling(payload)
-            .then((response) => {
-              this.logger.log(
-                  `Successfully patched redis usage for user ${uuid}`,
-              );
-              this.logger.debug(response);
-            })
-            .catch((error) => {
-              this.logger.error(error);
-            });
+          .patchRedisUserDataToBilling(payload)
+          .then((response) => {
+            this.logger.log(
+              `Successfully patched redis usage for user ${uuid}`,
+            );
+            this.logger.debug(response);
+          })
+          .catch((error) => {
+            this.logger.error(error);
+          });
       }
     } catch (e) {
       this.logger.error(e);

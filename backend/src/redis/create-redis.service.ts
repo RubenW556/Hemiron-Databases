@@ -1,26 +1,28 @@
-import {createParamDecorator, Injectable, Logger} from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import {
   RedisService,
   DEFAULT_REDIS_NAMESPACE,
 } from '@liaoliaots/nestjs-redis';
 import Redis from 'ioredis';
-import {QueryLoggingService} from "./query-logging.service";
+import { QueryLoggingService } from './query-logging.service';
 
 @Injectable()
 export class CreateRedisService {
   private readonly redis: Redis;
   private logger = new Logger(CreateRedisService.name);
-  constructor(private readonly redisService: RedisService, private queryLoggingService: QueryLoggingService) {
+  constructor(
+    private readonly redisService: RedisService,
+    private queryLoggingService: QueryLoggingService,
+  ) {
     this.redis = this.redisService.getClient(DEFAULT_REDIS_NAMESPACE);
   }
-
 
   public async set(key, value): Promise<string> {
     const currentDb = await this.getCurrentDb();
     this.queryLoggingService.logQuery(currentDb);
 
     const fullKey = currentDb + ':' + key;
-    this.logger.debug("inserting in key: " + key + " value: " + value)
+    this.logger.debug('inserting in key: ' + key + ' value: ' + value);
     const response = await this.redis.set(fullKey, value);
     return response;
   }
