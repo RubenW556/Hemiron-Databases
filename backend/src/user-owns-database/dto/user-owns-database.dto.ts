@@ -1,6 +1,6 @@
 import { IsUUID } from 'class-validator';
 
-export class DeleteUserOwnsDatabaseDto {
+export class UserOwnsDatabaseDto {
   @IsUUID(4)
   readonly database_id: string;
 
