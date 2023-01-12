@@ -38,15 +38,12 @@ describe('UserOwnsDatabaseController', () => {
   const mockUserOwnsDatabaseService = {
     findOne: jest.fn(async function (databaseId, UserId): Promise<void> {
       if (UserId != existingUser) throw new Error();
-      return;
     }),
     insert: jest.fn(async function (databaseId, UserId): Promise<void> {
       if (UserId != existingUser) throw new Error();
-      return;
     }),
     delete: jest.fn(async function (databaseId, UserId): Promise<void> {
       if (UserId != existingUser) throw new Error();
-      return;
     }),
   };
 
