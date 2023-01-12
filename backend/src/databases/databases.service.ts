@@ -24,8 +24,8 @@ export class DatabasesService {
   public findAllForUser(userId: string): Promise<Database[]> {
     return this.databasesRepository.query(
       `
-        SELECT database.* FROM docker.database
-        INNER JOIN docker.user_owns_database
+        SELECT database.* FROM ${process.env.POSTGRES_USER_SCHEMA}.database
+        INNER JOIN ${process.env.POSTGRES_USER_SCHEMA}.user_owns_database
         ON database.id = user_owns_database.database_id AND user_owns_database.user_id = $1
     `,
       [userId],
@@ -48,7 +48,7 @@ export class DatabasesService {
       id: databaseId,
       name: databaseDto.name,
       type: databaseDto.type,
-      created_at: new Date(),
+      created_at: new Date().toISOString(),
       pgd_id: createdDatabaseInfo.pg_id,
     });
 

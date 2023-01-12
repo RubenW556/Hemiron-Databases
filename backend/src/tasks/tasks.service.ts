@@ -41,8 +41,8 @@ export class TasksService {
         this.logger.debug(`query count of user ${uuid}: ${queries}`);
         this.logger.debug(`database size of user ${uuid}: ${size}`);
         const payload: PatchUserDatabaseMetricsDto = {
-          size: size,
-          queries: queries,
+          postgres_size: size,
+          postgres_queries: queries,
           userId: uuid,
         };
         this.billingService
