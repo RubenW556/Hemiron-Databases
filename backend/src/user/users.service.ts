@@ -53,12 +53,23 @@ export class UsersService {
   }
 
   /**
+   * Creates a user if the user doesn't exist yet
+   * @param {string} userId UUID of requested user as string
+   */
+  async createUserIfNotExist(userId: string): Promise<void> {
+    const user: User = await this.usersRepository.findOneBy({ id: userId });
+    if (user == null) {
+      await this.usersRepository.insert({ id: userId });
+    }
+  }
+
+  /**
    * gets query count for user
    * @param {string} id UUID of to be deleted user as string
    */
   async getQueryCount(id: string): Promise<number> {
     if ((await this.databaseManagementService.lookUpUser(id)) == undefined) {
-      new BadRequestException('user does not exist');
+      throw new BadRequestException('user does not exist');
     }
     const result = await this.metricsService.getQueryCountByUser_Id(id);
 

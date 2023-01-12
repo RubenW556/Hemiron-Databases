@@ -2,12 +2,19 @@ networks:
   databases-frontend-dev:
     name: databases-frontend-dev
   databases-db-dev:
+    external: true
     name: databases-db-dev
   hemiron-ntw-compose:
     external: true
     name: hemiron-ntw-compose
 
 services: # docker compose up --build
+  scanner: # docker compose up scanner
+    networks:
+      - hemiron-ntw-compose
+    volumes:
+      - ./:/usr/src
+  #      - sonarqube:/usr/src/tmp/cacerts
   backend: # docker compose up --build backend
     restart: unless-stopped
     build:

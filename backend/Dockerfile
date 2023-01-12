@@ -136,9 +136,6 @@ COPY --chown=node:node --from=build /usr/src/app/dist ./dist
 #Expose port 3000
 EXPOSE ${PORT}
 
-# check every 30s to ensure this service returns HTTP 200
-#HEALTHCHECK --interval=30s CMD wget --no-verbose --tries=1 --spider http://0.0.0.0:$PORT/v1/healthz #todo aanmaken endpoints
-
 USER node
 
 # Start the server using the production build

@@ -1,6 +1,5 @@
 import { Test } from '@nestjs/testing';
 import { MetricsService } from './metrics.service';
-import { ModuleMocker } from 'jest-mock';
 import { DataSource } from 'typeorm';
 
 describe('MetricsService', () => {
@@ -22,7 +21,6 @@ describe('MetricsService', () => {
   let metricsService: MetricsService;
   let dataSource: DataSource;
 
-  new ModuleMocker(global);
   beforeAll(async () => {
     const moduleRef = await Test.createTestingModule({
       providers: [
@@ -56,12 +54,6 @@ describe('MetricsService', () => {
   it('dataSource should be defined', () => {
     expect(dataSource).toBeDefined();
   });
-
-  describe('getHello', () => {
-    it('should return "Hello World!"', () => {
-      expect(metricsService.getHello()).toBe('Hello world');
-    });
-  });
   describe('getDatabaseSize', () => {
     it('should return db size string on existing db"', async () => {
       expect(await metricsService.getDatabaseSize(databaseOIDMock)).toEqual(
@@ -93,19 +85,19 @@ describe('MetricsService', () => {
   describe('getCombinedPostgresMetricsOfUser', () => {
     it('should return db size number on existing db and user"', async () => {
       expect(
-        await metricsService.getCombinedPostgresMetricsOfUser(userUUIDMock),
+        await metricsService.getCombinedPostgresSizeMetricsOfUser(userUUIDMock),
       ).toEqual(6666);
     });
     it('should return db size as number on existing db and user"', async () => {
       expect(
-        typeof (await metricsService.getCombinedPostgresMetricsOfUser(
+        typeof (await metricsService.getCombinedPostgresSizeMetricsOfUser(
           userUUIDMock,
         )),
       ).toBe('number');
     });
     it('should throw error when no data is found', async () => {
       try {
-        await metricsService.getCombinedPostgresMetricsOfUser(userUUIDMock);
+        await metricsService.getCombinedPostgresSizeMetricsOfUser(userUUIDMock);
       } catch (e) {
         expect(e.message).toBe('No data found');
       }

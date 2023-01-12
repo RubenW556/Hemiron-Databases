@@ -11,7 +11,6 @@ CREATE TABLE "database" (
 
 CREATE TABLE "user" (
     "id" uuid NOT NULL,
-    "username" character varying(50) NOT NULL,
     CONSTRAINT "User_pk" PRIMARY KEY ("id")
 );
 

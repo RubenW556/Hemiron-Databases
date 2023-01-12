@@ -1,4 +1,6 @@
 **/node_modules/
+node_modules/**/*
+node_modules
 **/.git
 **/README.md
 **/LICENSE
@@ -12,7 +14,8 @@
 **/docker_build
 Dockerfile
 .dockerignore
-node_modules
 npm-debug.log
 dist
+**/docker_build/
+docker_build/**/*
 docker_build

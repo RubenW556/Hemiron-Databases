@@ -24,10 +24,13 @@ export class TasksService {
       for (const user of users) {
         const uuid = user.id;
         let size;
+        let queries;
         try {
-          size = await this.metricsService.getCombinedPostgresMetricsOfUser(
+          size = await this.metricsService.getCombinedPostgresSizeMetricsOfUser(
             uuid,
           );
+          queries =
+            await this.metricsService.getCombinedPostgresQueryCountOfUser(uuid);
         } catch (e) {
           this.logger.debug(
             `Failed to get Postgres metrics for uuid ${uuid}... Skipping....`,
@@ -35,12 +38,13 @@ export class TasksService {
 
           continue;
         }
-        this.logger.debug(size);
+        this.logger.debug(`query count of user ${uuid}: ${queries}`);
+        this.logger.debug(`database size of user ${uuid}: ${size}`);
         const payload: PatchUserDatabaseMetricsDto = {
-          size: size,
+          postgres_size: size,
+          postgres_queries: queries,
           userId: uuid,
         };
-
         this.billingService
           .patchPostgresUserDataToBilling(payload)
           .then((response) => {

@@ -14,7 +14,7 @@ describe('Databases service', () => {
     id: '77807154-2c3a-44e0-94a9-409805cf9a2f',
     name: 'Database name',
     type: 'postgres',
-    created_at: new Date(),
+    created_at: new Date().toISOString(),
     pgd_id: 16463,
   };
   const validUserID = 'c30a6cdd-02db-472f-8e69-80d57b67b3da';
@@ -107,15 +107,12 @@ describe('Databases service', () => {
       type: 'postgres',
     };
 
-    it('should return an object with user id', async () => {
+    it('should return an object with database_id and password', async () => {
       const userMakingRequest = {
         id: validUserID,
       } as unknown as UserMakingRequest;
       const result = await service.insert(createDatabaseDto, userMakingRequest);
-      expect(result.databaseName).toBe(
-        userMakingRequest.id + '.' + createDatabaseDto.name,
-      );
-      expect(result.username).toBeDefined();
+      expect(result.database_id).toBeDefined();
       expect(result.password).toBeDefined();
     });
 

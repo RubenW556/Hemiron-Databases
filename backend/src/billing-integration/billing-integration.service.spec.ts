@@ -1,5 +1,4 @@
 import { Test } from '@nestjs/testing';
-import { ModuleMocker } from 'jest-mock';
 import { BillingIntegrationService } from './billing-integration.service';
 import { HttpService } from '@nestjs/axios';
 import { ConfigService } from '@nestjs/config';
@@ -11,11 +10,10 @@ describe('BillingIntegrationService', () => {
   const endpointMock = '3333';
   const payloadMock: PatchUserDatabaseMetricsDto = {
     userId: 'string',
-    size: 7777,
+    postgres_size: 7777,
   };
   let billingIntegrationService: BillingIntegrationService;
 
-  new ModuleMocker(global);
   beforeAll(async () => {
     const data = ['test'];
 
