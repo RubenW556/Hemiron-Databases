@@ -193,7 +193,7 @@ public async set(key, value): Promise<string> {
     return this.redis.info();
   }
 
-  private async getValidSearchTerm(dbname?: string) {
+  public async getValidSearchTerm(dbname?: string) {
     let searchTerm = '';
 
     const currentDb = await this.getCurrentDb();

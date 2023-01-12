@@ -6,10 +6,16 @@ import {RedisService} from "@liaoliaots/nestjs-redis";
 
 describe('CreateRedisService', () => {
     let service: CreateRedisService;
+    let mockKeyValueDB = {};
 
     const mockRedis = {
-        acl: jest.fn( function (): string{
-            return mockCurrentUser.database_id;
+        acl: jest.fn( function (subcommand): string{
+            switch (subcommand) {
+                case 'WHOAMI':
+                    return mockCurrentUser.database_id;
+                case 'USERS':
+                    return '';
+            }
         }),
         set: jest.fn( function (fullKey, value): string{
             mockKeyValueDB[fullKey] = value;
@@ -23,6 +29,26 @@ describe('CreateRedisService', () => {
         }),
         del: jest.fn( function (): string {
             return "OK";
+        }),
+        keys: jest.fn( function (startsWith): { key: string; value: string }[]{
+            const filteredKeys = Object.keys(mockKeyValueDB).filter(key => key.startsWith(startsWith));
+            const filteredObjects = filteredKeys.map(key => ({ key, value: mockKeyValueDB[key] }));
+            return filteredObjects;
+        }),
+        scan: jest.fn( function (cursor, patternToken, startsWith): string[]{
+            if(patternToken === 'MATCH'){
+                const filteredKeys = Object.keys(mockKeyValueDB).filter(key => key.startsWith(startsWith));
+                return [cursor, filteredKeys];
+            }
+            else throw new Error();
+        }),
+        auth: jest.fn( function (dbname, password): string {
+            mockCurrentUser.database_id = dbname;
+            return "OK";
+        }),
+        info: jest.fn( function ()  {
+        }),
+        client: jest.fn( function (subcommand:string)  {
         }),
     };
     const mockQueryLoggerService = {
@@ -40,6 +66,12 @@ describe('CreateRedisService', () => {
         database_id: '77807154-2c3a-44e0-94a9-409805cf9a2f',
         user_id: '448098df-b9dd-4ec2-af9f-b23459b203a1',
     };
+
+    const mockUser2 = {
+        database_id: '0080799-2c3a-44e0-94a9-409805ce0a3e',
+        user_id: '555098df-b9dd-4ec2-af9f-b23459b204b2',
+    };
+
     const mockAdmin = {
         database_id: 'default',
         user_id: 'default'
@@ -47,9 +79,8 @@ describe('CreateRedisService', () => {
     let mockCurrentUser = mockUser;
 
     let mockSingleKeyValue = {key: 'key1', value: 'value1'};
-    let mockKeyValueDB = {};
-    const RedisCommands = require('redis-commands');
 
+    const password = 'password'
 
     beforeEach(async () => {
         const module: TestingModule = await Test.createTestingModule({
@@ -167,4 +198,143 @@ describe('CreateRedisService', () => {
             expect(result).toEqual('OK');
         });
     });
+
+    describe('getAllKeys', () => {
+        it('should call queryLoggingService.logQuery(currentDb, keys.length)', async () => {
+            mockKeyValueDB = {};
+
+            const amountOfKeys = 4
+            for (let i = 1; i <= amountOfKeys; i++) {
+                const dbname = await service.getValidSearchTerm(mockCurrentUser.database_id);
+                const fullKey = `${dbname}:key${i}`;
+                const value = `value${i}`;
+                mockKeyValueDB[fullKey] = value;
+            }
+
+            const spy = jest.spyOn(mockQueryLoggerService, 'logQuery');
+
+            await service.getAllKeys(mockCurrentUser.database_id);
+
+            expect(spy).toBeCalledWith(mockCurrentUser.database_id, amountOfKeys);
+        });
+
+        it('should call CreateRedisService.getValidSearchterm(dbname)', async () => {
+            const spy = jest.spyOn(service, 'getValidSearchTerm');
+            await service.getAllKeys(mockCurrentUser.database_id);
+
+            expect(spy).toHaveBeenCalledWith(mockCurrentUser.database_id);
+        });
+
+        it('should call Redis.keys(getValidSearchTerm(dbname)', async () => {
+            const spy = jest.spyOn(mockRedis, 'keys');
+            const validSearchTerm = await service.getValidSearchTerm(mockCurrentUser.database_id)
+
+            await service.getAllKeys(mockCurrentUser.database_id);
+
+            expect(spy).toHaveBeenCalledWith(validSearchTerm);
+        });
+
+        it('should return the keys of logged-in database', async () => {
+            const result = await service.getAllKeys(mockCurrentUser.database_id);
+            const searchTerm = await service.getValidSearchTerm(mockCurrentUser.database_id);
+            const filteredKeys = Object.keys(mockKeyValueDB).filter(key => key.startsWith(searchTerm));
+            const filteredObjects = filteredKeys.map(key => ({ key, value: mockKeyValueDB[key] }));
+
+            expect(result).toEqual(filteredObjects);
+        });
+    });
+
+    describe('deleteAllKeys', () => {
+        it('should call queryLoggingService.logQuery(currentDb, keys.length)', async () => {
+            mockKeyValueDB = {};
+            const amountOfKeys = 4
+            for (let i = 1; i <= amountOfKeys; i++) {
+                const dbname = await service.getValidSearchTerm(mockCurrentUser.database_id);
+                const fullKey = `${dbname}:key${i}`;
+                const value = `value${i}`;
+                mockKeyValueDB[fullKey] = value;
+            }
+
+            const spy = jest.spyOn(mockQueryLoggerService, 'logQuery');
+
+            await service.deleteAllKeys(mockCurrentUser.database_id);
+
+            expect(spy).toBeCalledWith(mockCurrentUser.database_id, amountOfKeys);
+        });
+
+        it('should call CreateRedisService.getValidSearchterm(dbname)', async () => {
+            mockKeyValueDB = {};
+            const amountOfKeys = 4
+            for (let i = 1; i <= amountOfKeys; i++) {
+                const dbname = await service.getValidSearchTerm(mockCurrentUser.database_id);
+                const fullKey = `${dbname}:key${i}`;
+                const value = `value${i}`;
+                mockKeyValueDB[fullKey] = value;
+            }
+
+            const spy = jest.spyOn(service, 'getValidSearchTerm');
+            await service.deleteAllKeys(mockCurrentUser.database_id);
+
+            expect(spy).toHaveBeenCalledWith(mockCurrentUser.database_id);
+        });
+
+        it('should call Redis.del(keys)', async () => {
+            const spy = jest.spyOn(mockRedis, 'del');
+            const validSearchTerm = await service.getValidSearchTerm(mockCurrentUser.database_id)
+            const filteredKeys = Object.keys(mockKeyValueDB).filter(key => key.startsWith(validSearchTerm));
+
+            await service.deleteAllKeys(mockCurrentUser.database_id);
+
+            expect(spy).toHaveBeenCalledWith(...filteredKeys);
+        });
+
+        it('should return OK if succes', async () => {
+            const result = await service.deleteAllKeys(
+                mockCurrentUser.database_id
+            );
+            expect(result).toEqual('OK');
+        });
+    });
+
+    describe('login', () => {
+        it('should call Redis.auth(dbname, password)', async () => {
+            const spy = jest.spyOn(mockRedis, 'auth');
+            await service.login(mockUser2.database_id, password);
+
+            expect(spy).toHaveBeenCalledWith(mockUser2.database_id, password);
+        });
+
+        it('should change user', async () => {
+            await service.login(mockUser2.database_id, password);
+            let currentDB = mockCurrentUser.database_id;
+            expect(currentDB).toEqual(mockUser2.database_id);
+
+            await service.login(mockUser.database_id, password);
+            currentDB = mockCurrentUser.database_id;
+            expect(currentDB).toEqual(mockUser.database_id);
+        });
+
+        it('should return OK if succes', async () => {
+            const result = await service.login(mockUser2.database_id, password);
+            expect(result).toEqual('OK');
+        });
+    });
+
+    describe('getClientinfo', () => {
+        it('should call Redis.client(\'INFO\')', async () => {
+            const spy = jest.spyOn(mockRedis, 'client');
+            await service.getClientInfo();
+
+            expect(spy).toHaveBeenCalledWith('INFO');
+        });
+    });
+
+    describe('getRedisinfo', () => {
+        it('should call Redis.info()', async () => {
+            const spy = jest.spyOn(mockRedis, 'info');
+            await service.getRedisInfo();
+
+            expect(spy).toHaveBeenCalled();
+        });
+    })
 });
