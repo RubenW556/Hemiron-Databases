@@ -9,10 +9,9 @@ import {
   Post,
   Res,
 } from '@nestjs/common';
-import { CreateUserOwnsDatabaseDto } from './dto/create-user-owns-database.dto';
 import { Response } from 'express';
 import { UserOwnsDatabaseService } from './user-owns-database.service';
-import { DeleteUserOwnsDatabaseDto } from './dto/delete-user-owns-database.dto';
+import { UserOwnsDatabaseDto } from './dto/user-owns-database.dto';
 
 @Controller('user-owns-database')
 export class UserOwnsDatabaseController {
@@ -40,18 +39,18 @@ export class UserOwnsDatabaseController {
   @HttpCode(HttpStatus.CREATED)
   public async create(
     @Res({ passthrough: true }) res: Response,
-    @Body() createUserOwnsDatabase: CreateUserOwnsDatabaseDto,
+    @Body() userOwnsDatabaseDto: UserOwnsDatabaseDto,
   ): Promise<void> {
     try {
       const userMakingRequest = res.locals.userMakingRequest;
 
       await this.userOwnsDatabaseService.findOne(
-        createUserOwnsDatabase.database_id,
+        userOwnsDatabaseDto.database_id,
         userMakingRequest.id,
       );
       await this.userOwnsDatabaseService.insert(
-        createUserOwnsDatabase.database_id,
-        createUserOwnsDatabase.user_id,
+        userOwnsDatabaseDto.database_id,
+        userOwnsDatabaseDto.user_id,
       );
       return;
     } catch (e) {
@@ -63,18 +62,18 @@ export class UserOwnsDatabaseController {
   @HttpCode(HttpStatus.NO_CONTENT)
   public async delete(
     @Res({ passthrough: true }) res: Response,
-    @Body() deleteUserOwnsDatabaseDto: DeleteUserOwnsDatabaseDto,
+    @Body() userOwnsDatabaseDto: UserOwnsDatabaseDto,
   ): Promise<void> {
     try {
       const userMakingRequest = res.locals.userMakingRequest;
 
       await this.userOwnsDatabaseService.findOne(
-        deleteUserOwnsDatabaseDto.database_id,
+        userOwnsDatabaseDto.database_id,
         userMakingRequest.id,
       );
       await this.userOwnsDatabaseService.delete(
-        deleteUserOwnsDatabaseDto.database_id,
-        deleteUserOwnsDatabaseDto.user_id,
+        userOwnsDatabaseDto.database_id,
+        userOwnsDatabaseDto.user_id,
       );
       return;
     } catch (e) {

@@ -1,9 +1,11 @@
+version: '3.8'
 volumes:
   postgres:
 
 networks:
   databases-db-dev:
     name: databases-db-dev
+    external: true
   hemiron-ntw-compose:
     external: true
     name: hemiron-ntw-compose
@@ -16,15 +18,22 @@ services: # docker compose up --build
       - .env.dev
         #command below adds pg_stat_statements to the extensions of postgres
     command: postgres -c shared_preload_libraries=pg_stat_statements -c pg_stat_statements.track=all -c max_connections=200
-
     volumes:
       - postgres:/var/lib/postgresql/data
       - ./init-a-user-db.sh:/docker-entrypoint-initdb.d/init-a-user-db.sh
-      - ./init-z-schema-tables.sh:/docker-entrypoint-initdb.d/init-z-schema-tables.sh
-    ports:
-      - "5432:5432"
+      - ./init-y-schema-tables.sh:/docker-entrypoint-initdb.d/init-y-schema-tables.sh
+      - ./init-z-test-schema-tables.sh:/docker-entrypoint-initdb.d/init-z-test-schema-tables.sh
     networks:
       - databases-db-dev
+      - hemiron-ntw-compose
+    labels:
+      - "traefik.docker.network=hemiron-ntw-compose"
+      # routers
+      - "traefik.tcp.routers.postgres.rule=HostSNI(`*`)"
+      - "traefik.tcp.routers.postgres.entryPoints=postgres"
+      - "traefik.tcp.routers.postgres.service=postgres"
+      # services (needed for TCP)
+      - "traefik.tcp.services.postgres.loadbalancer.server.port=5432"
   adminer:
     environment:
       - ADMINER_DEFAULT_SERVER=db

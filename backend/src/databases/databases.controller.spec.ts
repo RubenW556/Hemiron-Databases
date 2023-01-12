@@ -19,7 +19,7 @@ describe('DatabasesController', () => {
     id: '77807154-2c3a-44e0-94a9-409805cf9a2f',
     name: 'Database name',
     type: 'postgres',
-    created_at: new Date(),
+    created_at: new Date().toISOString(),
     pgd_id: 16463,
   };
 

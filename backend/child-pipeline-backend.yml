@@ -84,6 +84,8 @@ CI_TEST_COV_BACKEND:
 
 CI_TEST_E2E_BACKEND:
     stage: test
+    image:
+        name: docker/compose:latest
     variables:
         BASE_IMAGE: node18-alpine
         PROJECT_ID: backend
@@ -91,12 +93,15 @@ CI_TEST_E2E_BACKEND:
         IMAGE_NAME_FINAL: $IMAGE_NAME_BASE/$PROJECT_ID:$TARGET_ID-1.0.$CI_PIPELINE_IID-$BASE_IMAGE
     inherit:
         default: false
-    <<: *template_merge
     needs: [CI_PRE_CHECK]
     before_script:
         - echo "Running E2E_BACKEND"
         - docker login -u pipeline -p $BUILD_TOKEN $CI_REGISTRY
     script:
+        - (cd postgresql && cp .env.example .env)
+        - (cd postgresql && cp .env.example .env.dev)
+        - docker network create hemiron-ntw-compose
+        - (cd postgresql && docker-compose up db)
         - docker build -t $IMAGE_NAME_FINAL --target $TARGET_ID $PROJECT_ID/.
         - docker run --rm -t $IMAGE_NAME_FINAL
     after_script:
