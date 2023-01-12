@@ -85,7 +85,11 @@ describe('Metrics Controller (e2e)', () => {
   it('/ (GET)', () => {
     return request(app.getHttpServer())
       .get(`/metrics/databases/postgres/users/${validUserID}`)
-      .expect(200);
+      .expect(200)
+      .then((res) => {
+        expect(res.body).toHaveProperty('sizeUsage');
+        expect(res.body).toHaveProperty('queryCount');
+      });
   });
   it('/ (GET)', () => {
     return request(app.getHttpServer())
