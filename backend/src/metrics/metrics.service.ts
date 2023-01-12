@@ -54,6 +54,7 @@ export class MetricsService {
         AND user_owns_database.user_id = $1
         INNER JOIN pg_database AS t1
         ON database.pgd_id = t1.oid
+        WHERE database.type = 'postgres'
         LIMIT $2
         OFFSET $3;
       `,
