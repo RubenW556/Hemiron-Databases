@@ -1,20 +1,18 @@
 import {
-  BadRequestException, Body,
   Controller,
   Delete,
-  Get, HttpException,
+  Get,
+  HttpException,
   Param,
   Post,
   Put,
   Req,
   UsePipes,
   ValidationPipe,
-  Response
+  Response,
 } from '@nestjs/common';
 
 import { CreateRedisService } from './create-redis.service';
-import {HttpErrorByCode} from "@nestjs/common/utils/http-error-by-code.util";
-import {UpdateDatabaseDto} from "../databases/dto/update-database.dto";
 
 @UsePipes(new ValidationPipe())
 @Controller('redis')
@@ -95,11 +93,17 @@ export class RedisController {
       throw new HttpException('No password in body', 400);
     }
     if (dbname.includes(':')) {
-      throw new HttpException('A databasename is not allowed to contain a semicolon ":" ', 406);
+      throw new HttpException(
+        'A databasename is not allowed to contain a semicolon ":" ',
+        406,
+      );
     }
     const response = await this.redisService.getAllDatabases();
     if (response.includes(dbname)) {
-      throw new HttpException('Databasename already in use, please pick another Databasename', 406);
+      throw new HttpException(
+        'Databasename already in use, please pick another Databasename',
+        406,
+      );
     }
     return this.redisService.addPassword(dbname, password);
   }
@@ -114,14 +118,16 @@ export class RedisController {
   }
 
   @Delete('db/:dbname')
-  async deleteDb(@Param('dbname') dbname: string, @Response() res): Promise<string> {
+  async deleteDb(
+    @Param('dbname') dbname: string,
+    @Response() res,
+  ): Promise<string> {
     const result = await this.redisService.deleteDb(dbname);
     if (result === 1) {
       res.status(200).send({ message: 'OK' });
     } else if (result === 0) {
       throw new HttpException('User does not exist', 406);
-    }
-    else{
+    } else {
       return result.toString();
     }
   }
