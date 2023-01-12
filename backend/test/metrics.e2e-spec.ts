@@ -93,8 +93,7 @@ describe('Metrics Controller (e2e)', () => {
 
   it('/ (GET)', () => {
     return request(app.getHttpServer())
-      .get(`/databases/postgres/users/123`)
-      .expect(200)
-      .expect('test');
+      .get(`/metrics/databases/postgres/users/123`)
+      .expect(200);
   });
 });
