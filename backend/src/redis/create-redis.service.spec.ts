@@ -1,8 +1,8 @@
-import {Test, TestingModule} from '@nestjs/testing';
-import {CreateRedisService} from './create-redis.service';
+import { Test, TestingModule } from '@nestjs/testing';
+import { CreateRedisService } from './create-redis.service';
 import Redis from 'ioredis';
-import {QueryLoggingService} from './query-logging.service';
-import {RedisService} from '@liaoliaots/nestjs-redis';
+import { QueryLoggingService } from './query-logging.service';
+import { RedisService } from '@liaoliaots/nestjs-redis';
 
 describe('CreateRedisService', () => {
   let service: CreateRedisService;
