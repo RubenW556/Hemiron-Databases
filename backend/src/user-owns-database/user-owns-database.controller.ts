@@ -12,7 +12,6 @@ import {
 import { Response } from 'express';
 import { UserOwnsDatabaseService } from './user-owns-database.service';
 import { UserOwnsDatabaseDto } from './dto/user-owns-database.dto';
-import {UserOwnsDatabase} from "./user-owns-database.entity";
 
 @Controller('user-owns-database')
 export class UserOwnsDatabaseController {
@@ -23,14 +22,14 @@ export class UserOwnsDatabaseController {
   public async getOne(
     @Res({ passthrough: true }) res: Response,
     @Param('databaseId') databaseId: string,
-  ): Promise<UserOwnsDatabase> {
+  ): Promise<void> {
     try {
       const userMakingRequest = res.locals.userMakingRequest;
-
-      return await this.userOwnsDatabaseService.findOne(
+      await this.userOwnsDatabaseService.findOne(
           databaseId,
           userMakingRequest.id,
       );
+      return;
     } catch (e) {
       res.status(HttpStatus.INTERNAL_SERVER_ERROR);
     }
