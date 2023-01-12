@@ -31,7 +31,11 @@ export class MetricsController {
     }
     const size =
       await this.metricsService.getAllPostgresDatabaseSizesOfSingleUser(id);
-    response.status(HttpStatus.OK).send({ sizeUsage: size });
+    const queryCount =
+      await this.metricsService.getCombinedPostgresSizeMetricsOfUser(id);
+    response
+      .status(HttpStatus.OK)
+      .send({ sizeUsage: size, queryCount: queryCount });
   }
 
   @Get('databases/postgres/databases/:id')
