@@ -5,6 +5,10 @@ import {
 } from '@liaoliaots/nestjs-redis';
 import Redis from 'ioredis';
 import { QueryLoggingService } from './query-logging.service';
+import {Test, TestingModule} from "@nestjs/testing";
+import {UsersService} from "../user/users.service";
+import {getRepositoryToken} from "@nestjs/typeorm";
+import {User} from "../user/user.entity";
 
 @Injectable()
 export class CreateRedisService {
@@ -17,7 +21,7 @@ export class CreateRedisService {
     this.redis = this.redisService.getClient(DEFAULT_REDIS_NAMESPACE);
   }
 
-  public async set(key, value): Promise<string> {
+public async set(key, value): Promise<string> {
     const currentDb = await this.getCurrentDb();
     this.queryLoggingService.logQuery(currentDb);
 
