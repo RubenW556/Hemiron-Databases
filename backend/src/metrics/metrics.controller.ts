@@ -29,8 +29,9 @@ export class MetricsController {
         .status(HttpStatus.BAD_REQUEST)
         .send({ message: responseMessage });
     }
-    const size =
-      await this.metricsService.getCombinedPostgresSizeMetricsOfUser(id);
+    const size = await this.metricsService.getCombinedPostgresSizeMetricsOfUser(
+      id,
+    );
     const queryCount =
       await this.metricsService.getCombinedPostgresQueryCountOfUser(id);
     response

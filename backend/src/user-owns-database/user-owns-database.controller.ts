@@ -26,8 +26,8 @@ export class UserOwnsDatabaseController {
     try {
       const userMakingRequest = res.locals.userMakingRequest;
       await this.userOwnsDatabaseService.findOne(
-          databaseId,
-          userMakingRequest.id,
+        databaseId,
+        userMakingRequest.id,
       );
       return;
     } catch (e) {
