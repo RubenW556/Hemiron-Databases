@@ -28,7 +28,7 @@ describe('UserOwnsDatabaseController', () => {
   const mockUnauthorizedResponse = {
     status: jest.fn((x) => x),
   } as unknown as Response;
-  const existingUser = '448098df-b9dd-4ec2-af9f-b23459b203a1'
+  const existingUser = '448098df-b9dd-4ec2-af9f-b23459b203a1';
   const mockAuthorizedResponse = {
     status: jest.fn((x) => x),
     locals: {
@@ -38,15 +38,12 @@ describe('UserOwnsDatabaseController', () => {
   const mockUserOwnsDatabaseService = {
     findOne: jest.fn(async function (databaseId, UserId): Promise<void> {
       if (UserId != existingUser) throw new Error();
-      return;
     }),
     insert: jest.fn(async function (databaseId, UserId): Promise<void> {
       if (UserId != existingUser) throw new Error();
-      return;
     }),
     delete: jest.fn(async function (databaseId, UserId): Promise<void> {
       if (UserId != existingUser) throw new Error();
-      return;
     }),
   };
 
@@ -123,21 +120,19 @@ describe('UserOwnsDatabaseController', () => {
         mockUserOwnsDatabaseDto.database_id,
         mockAuthorizedResponse.locals.userMakingRequest.id,
       );
-
     });
 
-  it('should call userOwnsDatabaseService with insert', async () => {
-    const spy = jest.spyOn(mockUserOwnsDatabaseService, 'insert');
+    it('should call userOwnsDatabaseService with insert', async () => {
+      const spy = jest.spyOn(mockUserOwnsDatabaseService, 'insert');
 
-    await controller.create(mockAuthorizedResponse, mockUserOwnsDatabaseDto);
+      await controller.create(mockAuthorizedResponse, mockUserOwnsDatabaseDto);
 
-    expect(spy).toHaveBeenCalledWith(
+      expect(spy).toHaveBeenCalledWith(
         mockUserOwnsDatabaseDto.database_id,
         mockAuthorizedResponse.locals.userMakingRequest.id,
-    );
-
+      );
+    });
   });
-});
 
   describe('delete', () => {
     it('should return a status of 500 if unauthorized response ', async () => {
@@ -156,8 +151,8 @@ describe('UserOwnsDatabaseController', () => {
       await controller.delete(mockAuthorizedResponse, mockUserOwnsDatabaseDto);
 
       expect(spy).toHaveBeenCalledWith(
-          mockUserOwnsDatabaseDto.database_id,
-          mockAuthorizedResponse.locals.userMakingRequest.id,
+        mockUserOwnsDatabaseDto.database_id,
+        mockAuthorizedResponse.locals.userMakingRequest.id,
       );
     });
 
@@ -167,8 +162,8 @@ describe('UserOwnsDatabaseController', () => {
       await controller.delete(mockAuthorizedResponse, mockUserOwnsDatabaseDto);
 
       expect(spy).toHaveBeenCalledWith(
-          mockUserOwnsDatabaseDto.database_id,
-          mockAuthorizedResponse.locals.userMakingRequest.id,
+        mockUserOwnsDatabaseDto.database_id,
+        mockAuthorizedResponse.locals.userMakingRequest.id,
       );
     });
   });

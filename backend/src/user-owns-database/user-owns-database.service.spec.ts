@@ -65,7 +65,6 @@ describe('UserOwnsDatabaseService', () => {
     });
   });
 
-
   describe('insert', () => {
     it('should call UserOwnsDatabaseRepository and insert database object', async () => {
       const database: UserOwnsDatabase = {

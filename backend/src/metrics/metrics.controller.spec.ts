@@ -10,6 +10,7 @@ describe('MetricsController', () => {
   const userUUIDMock = 'b45fc742-be1c-4c22-957c-3dd352743074';
   const databaseOIDMock = 5;
   const sizeMock = 333333;
+  const querycountMock = 0;
   const statusResponseMock = {
     send: jest.fn((x) => x),
   };
@@ -27,6 +28,12 @@ describe('MetricsController', () => {
       .useMocker((token) => {
         if (token === MetricsService) {
           return {
+            getCombinedPostgresSizeMetricsOfUser: jest
+              .fn()
+              .mockResolvedValue(sizeMock),
+            getCombinedPostgresQueryCountOfUser: jest
+              .fn()
+              .mockResolvedValue(querycountMock),
             getAllPostgresDatabaseSizesOfSingleUser: jest
               .fn()
               .mockResolvedValue(sizeMock),
@@ -60,6 +67,7 @@ describe('MetricsController', () => {
       );
       expect(statusResponseMock.send).toHaveBeenCalledWith({
         sizeUsage: sizeMock,
+        queryCount: 0,
       });
     });
     it('should return 400 with invalid user uuid', async () => {

@@ -40,7 +40,6 @@ describe('DatabasesController (e2e)', () => {
   };
 
   beforeEach(async () => {
-    process.env.POSTGRES_USER_SCHEMA = 'e2e_test';
     const moduleFixture: TestingModule = await Test.createTestingModule({
       providers: [
         DatabasesService,
