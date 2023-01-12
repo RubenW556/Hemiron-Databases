@@ -1,10 +1,14 @@
 import { BadRequestException, Injectable, Logger } from '@nestjs/common';
 import { InjectDataSource } from '@nestjs/typeorm';
 import { DataSource } from 'typeorm';
+import { CreateRedisService } from '../redis/create-redis.service';
+import { QueryLoggingService } from '../redis/query-logging.service';
 
 @Injectable()
 export class MetricsService {
   private readonly logger = new Logger(MetricsService.name);
+  private createRedisService: CreateRedisService;
+  private queryLoggingService: QueryLoggingService;
 
   constructor(@InjectDataSource() private dataSource: DataSource) {}
 
@@ -66,6 +70,54 @@ export class MetricsService {
     }
   }
 
+  /**
+   * Gets sizes of all Postgres databases of user combined
+   * @param {string} uuid UUID of requested user as string
+   */
+  async getAllRedisDatabaseSizesOfSingleUser(uuid: string): Promise<number> {
+    let totalSizeOfUser = 0;
+    try {
+      const dbList = await this.dataSource.query(
+        `SELECT database_id 
+      FROM docker.user_owns_database 
+      WHERE user_id = $1`,
+        [uuid],
+      );
+      for (const database_uuid of dbList) {
+        const singleDBSize = await this.createRedisService.getMemoryUsage(
+          database_uuid,
+        );
+        totalSizeOfUser += singleDBSize;
+      }
+    } catch (e) {
+      this.logger.error(e);
+    }
+    return totalSizeOfUser;
+  }
+  /**
+   * Gets sizes of all Postgres databases of user combined
+   * @param {string} uuid UUID of requested user as string
+   */
+  async getAllRedisQueriesOfSingleUser(uuid: string): Promise<number> {
+    let totalQueriesOfUser = 0;
+    try {
+      const dbList = await this.dataSource.query(
+        `SELECT database_id 
+      FROM docker.user_owns_database 
+      WHERE user_id = $1`,
+        [uuid],
+      );
+      for (const database_uuid of dbList) {
+        const singleDBQueries =
+          this.queryLoggingService.getQueryByDbUUID(database_uuid);
+        totalQueriesOfUser += singleDBQueries;
+      }
+    } catch (e) {
+      this.logger.error(e);
+    }
+    return totalQueriesOfUser;
+  }
+
   async getCombinedPostgresSizeMetricsOfUser(uuid: string): Promise<number> {
     let size = 0;
     const payload = await this.getAllPostgresDatabaseSizesOfSingleUser(uuid);
@@ -74,6 +126,21 @@ export class MetricsService {
       size = size + parseInt(database.db_size);
     }
     return size;
+  }
+
+  async getCombinedRedisMetricsOfUser(uuid: string): Promise<number> {
+    const size = await this.getAllRedisDatabaseSizesOfSingleUser(uuid);
+    this.logger.debug(size);
+    if (size < 1) throw new Error('No data found');
+    return size;
+  }
+
+  async getCombinedRedisQueriesOfUser(uuid: string): Promise<number> {
+    const totalQueries = await this.getAllRedisQueriesOfSingleUser(uuid);
+    this.logger.debug(totalQueries);
+    if (totalQueries < 1) throw new Error('No data found');
+    this.queryLoggingService.reset();
+    return totalQueries;
   }
 
   getHello() {
