@@ -5,10 +5,6 @@ import {
 } from '@liaoliaots/nestjs-redis';
 import Redis from 'ioredis';
 import { QueryLoggingService } from './query-logging.service';
-import {Test, TestingModule} from "@nestjs/testing";
-import {UsersService} from "../user/users.service";
-import {getRepositoryToken} from "@nestjs/typeorm";
-import {User} from "../user/user.entity";
 
 @Injectable()
 export class CreateRedisService {

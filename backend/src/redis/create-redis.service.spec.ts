@@ -1,32 +1,15 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { getRepositoryToken } from '@nestjs/typeorm';
-import { UsersService } from '../user/users.service';
-import { User } from '../user/user.entity';
 import {CreateRedisService} from "./create-redis.service";
 import Redis from "ioredis";
 import {QueryLoggingService} from "./query-logging.service";
+import {RedisService} from "@liaoliaots/nestjs-redis";
 
 describe('CreateRedisService', () => {
     let service: CreateRedisService;
-    const mockUser = {
-        database_id: '77807154-2c3a-44e0-94a9-409805cf9a2f',
-        user_id: '448098df-b9dd-4ec2-af9f-b23459b203a1',
-    };
-    let mockSingleKeyValue = {key: 'key1', value: 'value1'};
-    let mockKeyValueDB = {};
-    const mockAdmin = {
-        database_id: 'default',
-        user_id: 'default'
-    }
-    const mockQueryLoggerService = {
-        logQuery: jest.fn(async function (database_uuid: string, queries = 1): Promise<void> {
-            return;
-        }),
-    };
 
     const mockRedis = {
         acl: jest.fn(async function (): Promise<string> {
-            return mockUser.database_id;
+            return mockCurrentUser.database_id;
         }),
         set: jest.fn(async function (fullKey, value): Promise<void> {
             mockKeyValueDB[fullKey] = value;
@@ -36,6 +19,30 @@ describe('CreateRedisService', () => {
             return;
         }),
     };
+    const mockQueryLoggerService = {
+        logQuery: jest.fn(async function (database_uuid: string, queries = 1): Promise<void> {
+            return;
+        }),
+    };
+    const mockRedisService = {
+        getClient: jest.fn(async function () {
+            return mockRedis;
+        })
+    };
+
+    const mockUser = {
+        database_id: '77807154-2c3a-44e0-94a9-409805cf9a2f',
+        user_id: '448098df-b9dd-4ec2-af9f-b23459b203a1',
+    };
+    const mockAdmin = {
+        database_id: 'default',
+        user_id: 'default'
+    }
+    let mockCurrentUser = mockUser;
+
+    let mockSingleKeyValue = {key: 'key1', value: 'value1'};
+    let mockKeyValueDB = {};
+
 
     beforeEach(async () => {
         const module: TestingModule = await Test.createTestingModule({
@@ -48,6 +55,10 @@ describe('CreateRedisService', () => {
                 {
                     provide: QueryLoggingService,
                     useValue: mockQueryLoggerService,
+                },
+                {
+                    provide: RedisService,
+                    useValue: mockRedisService,
                 },
             ],
         }).compile();
@@ -66,7 +77,7 @@ describe('CreateRedisService', () => {
             mockSingleKeyValue.key, mockSingleKeyValue.value
             );
 
-            expect(spy).toHaveBeenCalledWith(mockUser.database_id);
+            expect(spy).toHaveBeenCalledWith(mockCurrentUser.database_id);
         });
 
         it('should call Redis.set(fullkey, value)', async () => {
@@ -79,47 +90,12 @@ describe('CreateRedisService', () => {
             expect(spy).toHaveBeenCalledWith(fullkey, mockSingleKeyValue.value);
         });
 
-        it('should return an object with user_id and database_id', async () => {
-            const result = await service.findOne(mockUserOwnsDatabaseDto.database_id, mockUserOwnsDatabaseDto.user_id);
-
-            expect(result.user_id).toBeDefined();
-            expect(result.database_id).toBeDefined();
-        });
-
-    });
-
-
-
-    describe('insert', () => {
-        it('should call UserOwnsDatabaseRepository and insert database object', async () => {
-            const database: UserOwnsDatabase = {
-                database_id: mockUserOwnsDatabaseDto.database_id,
-                user_id: mockUserOwnsDatabaseDto.user_id,
-            };
-            const spy = jest.spyOn(mockUserOwnsDatabaseRepository, 'insert');
-
-            await service.insert(
-                mockUserOwnsDatabaseDto.database_id,
-                mockUserOwnsDatabaseDto.user_id,
+        it('should return OK if succes', async () => {
+            const result =             await service.set(
+                mockSingleKeyValue.key, mockSingleKeyValue.value
             );
 
-            expect(spy).toHaveBeenCalledWith(database);
-        });
-    });
-
-    describe('delete', () => {
-        it('should call UserOwnsDatabaseRepository.delete() with database_id and user_id', async () => {
-            const spy = jest.spyOn(mockUserOwnsDatabaseRepository, 'delete');
-
-            await service.delete(
-                mockUserOwnsDatabaseDto.database_id,
-                mockUserOwnsDatabaseDto.user_id,
-            );
-
-            expect(spy).toHaveBeenCalledWith({
-                database_id: mockUserOwnsDatabaseDto.database_id,
-                user_id: mockUserOwnsDatabaseDto.user_id,
-            });
+            expect(result).toEqual('OK');
         });
     });
 });
