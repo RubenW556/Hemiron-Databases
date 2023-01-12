@@ -1,8 +1,8 @@
-import { Test, TestingModule } from '@nestjs/testing';
-import { CreateRedisService } from './create-redis.service';
+import {Test, TestingModule} from '@nestjs/testing';
+import {CreateRedisService} from './create-redis.service';
 import Redis from 'ioredis';
-import { QueryLoggingService } from './query-logging.service';
-import { RedisService } from '@liaoliaots/nestjs-redis';
+import {QueryLoggingService} from './query-logging.service';
+import {RedisService} from '@liaoliaots/nestjs-redis';
 
 describe('CreateRedisService', () => {
   let service: CreateRedisService;
@@ -34,11 +34,10 @@ describe('CreateRedisService', () => {
       const filteredKeys = Object.keys(mockKeyValueDB).filter((key) =>
         key.startsWith(startsWith),
       );
-      const filteredObjects = filteredKeys.map((key) => ({
+      return filteredKeys.map((key) => ({
         key,
         value: mockKeyValueDB[key],
       }));
-      return filteredObjects;
     }),
     scan: jest.fn(function (cursor, patternToken, startsWith): string[] {
       if (patternToken === 'MATCH') {
@@ -52,14 +51,15 @@ describe('CreateRedisService', () => {
       mockCurrentUser.database_id = dbname;
       return 'OK';
     }),
-    info: jest.fn(function () {}),
-    client: jest.fn(function () {}),
+    info: jest.fn(function (): void {
+      return;
+    }),
+    client: jest.fn(function (): void {
+      return;
+    }),
   };
   const mockQueryLoggerService = {
-    logQuery: jest.fn(function (
-      database_uuid: string,
-      queries = 1,
-    ): Promise<void> {
+    logQuery: jest.fn(function (): Promise<void> {
       return;
     }),
   };
@@ -79,15 +79,11 @@ describe('CreateRedisService', () => {
     user_id: '555098df-b9dd-4ec2-af9f-b23459b204b2',
   };
 
-  const mockAdmin = {
-    database_id: 'default',
-    user_id: 'default',
-  };
   const mockCurrentUser = mockUser;
 
   const mockSingleKeyValue = { key: 'key1', value: 'value1' };
 
-  const password = 'password';
+  const testpassword = 'testpassword';
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -199,8 +195,7 @@ describe('CreateRedisService', () => {
           mockCurrentUser.database_id,
         );
         const fullKey = `${dbname}:key${i}`;
-        const value = `value${i}`;
-        mockKeyValueDB[fullKey] = value;
+        mockKeyValueDB[fullKey] = `value${i}`;
       }
 
       const spy = jest.spyOn(mockQueryLoggerService, 'logQuery');
@@ -254,8 +249,7 @@ describe('CreateRedisService', () => {
           mockCurrentUser.database_id,
         );
         const fullKey = `${dbname}:key${i}`;
-        const value = `value${i}`;
-        mockKeyValueDB[fullKey] = value;
+        mockKeyValueDB[fullKey] = `value${i}`;
       }
 
       const spy = jest.spyOn(mockQueryLoggerService, 'logQuery');
@@ -273,8 +267,7 @@ describe('CreateRedisService', () => {
           mockCurrentUser.database_id,
         );
         const fullKey = `${dbname}:key${i}`;
-        const value = `value${i}`;
-        mockKeyValueDB[fullKey] = value;
+        mockKeyValueDB[fullKey] = `value${i}`;
       }
 
       const spy = jest.spyOn(service, 'getValidSearchTerm');
@@ -306,23 +299,23 @@ describe('CreateRedisService', () => {
   describe('login', () => {
     it('should call Redis.auth(dbname, password)', async () => {
       const spy = jest.spyOn(mockRedis, 'auth');
-      await service.login(mockUser2.database_id, password);
+      await service.login(mockUser2.database_id, testpassword);
 
-      expect(spy).toHaveBeenCalledWith(mockUser2.database_id, password);
+      expect(spy).toHaveBeenCalledWith(mockUser2.database_id, testpassword);
     });
 
     it('should change user', async () => {
-      await service.login(mockUser2.database_id, password);
+      await service.login(mockUser2.database_id, testpassword);
       let currentDB = mockCurrentUser.database_id;
       expect(currentDB).toEqual(mockUser2.database_id);
 
-      await service.login(mockUser.database_id, password);
+      await service.login(mockUser.database_id, testpassword);
       currentDB = mockCurrentUser.database_id;
       expect(currentDB).toEqual(mockUser.database_id);
     });
 
     it('should return OK if succes', async () => {
-      const result = await service.login(mockUser2.database_id, password);
+      const result = await service.login(mockUser2.database_id, testpassword);
       expect(result).toEqual('OK');
     });
   });

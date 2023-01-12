@@ -82,8 +82,7 @@ export class MetricsService {
       WHERE user_id = $1`,
         [uuid],
       );
-      for (let i = 0; i < dbList.length; i++) {
-        const database_uuid = dbList[i];
+      for (const database_uuid of dbList) {
         const singleDBSize = await this.createRedisService.getMemoryUsage(
           database_uuid,
         );
@@ -107,8 +106,7 @@ export class MetricsService {
       WHERE user_id = $1`,
         [uuid],
       );
-      for (let i = 0; i < dbList.length; i++) {
-        const database_uuid = dbList[i];
+      for (const database_uuid of dbList) {
         const singleDBQueries =
           this.queryLoggingService.getQueryByDbUUID(database_uuid);
         totalQueriesOfUser += singleDBQueries;
