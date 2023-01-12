@@ -193,7 +193,7 @@ export class CreateRedisService {
     return this.redis.info();
   }
 
-  private async getValidSearchTerm(dbname?: string) {
+  public async getValidSearchTerm(dbname?: string) {
     let searchTerm = '';
 
     const currentDb = await this.getCurrentDb();
