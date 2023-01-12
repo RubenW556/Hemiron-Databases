@@ -8,24 +8,30 @@ describe('CreateRedisService', () => {
     let service: CreateRedisService;
 
     const mockRedis = {
-        acl: jest.fn(async function (): Promise<string> {
+        acl: jest.fn( function (): string{
             return mockCurrentUser.database_id;
         }),
-        set: jest.fn(async function (fullKey, value): Promise<void> {
+        set: jest.fn( function (fullKey, value): string{
             mockKeyValueDB[fullKey] = value;
-            return;
+            return "OK";
         }),
-        delete: jest.fn(async function (): Promise<void> {
-            return;
+        get: jest.fn( function (fullKey): string{
+            if(mockKeyValueDB.hasOwnProperty(fullKey)) {
+                return mockKeyValueDB[fullKey];
+            }
+            return '';
+        }),
+        del: jest.fn( function (): string {
+            return "OK";
         }),
     };
     const mockQueryLoggerService = {
-        logQuery: jest.fn(async function (database_uuid: string, queries = 1): Promise<void> {
+        logQuery: jest.fn( function (database_uuid: string, queries = 1): Promise<void> {
             return;
         }),
     };
     const mockRedisService = {
-        getClient: jest.fn(async function () {
+        getClient: jest.fn( function () {
             return mockRedis;
         })
     };
@@ -42,6 +48,7 @@ describe('CreateRedisService', () => {
 
     let mockSingleKeyValue = {key: 'key1', value: 'value1'};
     let mockKeyValueDB = {};
+    const RedisCommands = require('redis-commands');
 
 
     beforeEach(async () => {
@@ -74,7 +81,7 @@ describe('CreateRedisService', () => {
         it('should call queryLoggingService.logQuery(currentDb)', async () => {
             const spy = jest.spyOn(mockQueryLoggerService, 'logQuery');
             await service.set(
-            mockSingleKeyValue.key, mockSingleKeyValue.value
+                mockSingleKeyValue.key, mockSingleKeyValue.value
             );
 
             expect(spy).toHaveBeenCalledWith(mockCurrentUser.database_id);
@@ -82,7 +89,7 @@ describe('CreateRedisService', () => {
 
         it('should call Redis.set(fullkey, value)', async () => {
             const spy = jest.spyOn(mockRedis, 'set');
-            const fullkey =  + mockUser.database_id + ":" + mockSingleKeyValue.key;
+            let fullkey = mockUser.database_id + ":" + mockSingleKeyValue.key;
             await service.set(
                 mockSingleKeyValue.key, mockSingleKeyValue.value
             );
@@ -91,10 +98,72 @@ describe('CreateRedisService', () => {
         });
 
         it('should return OK if succes', async () => {
-            const result =             await service.set(
+            const result = await service.set(
                 mockSingleKeyValue.key, mockSingleKeyValue.value
             );
 
+            expect(result).toEqual('OK');
+        });
+    });
+
+    describe('get', () => {
+        it('should call queryLoggingService.logQuery(currentDb)', async () => {
+            const spy = jest.spyOn(mockQueryLoggerService, 'logQuery');
+            await service.get(
+                mockSingleKeyValue.key
+            );
+
+            expect(spy).toHaveBeenCalledWith(mockCurrentUser.database_id);
+        });
+
+        it('should call Redis.get(fullkey)', async () => {
+            const spy = jest.spyOn(mockRedis, 'get');
+            let fullkey = mockUser.database_id + ":" + mockSingleKeyValue.key;
+            await service.get(
+                mockSingleKeyValue.key
+            );
+
+            expect(spy).toHaveBeenCalledWith(fullkey);
+        });
+
+        it('should return key if succes', async () => {
+            const result = await service.get(
+                mockSingleKeyValue.key
+            );
+            expect(result).toEqual(mockSingleKeyValue.value);
+        });
+        it('should return nothing if fail', async () => {
+            const result = await service.get(
+                'nonexistantkey'
+            );
+            expect(result).toEqual('');
+        });
+    });
+
+    describe('delete', () => {
+        it('should call queryLoggingService.logQuery(currentDb)', async () => {
+            const spy = jest.spyOn(mockQueryLoggerService, 'logQuery');
+            await service.delete(
+                mockSingleKeyValue.key
+            );
+
+            expect(spy).toHaveBeenCalledWith(mockCurrentUser.database_id);
+        });
+
+        it('should call Redis.delete(fullkey)', async () => {
+            const spy = jest.spyOn(mockRedis, 'del');
+            let fullkey = mockUser.database_id + ":" + mockSingleKeyValue.key;
+            await service.delete(
+                mockSingleKeyValue.key
+            );
+
+            expect(spy).toHaveBeenCalledWith(fullkey);
+        });
+
+        it('should return OK if succes', async () => {
+            const result = await service.delete(
+                mockSingleKeyValue.key
+            );
             expect(result).toEqual('OK');
         });
     });
