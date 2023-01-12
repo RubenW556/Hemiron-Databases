@@ -70,9 +70,7 @@ describe('UserOwnsDatabaseService', () => {
       expect(result.user_id).toBeDefined();
       expect(result.database_id).toBeDefined();
     });
-
   });
-
 
 
   describe('insert', () => {
