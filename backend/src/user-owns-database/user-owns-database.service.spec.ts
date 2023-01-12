@@ -63,7 +63,17 @@ describe('UserOwnsDatabaseService', () => {
 
       expect(spy).toHaveBeenCalledWith(mockUserOwnsDatabaseDto);
     });
+
+    it('should return an object with user_id and database_id', async () => {
+      const result = await service.findOne(mockUserOwnsDatabaseDto.database_id, mockUserOwnsDatabaseDto.user_id);
+
+      expect(result.user_id).toBeDefined();
+      expect(result.database_id).toBeDefined();
+    });
+
   });
+
+
 
   describe('insert', () => {
     it('should call UserOwnsDatabaseRepository and insert database object', async () => {
