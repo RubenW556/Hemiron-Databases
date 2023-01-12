@@ -5,7 +5,6 @@ import { User } from '../src/user/user.entity';
 import { Database } from '../src/databases/database.entity';
 import { UserOwnsDatabase } from '../src/user-owns-database/user-owns-database.entity';
 import { MetricsService } from '../src/metrics/metrics.service';
-import { MetricsController } from '../src/metrics/metrics.controller';
 import { MetricsModule } from '../src/metrics/metrics.module';
 import { DatabasesService } from '../src/databases/databases.service';
 import { UserOwnsDatabaseService } from '../src/user-owns-database/user-owns-database.service';
@@ -14,19 +13,12 @@ import { DatabaseManagementService } from '../src/meta-database-management/datab
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { DatabasesController } from '../src/databases/databases.controller';
 import { MockAuthMiddleware } from './mock-auth.middleware';
-import { AuthenticationValidatorModule } from 'hemiron-auth/dist/authentication-validator.module';
-import { UsersModule } from '../src/user/users.module';
-import { DatabasesModule } from '../src/databases/databases.module';
-import { UserOwnsDatabaseModule } from '../src/user-owns-database/user-owns-database.module';
-import { TasksModule } from '../src/tasks/tasks.module';
-import { APP_GUARD } from '@nestjs/core';
-import { AuthenticationValidationGuard } from 'hemiron-auth/dist/guards/authentication-validation.guard';
 import * as request from 'supertest';
 
 describe('Metrics Controller (e2e)', () => {
   let app: INestApplication;
 
-  const validDatabaseID = 'ee85aca8-f829-468e-bca9-7db0a63688c2';
+  const validUserID = 'c30a6cdd-02db-472f-8e69-80d57b67b3da';
 
   const mockDatabaseManagementService = {
     createDatabase: jest.fn(async () => {
@@ -93,7 +85,7 @@ describe('Metrics Controller (e2e)', () => {
 
   it('/ (GET)', () => {
     return request(app.getHttpServer())
-      .get(`/metrics/databases/postgres/users/123`)
+      .get(`/metrics/databases/postgres/users/${validUserID}`)
       .expect(200);
   });
 });
