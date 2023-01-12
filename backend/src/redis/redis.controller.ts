@@ -1,16 +1,20 @@
 import {
+  BadRequestException, Body,
   Controller,
   Delete,
-  Get,
+  Get, HttpException,
   Param,
   Post,
   Put,
   Req,
   UsePipes,
   ValidationPipe,
+  Response
 } from '@nestjs/common';
 
 import { CreateRedisService } from './create-redis.service';
+import {HttpErrorByCode} from "@nestjs/common/utils/http-error-by-code.util";
+import {UpdateDatabaseDto} from "../databases/dto/update-database.dto";
 
 @UsePipes(new ValidationPipe())
 @Controller('redis')
@@ -21,7 +25,7 @@ export class RedisController {
   async setKey(@Param('key') key: string, @Req() req): Promise<string> {
     const value = req.body.value;
     if (typeof value === 'undefined') {
-      return 'no value given in x-www-form-encoded parameter: value';
+      throw new HttpException('No value in body', 400);
     }
     return this.redisService.set(key, value);
   }
@@ -32,12 +36,12 @@ export class RedisController {
   }
 
   @Delete('key/:key')
-  async deleteKey(@Param('key') key: string): Promise<string> {
+  async deleteKey(@Param('key') key: string, @Response() res): Promise<string> {
     const result = await this.redisService.delete(key);
     if (result === 1) {
-      return 'OK';
+      res.status(200).send({ message: 'OK' });
     } else if (result === 0) {
-      return "Key doesn't exist";
+      throw new HttpException('Key not found', 404);
     } else return result.toString();
   }
 
@@ -55,7 +59,7 @@ export class RedisController {
   async login(@Param('dbname') dbname: string, @Req() req): Promise<string> {
     const password = req.body.password;
     if (typeof password === 'undefined') {
-      return 'no value given in x-www-form-encoded parameter: password';
+      throw new HttpException('No database name in body', 400);
     }
     return this.redisService.login(dbname, password);
   }
@@ -67,7 +71,7 @@ export class RedisController {
   ): Promise<string> {
     const password = req.body.password;
     if (typeof password === 'undefined') {
-      return 'no value given in x-www-form-encoded parameter: password';
+      throw new HttpException('No password in body', 400);
     }
     return this.redisService.addPassword(dbname, password);
   }
@@ -79,7 +83,7 @@ export class RedisController {
   ): Promise<string> {
     const password = req.body.password;
     if (typeof password === 'undefined') {
-      return 'no value given in x-www-form-encoded parameter: password';
+      throw new HttpException('No databasename in body', 400);
     }
     return await this.redisService.deletePassword(dbname, password);
   }
@@ -88,14 +92,14 @@ export class RedisController {
   async createDb(@Param('dbname') dbname: string, @Req() req): Promise<string> {
     const password = req.body.password;
     if (typeof password === 'undefined') {
-      return 'no value given in x-www-form-encoded parameter: password';
+      throw new HttpException('No password in body', 400);
     }
     if (dbname.includes(':')) {
-      return 'A databasename is not allowed to contain a semicolon ":" ';
+      throw new HttpException('A databasename is not allowed to contain a semicolon ":" ', 406);
     }
     const response = await this.redisService.getAllDatabases();
     if (response.includes(dbname)) {
-      return 'Databasename already in use, please pick another Databasename';
+      throw new HttpException('Databasename already in use, please pick another Databasename', 406);
     }
     return this.redisService.addPassword(dbname, password);
   }
@@ -104,20 +108,22 @@ export class RedisController {
   async getDb(@Param('dbname') dbname: string): Promise<string[]> {
     const response = await this.redisService.getDb(dbname);
     if (response == null) {
-      return ["Database doesn't exist"];
+      throw new HttpException('Database not found', 404);
     }
     return this.redisService.getDb(dbname);
   }
 
   @Delete('db/:dbname')
-  async deleteDb(@Param('dbname') dbname: string): Promise<string> {
+  async deleteDb(@Param('dbname') dbname: string, @Response() res): Promise<string> {
     const result = await this.redisService.deleteDb(dbname);
     if (result === 1) {
-      return 'OK';
+      res.status(200).send({ message: 'OK' });
     } else if (result === 0) {
-      return "User doesn't exist";
+      throw new HttpException('User does not exist', 406);
     }
-    return result.toString();
+    else{
+      return result.toString();
+    }
   }
 
   @Get('usage/:dbname')
