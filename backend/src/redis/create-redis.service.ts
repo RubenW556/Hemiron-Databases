@@ -17,7 +17,7 @@ export class CreateRedisService {
     this.redis = this.redisService.getClient(DEFAULT_REDIS_NAMESPACE);
   }
 
-public async set(key, value): Promise<string> {
+  public async set(key, value): Promise<string> {
     const currentDb = await this.getCurrentDb();
     this.queryLoggingService.logQuery(currentDb);
 
