@@ -4,7 +4,3 @@
 postgresql/.env
 postgresql/.env.dev
 sonarqube/.env
-
-*.env
-redis/.env
-queries.txt

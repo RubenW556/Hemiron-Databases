@@ -1,4 +1,4 @@
-import { Logger, MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
+import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { User } from './user/user.entity';
 import { UsersModule } from './user/users.module';
@@ -12,28 +12,10 @@ import { AuthMiddleware } from './auth.middleware';
 import { AuthenticationValidationGuard } from 'hemiron-auth/dist/guards/authentication-validation.guard';
 import { AuthenticationValidatorModule } from 'hemiron-auth/dist/authentication-validator.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import { RedisModule } from '@liaoliaots/nestjs-redis';
-import { RedisMainModule } from './redis/redis-main.Module';
 
 @Module({
   imports: [
     ConfigModule.forRoot(),
-    RedisModule.forRoot({
-      readyLog: true,
-      closeClient: true,
-      config: {
-        host: process.env.REDIS_HOST,
-        port: 6379,
-        onClientCreated(client) {
-          client.on('error', () => {
-            AppModule.logger.log('[Warning] Redisclient NOT created (yet) !');
-          });
-          client.on('ready', () => {
-            AppModule.logger.log('Redisclient created!');
-          });
-        },
-      },
-    }),
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
       inject: [ConfigService],
@@ -56,8 +38,6 @@ import { RedisMainModule } from './redis/redis-main.Module';
     DatabasesModule,
     UserOwnsDatabaseModule,
     TasksModule,
-    RedisMainModule,
-    RedisModule,
   ],
   providers: [
     {
@@ -67,7 +47,6 @@ import { RedisMainModule } from './redis/redis-main.Module';
   ],
 })
 export class AppModule implements NestModule {
-  private static logger = new Logger(AppModule.name);
   // noinspection JSUnusedGlobalSymbols
   public configure(consumer: MiddlewareConsumer) {
     consumer.apply(AuthMiddleware).forRoutes('*');
